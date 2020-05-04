@@ -21,7 +21,7 @@
 - [ ] Kindle
 
 ## Reseach
-- [ x ] Github
+- [x] Github
 - [ ] Baza danych research
 - [ ] Wykresy
 - [ ] Strona internetowa
