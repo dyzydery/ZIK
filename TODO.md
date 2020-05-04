@@ -1,28 +1,30 @@
-TODO :
-Koszyk:
-[] Średnia jajka
-[] Średnia kurczaka
-[] otomoto
-[] BigMac
-[] cinemacity
-[] wiecej sklepow
+#TODO :
+##Koszyk:
+- [] Średnia jajka
+- [] Średnia kurczaka
+- [] otomoto
+- [] BigMac
+- [] cinemacity
+- [] wiecej sklepow
 
-Github
+##Waluty API
+- [] xau
+- [] CHF
+- [] USD
 
-[]Loty - kiedy najlepiej kupic - zaczac od 6 miesiac
+- [] Indeks Złotego
+- [] Koszyk inflacyjny
+- [] Różnice w czasie
 
-Baza danych research
+##Side projekciki
+- [] Loty - kiedy najlepiej kupic - zaczac od 6 miesiac
+- [] Kindle
 
-Waluty API
-[] xau
-[] CHF
-[] USD
+##Reseach
+- [] Github
+- [] Baza danych research
+- [] Wykresy
+- [] Strona internetowa
 
-Wykresy
 
-Indeks Złotego
-Koszyk inflacyjny
 
-Różnice w czasie
-
-Strona internetowa
