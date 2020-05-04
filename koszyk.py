@@ -3,7 +3,7 @@ koszyk = [
 ['pizza','Dr. Oetker Guseppe Pizza z szynką i pieczarkami 425g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003011893331'],
 ['maslo', 'Mlekovita Masło Polskie ekstra bez dodatków 82% 200g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003010388395'],
 ['jablka','Jabłka Championy 1kg	','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003000324204'],
-['makaron','Lubella Pełne Ziarno Makaron pióra penne 400g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003009844550'],
+['makaron','Lubella Penne Rigate Makaron Pióra 400g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003009542586'],
 ['chleb','Chleb najtańszy bochen za 500g pszenny','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003006016745'],
 ['mydlo','Biały Jeleń Hipoalergiczne mydło naturalne premium z lnem 100 g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003120616898'],
 ['kurczak','Filet z piersi kurczaka','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003009075602'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=filet%20z%20piersi%20kurczaka&sortBy=priceAscending'],
