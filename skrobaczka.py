@@ -23,9 +23,6 @@ def waluty():
 			'chf':float(pln)/float(chf),
 			'usd':float(pln)/float(usd)}
 
-
-
-
 def getPage(url):
 	return str(urlopen(url).read())
 
@@ -50,6 +47,18 @@ def getPageId(url,idx):
 	page = requests.get(url)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find(id=idx)
+
+def otomoto(url):
+	kod = getPageClass(url,'om-pager rel')
+	stron = kod.findChildren('li', recursive=True)
+	kwota = []
+	for i in range(1,len(stron)):
+		car = getPageClassAll(url+'&page='+str(i),'offer-price__number ds-price-number')
+		for x in car:
+			kwota.append(f.zrobCene(x.get_text()))
+	print('Ofert aut: ',len(kwota))
+	return [statistics.mean(kwota),statistics.median(kwota)]
+
 
 def tesco(rzecz,url):
 	try:

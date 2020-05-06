@@ -6,6 +6,7 @@
 - [ ] BigMac
 - [ ] cinemacity
 - [ ] wiecej sklepow
+- [ ] otomoto - automatycznie rok-3
 
 ## Indeks
 - [ ] Indeks Złotego

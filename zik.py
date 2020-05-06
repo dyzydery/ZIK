@@ -55,6 +55,10 @@ def skanujKoszyk():
             z=lekarz(x[2])
             cart[x[0]+'_Mean'] = z[0]
             cart[x[0]+'_Median'] = z[1]
+        elif (x[0]=='auto'):
+            z=otomoto(x[2])
+            cart[x[0]+'_Mean'] = z[0]
+            cart[x[0]+'_Median'] = z[1]
         i+=1
     print ('[==',int(i/l*100),'% ',f.CYELLOW2 + 'kindle' + f.CEND,' ==]',end ="               \r")
     cart['kindle'] = getMinCenaKindla()
@@ -75,11 +79,12 @@ def printKoszyk():
         i+=1
 
 
-a = koszyk.koszyk[20]
-# printPage(a[2])
-# print('Cena', fryzjer(a[2]))
+a = koszyk.koszyk[15]
+print(getPage(a[2]))
+printPage(a[2])
+# print('Cena srednia', otomoto(a[2])[0])
 
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
-skanujKoszyk()
-printKoszyk()
-f.saveCSV(cart)
+# skanujKoszyk()
+# printKoszyk()
+# f.saveCSV(cart)

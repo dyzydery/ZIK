@@ -12,6 +12,9 @@ def saveCSV(cart):
     i = fieldnames.index('lekarz')
     fieldnames[i]='lekarz_Mean'
     fieldnames.insert(i+1,'lekarz_Median')
+    i = fieldnames.index('auto')
+    fieldnames[i]='auto_Mean'
+    fieldnames.insert(i+1,'auto_Median')
     fieldnames.append('kindle')
     fieldnames.insert(0,'TimeStamp')
     with open('zikDB.csv', 'a') as csvfile:
