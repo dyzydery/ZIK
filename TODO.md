@@ -7,11 +7,7 @@
 - [ ] cinemacity
 - [ ] wiecej sklepow
 
-## Waluty API
-- [ ] xau
-- [ ] CHF
-- [ ] USD
-
+## Indeks
 - [ ] Indeks Złotego
 - [ ] Koszyk inflacyjny
 - [ ] Różnice w czasie
@@ -25,6 +21,3 @@
 - [ ] Baza danych research
 - [ ] Wykresy
 - [ ] Strona internetowa
-
-
-

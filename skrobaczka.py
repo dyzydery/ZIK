@@ -5,6 +5,27 @@ from urllib.request import urlopen
 import requests
 import funkcyjki as f
 import statistics
+import json
+
+def waluty():
+	# Key Fixerio 82115c700a7d9d17d383a6f386a67a92
+	# http://data.fixer.io/api/latest?access_key=82115c700a7d9d17d383a6f386a67a92
+	url = "http://data.fixer.io/api/latest?access_key=82115c700a7d9d17d383a6f386a67a92&symbols=USD,PLN,XAU,CHF"
+	response = requests.get(url)
+	data = response.text
+	parsed = json.loads(data)
+	pln = parsed["rates"]["PLN"]
+	usd = parsed["rates"]["USD"]
+	xau = parsed["rates"]["XAU"]
+	chf = parsed["rates"]["CHF"]
+	return {'eur':float(pln),
+			'xau':float(pln)/float(xau),
+			'chf':float(pln)/float(chf),
+			'usd':float(pln)/float(usd)}
+
+
+
+
 def getPage(url):
 	return str(urlopen(url).read())
 
