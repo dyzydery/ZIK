@@ -2,7 +2,6 @@
 ## Koszyk:
 - [ ] Średnia jajka
 - [ ] Średnia kurczaka
-- [ ] BigMac
 - [ ] cinemacity
 - [ ] wiecej sklepow
 - [ ] otomoto - automatycznie rok-3

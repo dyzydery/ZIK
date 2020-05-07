@@ -6,6 +6,7 @@ import requests
 import funkcyjki as f
 import statistics
 import json
+import datetime
 
 def waluty():
 	# Key Fixerio 82115c700a7d9d17d383a6f386a67a92
@@ -23,8 +24,31 @@ def waluty():
 			'chf':float(pln)/float(chf),
 			'usd':float(pln)/float(usd)}
 
+def bigmac(url):
+	header = {'accept' : 'text/html'}
+	kod = getPageHeader(url,header)
+	cena = kod.find('Big Mac')
+	kwota = kod[cena:cena+300]
+	cena = kwota.find('\">')
+	kwota = kwota[cena+10:cena+100]
+	cena = kwota.find('\">')
+	return kwota[cena+2:kwota.find('zł')]
+
+
 def getPage(url):
 	return str(urlopen(url).read())
+
+def getPageHeader(url,header):
+	page = requests.get(url,headers=header)
+	soup = BeautifulSoup(page.content, 'html.parser')
+	return str(soup)
+
+def printPageHeader(url,header):
+	page = requests.get(url,headers=header)
+	soup = BeautifulSoup(page.content, 'html.parser')
+	text_file = open("s.html", "w")
+	text_file.write(soup.prettify())
+	text_file.close()
 
 def printPage(url):
 	page = requests.get(url)
@@ -124,7 +148,8 @@ def kasjer(url):
 	return getPageClass(url,'js-median-gross').get_text()
 
 def lot(url):
-	return getPageClass(url,' length-5').get_text()
+	data = str(datetime.date.today()+datetime.timedelta(days=90))
+	return getPageClass(url+data,' length-5').get_text()
 
 def upc(url):
 	kwota = getPageClass(url,'lgi-hdr-9 ph2-d l-h6 m-h7 lgi-txtsd-default').get_text()

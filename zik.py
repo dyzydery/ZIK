@@ -49,6 +49,8 @@ def skanujKoszyk():
             cart[x[0]] = f.zrobCene(kasjer(x[2]))
         elif (x[0]=='fryzjer'):
             cart[x[0]] = f.zrobCene(fryzjer(x[2]))
+        elif (x[0]=='bigmac'):
+            cart[x[0]] = f.zrobCene(bigmac(x[2]))
         elif (x[0]=='lot'):
             cart[x[0]] = f.zrobCene(lot(x[2]))
         elif (x[0]=='lekarz'):
@@ -80,11 +82,11 @@ def printKoszyk():
 
 
 a = koszyk.koszyk[15]
-print(getPage(a[2]))
-printPage(a[2])
+# bigmac(a[2])
+# printPageHeader(a[2],{'accept' : 'text/html'})
 # print('Cena srednia', otomoto(a[2])[0])
 
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
-# skanujKoszyk()
-# printKoszyk()
-# f.saveCSV(cart)
+skanujKoszyk()
+printKoszyk()
+f.saveCSV(cart)

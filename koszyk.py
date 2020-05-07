@@ -18,7 +18,7 @@ koszyk = [
 ['m2wtorny','Średnia cena m2 w Krakowie 50-60m2 wtórny	','https://www.morizon.pl/mieszkania/krakow/?ps%5Bliving_area_from%5D=50&ps%5Bliving_area_to%5D=60&ps%5Bmarket_type%5D%5B0%5D=2'],
 ['m2pierwotny','Średnia cena m2 w Krakowie 50-60m2 pierwotny','https://www.morizon.pl/mieszkania/rynek-pierwotny/krakow/?ps%5Bliving_area_from%5D=50&ps%5Bliving_area_to%5D=60'],
 ['benzyna','Benzyna 95 1L	','https://www.autocentrum.pl/stacje-paliw/auchan/auchan-henryka-kamienskiego-11-krakow/'],
-['lot','Krakow-Rzym za 3 miesiace	','https://www.kiwi.com/us/search/results/krakow-poland/rome-italy/2020-08-03?transport=aircraft'],
+['lot','Krakow-Rzym za 3 miesiace	','https://www.kiwi.com/us/search/results/krakow-poland/rome-italy/'],
 #['Bilet to kina Cinecity w sobote wieczorem	'],
 ['fryzjer','Strzyżenie męskie Jean Luis David	','https://www.jeanlouisdavid.pl/salon-fryzjerski/fryzjer-katowice_s5434'],
 ['upc','Łącze internetowe najtanszne upc	','https://www.upc.pl/internet/kup-internet/'],
