@@ -95,11 +95,15 @@ def tesco(rzecz,url):
 		return '0'
 
 def kazar(url):
-	kod = getPage(url)
-	cena = kod.find('\\\'price\\\'')
-	kwota = kod[cena+13:cena+30]
-	kwota = kwota[:kwota.find('\'')-1]
-	return kwota
+	try:
+		kod = getPage(url)
+		cena = kod.find('\\\'price\\\'')
+		kwota = kod[cena+13:cena+30]
+		kwota = kwota[:kwota.find('\'')-1]
+		return kwota
+	except:
+		print("problem z: ", url)
+		return '0'
 
 def fryzjer(url):
 	kod = getPageClassAll(url,'salonPrices')
@@ -148,8 +152,12 @@ def kasjer(url):
 	return getPageClass(url,'js-median-gross').get_text()
 
 def lot(url):
-	data = str(datetime.date.today()+datetime.timedelta(days=90))
-	return getPageClass(url+data,' length-5').get_text()
+	try:
+		data = str(datetime.date.today()+datetime.timedelta(days=90))
+		return getPageClass(url+data,' length-5').get_text()
+	except:
+		print("problem z: ", url)
+		return '0'
 
 def upc(url):
 	kwota = getPageClass(url,'lgi-hdr-9 ph2-d l-h6 m-h7 lgi-txtsd-default').get_text()
@@ -164,8 +172,12 @@ def telefon(url):
 	return kwota
 
 def lekarz(url):
-	lek = getPageClassAll(url,'text-muted offset-0')
-	kwota = []
-	for x in lek:
-		kwota.append(f.zrobCene(x.get_text()))
-	return [statistics.mean(kwota),statistics.median(kwota)]
+	try:
+		lek = getPageClassAll(url,'offset-0 text-nowrap')
+		kwota = []
+		for x in lek:
+			kwota.append(f.zrobCene(x.get_text()))
+		return [statistics.mean(kwota),statistics.median(kwota)]
+	except:
+		print("problem z: ", url)
+		return ['0','0']

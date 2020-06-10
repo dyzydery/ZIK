@@ -73,15 +73,20 @@ def skanujKoszyk():
 
 def printKoszyk():
     i = 0
+    xau = cart['xau']
     for e,v in cart.items():
-        if i%2==0:
+        if i==0:
             print(f.CGREYBG+'{:15}'.format(e)+f.CEND,': ',f.CGREEN2+str(v)+f.CEND)
+        elif i%2==0:
+            print(f.CGREYBG+'{:15}'.format(e)+f.CEND,': ',f.CGREEN2+'{:20}'.format(str(v))+f.CEND, f.CBEIGE2+'ZIK: ',f.CGREYBG+str(xau/float(v))+f.CEND)
         else:
-            print('{:15}'.format(e),': ',f.CGREEN2+str(v)+f.CEND)
+            print('{:15}'.format(e),': ',f.CGREEN2+'{:20}'.format(str(v))+f.CEND,'ZIK: ',str(xau/float(v)))
         i+=1
 
 
-a = koszyk.koszyk[15]
+
+a = koszyk.koszyk[23]
+# printPage(a[2])
 # bigmac(a[2])
 # printPageHeader(a[2],{'accept' : 'text/html'})
 # print('Cena srednia', otomoto(a[2])[0])
@@ -89,4 +94,4 @@ a = koszyk.koszyk[15]
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
 skanujKoszyk()
 printKoszyk()
-f.saveCSV(cart)
+# f.saveCSV(cart)
