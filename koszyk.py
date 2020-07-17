@@ -2,7 +2,7 @@ koszyk = [
 ['kielecki','Majonez Kielecki 700ml','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003008316294'],
 ['pizza','Dr. Oetker Guseppe Pizza z szynką i pieczarkami 425g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003011893331'],
 ['maslo', 'Mlekovita Masło Polskie ekstra bez dodatków 82% 200g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003010388395'],
-['jablka','Jabłka Championy 1kg	','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003000324204'],
+['jablka','Jabłka 1kg	','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003006006883'],
 ['makaron','Lubella Penne Rigate Makaron Pióra 400g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003009542586'],
 ['chleb','Chleb najtańszy bochen za 500g pszenny','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003006016745'],
 ['mydlo','Biały Jeleń Hipoalergiczne mydło naturalne premium z lnem 100 g','https://ezakupy.tesco.pl/groceries/pl-PL/products/2003120616898'],
@@ -29,5 +29,6 @@ koszyk = [
 ['kasjer','Brutto Kasjera','https://wynagrodzenia.pl/moja-placa/ile-zarabia-kasjer'],
 ['xau','1 uncja Złota	','https://www.xe.com/currencyconverter/convert/?From=XAU&To=PLN'],
 ['chf','1 CHF	','https://www.xe.com/currencyconverter/convert/?Amount=1&From=chf&To=PLN'],
-['usd','1 USD','https://www.xe.com/currencyconverter/convert/?Amount=1&From=usd&To=PLN']
+['usd','1 USD','https://www.xe.com/currencyconverter/convert/?Amount=1&From=usd&To=PLN'],
+['kindle','Kindle Paperwhite 8gb bez reklam','https://www.ceneo.pl/72562365']
 ]

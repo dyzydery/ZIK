@@ -92,7 +92,7 @@ def tesco(rzecz,url):
 		return kwota.get_text()
 	except:
 		print("problem z: ", url)
-		return '0'
+		return '-1'
 
 def kazar(url):
 	try:
@@ -103,7 +103,7 @@ def kazar(url):
 		return kwota
 	except:
 		print("problem z: ", url)
-		return '0'
+		return '-1'
 
 def fryzjer(url):
 	kod = getPageClassAll(url,'salonPrices')
@@ -129,7 +129,7 @@ def auchan(url):
 		return kwota
 	except:
 		print("problem z: ", url)
-		return '0'
+		return '-1'
 
 def m2(url):
 	kwota = getPageId(url,'locationPageLink').get_text()
@@ -147,6 +147,9 @@ def rolex(url):
 
 def benzyna(url):
 	return getPageClass(url,'price').get_text()
+
+def kindl(url):
+	return getPageClass(url,'value').get_text()
 
 def kasjer(url):
 	return getPageClass(url,'js-median-gross').get_text()
@@ -180,4 +183,4 @@ def lekarz(url):
 		return [statistics.mean(kwota),statistics.median(kwota)]
 	except:
 		print("problem z: ", url)
-		return ['0','0']
+		return ['-1','-1']

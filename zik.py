@@ -53,6 +53,8 @@ def skanujKoszyk():
             cart[x[0]] = f.zrobCene(bigmac(x[2]))
         elif (x[0]=='lot'):
             cart[x[0]] = f.zrobCene(lot(x[2]))
+        elif (x[0]=='kindle'):
+            cart[x[0]] = f.zrobCene(kindl(x[2]))
         elif (x[0]=='lekarz'):
             z=lekarz(x[2])
             cart[x[0]+'_Mean'] = z[0]
@@ -62,9 +64,6 @@ def skanujKoszyk():
             cart[x[0]+'_Mean'] = z[0]
             cart[x[0]+'_Median'] = z[1]
         i+=1
-    print ('[==',int(i/l*100),'% ',f.CYELLOW2 + 'kindle' + f.CEND,' ==]',end ="               \r")
-    cart['kindle'] = getMinCenaKindla()
-    i+=1
     print ('[==',int(i/l*100),'% ',f.CYELLOW2 + 'waluty' + f.CEND,' ==]',end ="               \r")
     currency = waluty()
     cart['xau'] = currency['xau']
@@ -94,4 +93,4 @@ a = koszyk.koszyk[23]
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
 skanujKoszyk()
 printKoszyk()
-# f.saveCSV(cart)
+f.saveCSV(cart)

@@ -13,17 +13,17 @@ kindl = [
 
 def skanujKindle():
     for x in kindl:
-        if x[0]=='media':
-            x.append(zrobCene(getPageClass(x[1],'a-price_price').get_text()))
-        elif x[0]=='euro':
-            x.append(zrobCene(getPageClass(x[1],'price-normal selenium-price-normal').get_text()))
+        # if x[0]=='media':
+        #     x.append(zrobCene(getPageClass(x[1],'a-price_price').get_text()))
+        # if x[0]=='euro':
+        #     x.append(zrobCene(getPageClass(x[1],'price-normal selenium-price-normal').get_text()))
         #elif x[0]=='bit':
         #    x.append(zrobCene(getPageClass(x[1],'main-price').get_text()))
-        elif x[0]=='xkom':
-            x.append(zrobCene(getPageClass(x[1],'u7xnnm-4 iVazGO').get_text()))
+        # if x[0]=='xkom':
+        #     x.append(zrobCene(getPageClass(x[1],'u7xnnm-4 iVazGO').get_text()))
         # elif x[0]=='neo24':
         #     x.append(zrobCene(getPageClass(x[1],'u7xnnm-4 iVazGO').get_text()))
-        elif x[0]=='ceneo':
+        if x[0]=='ceneo':
             x.append(zrobCene(getPageClass(x[1],'value').get_text()))
 
 def statystyka():
@@ -45,7 +45,7 @@ def getMinCenaKindla():
         return getMin()
     except:
         print("problem z kindlem")
-        return '0'
+        return '-1'
 
 def pokazKindle():
     skanujKindle()
@@ -54,3 +54,4 @@ def pokazKindle():
 
 # pokazKindle()
 # printPage(kindl[2][1])
+# print(getPageClass(kindl[2][1],'value').get_text())

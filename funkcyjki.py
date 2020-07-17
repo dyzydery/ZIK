@@ -5,7 +5,7 @@ import csv
 import koszyk
 def zrobCene(x):
     x = x.replace(',','.')
-    return float(re.sub('[^0-9.]', '', x))
+    return float(re.sub('[^0-9.-]', '', x))
 
 def saveCSV(cart):
     fieldnames = [row[0] for row in koszyk.koszyk]
