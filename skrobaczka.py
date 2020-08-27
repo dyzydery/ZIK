@@ -73,15 +73,19 @@ def getPageId(url,idx):
 	return soup.find(id=idx)
 
 def otomoto(url):
-	kod = getPageClass(url,'om-pager rel')
-	stron = kod.findChildren('li', recursive=True)
-	kwota = []
-	for i in range(1,len(stron)):
-		car = getPageClassAll(url+'&page='+str(i),'offer-price__number ds-price-number')
-		for x in car:
-			kwota.append(f.zrobCene(x.get_text()))
-	print('Ofert aut: ',len(kwota))
-	return [statistics.mean(kwota),statistics.median(kwota)]
+	try:
+		kod = getPageClass(url,'om-pager rel')
+		stron = kod.findChildren('li', recursive=True)
+		kwota = []
+		for i in range(1,len(stron)):
+			car = getPageClassAll(url+'&page='+str(i),'offer-price__number ds-price-number')
+			for x in car:
+				kwota.append(f.zrobCene(x.get_text()))
+		print('Ofert aut: ',len(kwota))
+		return [statistics.mean(kwota),statistics.median(kwota)]
+	except:
+		print("problem z: ", url)
+		return '-1'
 
 
 def tesco(rzecz,url):
@@ -163,9 +167,14 @@ def lot(url):
 		return '0'
 
 def upc(url):
-	kwota = getPageClass(url,'lgi-hdr-9 ph2-d l-h6 m-h7 lgi-txtsd-default').get_text()
-	kwota = kwota[:kwota.find('zł/mies')]
-	return kwota
+		try:
+			kwota = getPageClass(url,'lgi-hdr-9 ph2-d l-h6 m-h11 lgi-txtsd-default').get_text()
+			kwota = kwota[:kwota.find('zł/mies')]
+			return kwota
+		except:
+			print("problem z: ", url)
+			return '0'
+
 
 def telefon(url):
 	kod = getPage(url)

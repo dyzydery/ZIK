@@ -5,6 +5,7 @@
 - [ ] cinemacity
 - [ ] wiecej sklepow
 - [ ] otomoto - automatycznie rok-3
+- [ ] najtansze jablka
 
 ## Indeks
 - [ ] Indeks Złotego
