@@ -110,10 +110,14 @@ def kazar(url):
 		return '-1'
 
 def fryzjer(url):
-	kod = getPageClassAll(url,'salonPrices')
-	men = kod[1]
-	ceny = men.findChildren(class_='salonPriceValue', recursive=True)
-	return ceny[0].get_text()
+	try:
+		kod = getPageClassAll(url,'salonPrices')
+		men = kod[1]
+		ceny = men.findChildren(class_='salonPriceValue', recursive=True)
+		return ceny[0].get_text()
+	except:
+		print("problem z: ", url)
+		return '-1'
 
 def prad(url):
 	kod = getPage(url)
@@ -147,7 +151,11 @@ def aspiryna(url):
 	return getPageClass(url,'product-card-product-price').get_text()
 
 def rolex(url):
-	return getPageClass(url,'price dig').get_text()
+	try:
+		return getPageClass(url,'price dig').get_text()
+	except:
+		print("problem z: ", url)
+		return '0'
 
 def benzyna(url):
 	return getPageClass(url,'price').get_text()
