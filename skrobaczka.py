@@ -127,9 +127,10 @@ def prad(url):
 	return kwota
 
 def auchan(url):
-	page = requests.get(url)
-	kod = BeautifulSoup(page.content, 'html.parser')
+
 	try:
+		page = requests.get(url)
+		kod = BeautifulSoup(page.content, 'html.parser')
 		kod = kod.get_text()
 		cena = kod.find('product_unitprice_ati')
 		kwota = kod[cena+23:cena+50]
