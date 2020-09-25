@@ -95,5 +95,5 @@ a = koszyk.koszyk[23]
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
 skanujKoszyk()
 printKoszyk()
-# f.saveCSV(cart)
+f.saveCSV(cart)
 DBinsert(cart)
