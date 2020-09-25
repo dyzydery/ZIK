@@ -1,5 +1,6 @@
 # TODO :
 ## Koszyk:
+- [ ] Loty sa zepsute, na razie markujemy 0.0 zeby nie zepsuc CSV
 - [ ] Średnia jajka
 - [ ] Średnia kurczaka
 - [ ] cinemacity

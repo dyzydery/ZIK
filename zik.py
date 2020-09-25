@@ -5,11 +5,12 @@ import requests
 import datetime
 import koszyk
 import funkcyjki as f
-from kindle import getMinCenaKindla
+# from kindle import getMinCenaKindla
 import re
 from bs4 import BeautifulSoup
 from skrobaczka import *
 import statistics
+from baza import DBinsert
 print('Złoty Indeks Kieleckiego')
 print(datetime.datetime.now())
 
@@ -52,7 +53,8 @@ def skanujKoszyk():
         elif (x[0]=='bigmac'):
             cart[x[0]] = f.zrobCene(bigmac(x[2]))
         elif (x[0]=='lot'):
-            cart[x[0]] = f.zrobCene(lot(x[2]))
+            #na razie nie ma lotow, markujemy zeby nie bylo syfu w bazie
+            cart[x[0]] = -1.0
         elif (x[0]=='kindle'):
             cart[x[0]] = f.zrobCene(kindl(x[2]))
         elif (x[0]=='lekarz'):
@@ -93,4 +95,5 @@ a = koszyk.koszyk[23]
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
 skanujKoszyk()
 printKoszyk()
-f.saveCSV(cart)
+# f.saveCSV(cart)
+DBinsert(cart)
