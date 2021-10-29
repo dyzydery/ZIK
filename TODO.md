@@ -5,7 +5,7 @@
 - [ ] Średnia kurczaka
 - [ ] cinemacity
 - [ ] wiecej sklepow
-- [ ] otomoto - automatycznie rok-3
+- [x] otomoto - automatycznie rok-3
 - [ ] najtansze jablka
 
 ## Indeks
