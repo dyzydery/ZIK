@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from skrobaczka import *
 import statistics
 from baza import DBinsert
+from plot import wykresuj
 print('Złoty Indeks Kieleckiego')
 print(datetime.datetime.now())
 
@@ -22,8 +23,8 @@ def skanujKoszyk():
     i = 0
     for x in koszyk.koszyk:
         print ('[==',int(i/l*100),'% ',f.CYELLOW2 + x[0] + f.CEND,' ==]',end="               \r")
-        if (x[2].find('tesco')!=-1):
-            cart[x[0]] = f.zrobCene(tesco(x[0],x[2]))
+        if (x[2].find('carrefour')!=-1):
+            cart[x[0]] = f.zrobCene(carrefour(x[0],x[2]))
         elif (x[0]=='buty'):
             cart[x[0]] = f.zrobCene(kazar(x[2]))
         elif (x[0]=='whisky' or x[0]=='piwo'):
@@ -86,8 +87,9 @@ def printKoszyk():
 
 
 
-a = koszyk.koszyk[23]
-# printPage(a[2])
+# a = koszyk.koszyk[1]
+# printPage('https://www.mediaexpert.pl/smartfony-i-zegarki/smartfony/smartfon-samsung-sm-g991-galaxy-s21-5g-8-128gb-gray')
+# print(carrefour('kielecki','https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml'))
 # bigmac(a[2])
 # printPageHeader(a[2],{'accept' : 'text/html'})
 # print('Cena srednia', otomoto(a[2])[0])
@@ -97,3 +99,4 @@ skanujKoszyk()
 printKoszyk()
 f.saveCSV(cart)
 DBinsert(cart)
+wykresuj()

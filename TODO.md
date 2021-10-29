@@ -9,7 +9,7 @@
 - [ ] najtansze jablka
 
 ## Indeks
-- [ ] Indeks Złotego
+- [x] Indeks Złotego
 - [ ] Koszyk inflacyjny
 - [ ] Różnice w czasie
 
@@ -18,7 +18,4 @@
 - [ ] Kindle
 
 ## Reseach
-- [x] Github
-- [ ] Baza danych research
-- [ ] Wykresy
 - [ ] Strona internetowa

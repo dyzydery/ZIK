@@ -4,21 +4,25 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import sqlite3
-
-def savePlot(produkt):
-    sns.set_theme()
+def getData(produkt):
     conn = sqlite3.connect('zik.db')
-    q1 = "SELECT timestamp,"+produkt+" FROM 'ceny';"
-    q2 = "SELECT timestamp,"+produkt+" FROM 'zik';"
+    q1 = "SELECT timestamp,"+produkt+" FROM 'ceny' WHERE "+produkt+">0;"
+    q2 = "SELECT timestamp,"+produkt+" FROM 'zik'  WHERE "+produkt+">0;"
 
     df1 = pd.read_sql_query(q1,conn)
     df2 = pd.read_sql_query(q2,conn)
 
+    return df1,df2,df2.loc[:,produkt].std()
+
+def savePlot(produkt):
+    df1,df2,STD = getData(produkt)
+    sns.set_theme()
     # Create a visualization
     ax = sns.lineplot(
         data=df2,color="red",
         x="timestamp", y=produkt, )
-    ax.set(xlabel='Czas', ylabel='PLN', title=produkt)
+    tytul=produkt+' STD: '+str(round(STD,9))
+    ax.set(xlabel='Czas', ylabel='PLN', title=tytul)
     # ax.set(xticks=df2.timestamp[2::50])
     ax2 = ax.twinx()
     ax = sns.lineplot(
@@ -42,8 +46,10 @@ def savePlot(produkt):
     plt.savefig("wykresy/"+produkt+".png")
     plt.clf()
 
-produkty = ['kielecki','pizza','maslo','jablka','makaron','chleb','mydlo','kurczak','jajka','rolex','whisky','piwo','buty','auto_Mean','auto_Median','telefon','bigmac','m2wtorny','m2pierwotny','benzyna','lot','fryzjer','upc','prad','lekarz_Mean','lekarz_Median','aspiryna','karma','kasjer','xau','chf','usd','kindle']
 
-for p in produkty:
-    savePlot(p)
+
+def wykresuj():
+    produkty = ['kielecki','pizza','maslo','jablka','makaron','chleb','mydlo','kurczak','jajka','rolex','whisky','piwo','buty','auto_Mean','auto_Median','telefon','bigmac','m2wtorny','m2pierwotny','benzyna','lot','fryzjer','upc','prad','lekarz_Mean','lekarz_Median','aspiryna','karma','kasjer','xau','chf','usd','kindle']
+    for p in produkty:
+        savePlot(p)
 # plt.show()

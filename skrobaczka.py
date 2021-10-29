@@ -25,14 +25,18 @@ def waluty():
 			'usd':float(pln)/float(usd)}
 
 def bigmac(url):
-	header = {'accept' : 'text/html'}
-	kod = getPageHeader(url,header)
-	cena = kod.find('Big Mac')
-	kwota = kod[cena:cena+300]
-	cena = kwota.find('\">')
-	kwota = kwota[cena+10:cena+100]
-	cena = kwota.find('\">')
-	return kwota[cena+2:kwota.find('zł')]
+	try:
+		header = {'accept' : 'text/html'}
+		kod = getPageHeader(url,header)
+		cena = kod.find('Big Mac')
+		kwota = kod[cena:cena+300]
+		cena = kwota.find('ah\">')
+		kwota = kwota[cena+4:cena+10]
+		print("bigmac:", kwota)
+		return kwota
+	except:
+		print ("Problem z: ",url)
+		return '-1'
 
 
 def getPage(url):
@@ -73,6 +77,8 @@ def getPageId(url,idx):
 	return soup.find(id=idx)
 
 def otomoto(url):
+	rok = str(int(datetime.date.today().year)-3)
+	url = url.replace("2018",rok)
 	try:
 		kod = getPageClass(url,'om-pager rel')
 		stron = kod.findChildren('li', recursive=True)
@@ -80,10 +86,20 @@ def otomoto(url):
 		for i in range(1,len(stron)):
 			car = getPageClassAll(url+'&page='+str(i),'offer-price__number ds-price-number')
 			for x in car:
-				kwota.append(f.zrobCene(x.get_text()))
+				cenaAuta = x.get_text().replace("\n", "")
+				if ("Miesiąc" in cenaAuta):
+					continue
+				if ("," in cenaAuta):
+					cenaAuta = cenaAuta[:cenaAuta.find(",")]
+				nowacenaAuta = ''.join(z for z in cenaAuta if z.isdigit())
+				if(nowacenaAuta==""):
+					continue
+				nowacenaAutaF = float(nowacenaAuta)
+				kwota.append(float(nowacenaAuta))
 		print('Ofert aut: ',len(kwota))
 		return [statistics.mean(kwota),statistics.median(kwota)]
-	except:
+	except Exception as e:
+		print(e)
 		print("problem z: ", url)
 		return '-1'
 
@@ -98,11 +114,25 @@ def tesco(rzecz,url):
 		print("problem z: ", url)
 		return '-1'
 
+def carrefour(rzecz,url):
+	try:
+		kwota = getPageClass(url,'MuiTypography-root MuiTypography-h1 MuiTypography-noWrap')
+		if (rzecz=='jablka' or rzecz=='jajka' or rzecz=='kurczak'):
+			kwota = getPageClassAll(url,'MuiTypography-root MuiTypography-caption MuiTypography-colorTextSecondary')[1]
+			kwota = kwota.get_text()
+			kwota = kwota[0:kwota.find("zł")]
+		else:
+			kwota = kwota.get_text()
+		return kwota
+	except:
+		print("problem z: ", url)
+		return '-1'
+
+
 def kazar(url):
 	try:
 		kod = getPage(url)
 		cena = kod.find('\\\'price\\\'')
-		kwota = kod[cena+13:cena+30]
 		kwota = kwota[:kwota.find('\'')-1]
 		return kwota
 	except:
@@ -165,7 +195,11 @@ def kindl(url):
 	return getPageClass(url,'value').get_text()
 
 def kasjer(url):
-	return getPageClass(url,'js-median-gross').get_text()
+	try:
+		return getPageClass(url,'js-median-gross').get_text()
+	except:
+		print("problem z: ", url)
+		return '-1'
 
 def lot(url):
 	try:
@@ -173,7 +207,7 @@ def lot(url):
 		return getPageClass(url+data,' length-5').get_text()
 	except:
 		print("problem z: ", url)
-		return '0'
+		return '-1'
 
 def upc(url):
 		try:
@@ -182,15 +216,19 @@ def upc(url):
 			return kwota
 		except:
 			print("problem z: ", url)
-			return '0'
+			return '-1'
 
 
 def telefon(url):
-	kod = getPage(url)
-	cena = kod.find('js-range_min js-filters_priceMin')
-	kwota = kod[cena+55:cena+100]
-	kwota = kwota[:kwota.find('>')-1]
-	return kwota
+		try:
+			page = requests.get(url)
+			soup = BeautifulSoup(page.content, 'html.parser')
+			cena = soup.find("meta", property="product:price:amount")
+			return cena["content"]
+		except Exception as e:
+			print(e)
+			print("problem z: ", url)
+			return '-1'
 
 def lekarz(url):
 	try:
@@ -201,4 +239,4 @@ def lekarz(url):
 		return [statistics.mean(kwota),statistics.median(kwota)]
 	except:
 		print("problem z: ", url)
-		return ['-1','-1']
+		return [float(-1),float(-1)]

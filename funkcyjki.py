@@ -4,8 +4,12 @@ import re
 import csv
 import koszyk
 def zrobCene(x):
-    x = x.replace(',','.')
-    return float(re.sub('[^0-9.-]', '', x))
+    try:
+        x = x.replace(',','.')
+        return float(re.sub('[^0-9.-]', '', x))
+    except Exception as e:
+        print ('ZrobCene problem z: ',x)
+        return float(-1)
 
 def saveCSV(cart):
     fieldnames = [row[0] for row in koszyk.koszyk]
