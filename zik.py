@@ -90,7 +90,7 @@ def printKoszyk():
 
 
 # a = koszyk.koszyk[1]
-# printPage('https://sklep.spolemkielce.pl/produkt/piwo-zywiec-56-puszka-4x-500ml-zywiec/')
+# printPage('https://www.ubereats.com/pl/store/mcdonalds-galeria-krakowska-pietro/GsQ-ThCQQT6OQUCuTTFtJQ?pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMk1hcmtvd3NraWVnbyUyMDE1JTIyJTJDJTIycmVmZXJlbmNlJTIyJTNBJTIyRWlkTllYSnJiM2R6YTJsbFoyOGdNVFVzSURNeExUZzRNU0JMY21Gcnc3TjNMQ0JRYjJ4aGJtUWlNQkl1Q2hRS0VnbHYzZExlMDFvV1J4RUhDN1UyQ1N2U0NSQVBLaFFLRWdrOVA1N0IwMW9XUnhIdE5OY3VIdE9Kb1ElMjIlMkMlMjJyZWZlcmVuY2VUeXBlJTIyJTNBJTIyZ29vZ2xlX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNTAuMDc2MTQ4NCUyQyUyMmxvbmdpdHVkZSUyMiUzQTE5Ljk4NzgzMTMlN0Q%3D')
 # print(carrefour('kielecki','https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml'))
 # bigmac(a[2])
 # printPageHeader(a[2],{'accept' : 'text/html'})

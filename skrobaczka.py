@@ -28,11 +28,11 @@ def bigmac(url):
 	try:
 		header = {'accept' : 'text/html'}
 		kod = getPageHeader(url,header)
-		cena = kod.find('Big Mac')
-		kwota = kod[cena:cena+300]
-		cena = kwota.find('ah\">')
-		kwota = kwota[cena+4:cena+10]
-		print("bigmac:", kwota)
+		cena = kod.find('>Big Mac')
+
+		# print("bigmac:", kod[cena:cena+100])
+		kwota = kod[cena+79:cena+87]
+		# print("bigmac:", kwota)
 		return kwota
 	except:
 		print ("Problem z: ",url)
