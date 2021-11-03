@@ -88,7 +88,7 @@ def printKoszyk():
 
 
 # a = koszyk.koszyk[1]
-# printPage('https://www.mediaexpert.pl/smartfony-i-zegarki/smartfony/smartfon-samsung-sm-g991-galaxy-s21-5g-8-128gb-gray')
+# printPage('https://www.kazar.com/pl/sklep/kobieta/buty/czolenka/filtry/material,skora-cieleca/order,sortPriceUp/wysokosc-obcasa,wysoki-powyzej-8-cm')
 # print(carrefour('kielecki','https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml'))
 # bigmac(a[2])
 # printPageHeader(a[2],{'accept' : 'text/html'})

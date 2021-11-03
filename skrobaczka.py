@@ -132,8 +132,10 @@ def carrefour(rzecz,url):
 def kazar(url):
 	try:
 		kod = getPage(url)
-		cena = kod.find('\\\'price\\\'')
-		kwota = kwota[:kwota.find('\'')-1]
+		tag = "price"
+		cena = kod.find(tag)
+		kwota = kod[cena+10:cena+17]
+		# print(kwota)
 		return kwota
 	except:
 		print("problem z: ", url)
