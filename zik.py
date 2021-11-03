@@ -27,8 +27,10 @@ def skanujKoszyk():
             cart[x[0]] = f.zrobCene(carrefour(x[0],x[2]))
         elif (x[0]=='buty'):
             cart[x[0]] = f.zrobCene(kazar(x[2]))
-        elif (x[0]=='whisky' or x[0]=='piwo'):
-            cart[x[0]] = f.zrobCene(auchan(x[2]))
+        elif (x[0]=='whisky'):
+            cart[x[0]] = f.zrobCene(alkohol(x[2]))
+        elif (x[0]=='piwo'):
+            cart[x[0]] = f.zrobCene(spolem(x[2]))
         elif (x[0]=='karma'):
             cart[x[0]] = f.zrobCene(karma(x[2]))
         elif (x[0]=='aspiryna'):
@@ -88,7 +90,7 @@ def printKoszyk():
 
 
 # a = koszyk.koszyk[1]
-# printPage('https://www.kazar.com/pl/sklep/kobieta/buty/czolenka/filtry/material,skora-cieleca/order,sortPriceUp/wysokosc-obcasa,wysoki-powyzej-8-cm')
+# printPage('https://sklep.spolemkielce.pl/produkt/piwo-zywiec-56-puszka-4x-500ml-zywiec/')
 # print(carrefour('kielecki','https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml'))
 # bigmac(a[2])
 # printPageHeader(a[2],{'accept' : 'text/html'})

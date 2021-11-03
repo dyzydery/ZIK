@@ -49,6 +49,7 @@ def savePlot(produkt):
 
 
 def wykresuj():
+    print("Printing plots")
     produkty = ['kielecki','pizza','maslo','jablka','makaron','chleb','mydlo','kurczak','jajka','rolex','whisky','piwo','buty','auto_Mean','auto_Median','telefon','bigmac','m2wtorny','m2pierwotny','benzyna','lot','fryzjer','upc','prad','lekarz_Mean','lekarz_Median','aspiryna','karma','kasjer','xau','chf','usd','kindle']
     for p in produkty:
         savePlot(p)

@@ -203,6 +203,22 @@ def kasjer(url):
 		print("problem z: ", url)
 		return '-1'
 
+def alkohol(url):
+	try:
+		kwota = getPageId(url,'our_price_display').get_text()
+		return kwota
+	except:
+		print("problem z: ", url)
+		return '-1'
+
+def spolem(url):
+	try:
+		kwota = getPageClassAll(url,'woocommerce-Price-amount amount')[3].get_text()
+		return kwota
+	except:
+		print("problem z: ", url)
+		return '-1'
+
 def lot(url):
 	try:
 		data = str(datetime.date.today()+datetime.timedelta(days=90))
