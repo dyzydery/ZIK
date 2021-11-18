@@ -104,19 +104,11 @@ def otomoto(url):
 		return '-1'
 
 
-def tesco(rzecz,url):
-	try:
-		kwota = getPageClass(url,'value')
-		if (rzecz=='jablka' or rzecz=='jajka' or rzecz=='kurczak'):
-			kwota = getPageClass(url,'price-per-quantity-weight').find(class_='value')
-		return kwota.get_text()
-	except:
-		print("problem z: ", url)
-		return '-1'
-
 def carrefour(rzecz,url):
 	try:
 		kwota = getPageClass(url,'MuiTypography-root MuiTypography-h1 MuiTypography-noWrap')
+		if (not kwota):
+			kwota = getPageClass(url,'MuiTypography-root MuiTypography-h1 MuiTypography-colorError MuiTypography-noWrap')
 		if (rzecz=='jablka' or rzecz=='jajka' or rzecz=='kurczak'):
 			kwota = getPageClassAll(url,'MuiTypography-root MuiTypography-caption MuiTypography-colorTextSecondary')[1]
 			kwota = kwota.get_text()
@@ -250,11 +242,15 @@ def telefon(url):
 
 def lekarz(url):
 	try:
-		lek = getPageClassAll(url,'offset-0 text-nowrap')
+		lek = getPageClassAll(url,'m-0 text-nowrap')
 		kwota = []
 		for x in lek:
-			kwota.append(f.zrobCene(x.get_text()))
+			# print("####",x,"####")
+			x = x.get_text()[20:]
+			# print("@@@@@",x,"@@@@")
+			kwota.append(f.zrobCene(x))
 		return [statistics.mean(kwota),statistics.median(kwota)]
-	except:
+	except Exception as e:
+		print(e)
 		print("problem z: ", url)
 		return [float(-1),float(-1)]

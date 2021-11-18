@@ -90,7 +90,7 @@ def printKoszyk():
 
 
 # a = koszyk.koszyk[1]
-# printPage('https://www.ubereats.com/pl/store/mcdonalds-galeria-krakowska-pietro/GsQ-ThCQQT6OQUCuTTFtJQ?pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMk1hcmtvd3NraWVnbyUyMDE1JTIyJTJDJTIycmVmZXJlbmNlJTIyJTNBJTIyRWlkTllYSnJiM2R6YTJsbFoyOGdNVFVzSURNeExUZzRNU0JMY21Gcnc3TjNMQ0JRYjJ4aGJtUWlNQkl1Q2hRS0VnbHYzZExlMDFvV1J4RUhDN1UyQ1N2U0NSQVBLaFFLRWdrOVA1N0IwMW9XUnhIdE5OY3VIdE9Kb1ElMjIlMkMlMjJyZWZlcmVuY2VUeXBlJTIyJTNBJTIyZ29vZ2xlX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNTAuMDc2MTQ4NCUyQyUyMmxvbmdpdHVkZSUyMiUzQTE5Ljk4NzgzMTMlN0Q%3D')
+# printPage('https://www.znanylekarz.pl/szukaj?q=ortopeda&loc=Kraków%2C%20Polska&filters%5Bspecializations%5D%5B%5D=76&filters%5Bservices%5D%5B%5D=631&sorter=recommended')
 # print(carrefour('kielecki','https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml'))
 # bigmac(a[2])
 # printPageHeader(a[2],{'accept' : 'text/html'})
