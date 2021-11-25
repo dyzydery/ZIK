@@ -20,7 +20,7 @@ koszyk = [
 ['benzyna','Benzyna 95 1L	','https://www.autocentrum.pl/stacje-paliw/auchan/auchan-henryka-kamienskiego-11-krakow/'],
 ['lot','Krakow-Rzym za 3 miesiace	','https://www.kiwi.com/us/search/results/krakow-poland/rome-italy/'],
 #['Bilet to kina Cinecity w sobote wieczorem	'],
-['fryzjer','Strzyżenie męskie Jean Luis David	','https://www.jeanlouisdavid.pl/salon-fryzjerski/fryzjer-katowice_s5434'],
+['fryzjer','Strzyżenie męskie Jean Luis David	','https://www.rezerwacje-jeanlouisdavid.pl/api/salon-prices/M58'],
 ['upc','Łącze internetowe najtanszne upc	','https://www.upc.pl/internet/kup-internet/'],
 ['prad','1Kwh w Tauron w dzień	','http://www.cena-pradu.pl/tauron.html'],
 ['lekarz','Cena wizyty konsultacja ortopedyczna srednia 10 ofert z znany lekarz	','https://www.znanylekarz.pl/szukaj?q=ortopeda&loc=Kraków%2C%20Polska&filters%5Bspecializations%5D%5B%5D=76&filters%5Bservices%5D%5B%5D=631&sorter=recommended'],

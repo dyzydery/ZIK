@@ -90,7 +90,7 @@ def printKoszyk():
 
 
 # a = koszyk.koszyk[1]
-# printPage('https://www.znanylekarz.pl/szukaj?q=ortopeda&loc=Kraków%2C%20Polska&filters%5Bspecializations%5D%5B%5D=76&filters%5Bservices%5D%5B%5D=631&sorter=recommended')
+# printPage('https://www.rezerwacje-jeanlouisdavid.pl/salons/Krakow/C.H.Krokus/M58')
 # print(carrefour('kielecki','https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml'))
 # bigmac(a[2])
 # printPageHeader(a[2],{'accept' : 'text/html'})

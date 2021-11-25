@@ -12,10 +12,11 @@
 - [x] Indeks Złotego
 - [ ] Koszyk inflacyjny
 - [ ] Różnice w czasie
+- [ ] Inflancja Y2Y
 
 ## Side projekciki
 - [ ] Loty - kiedy najlepiej kupic - zaczac od 6 miesiac
-- [ ] Kindle
+- [x] Kindle
 
 ## Reseach
 - [ ] Strona internetowa
