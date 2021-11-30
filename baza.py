@@ -15,6 +15,7 @@ def sql_insert(con, entities, table):
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO '+table+'(timestamp,kielecki,pizza,maslo,jablka,makaron,chleb,mydlo,kurczak,jajka,rolex,whisky,piwo,buty,auto_Mean,auto_Median,telefon,bigmac,m2wtorny,m2pierwotny,benzyna,lot,fryzjer,upc,prad,lekarz_Mean,lekarz_Median,aspiryna,karma,kasjer,kindle,xau,chf,usd) VALUES(?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?,?, ?, ?, ?,?)', entities)
     con.commit()
+    cursorObj.close()
 
 def DBinsert(row):
     con = sql_connection()
@@ -24,3 +25,19 @@ def DBinsert(row):
     zikEnt = (row['TimeStamp'],row['kielecki']/x,row['pizza']/x,row['maslo']/x,row['jablka']/x,row['makaron']/x,row['chleb']/x,row['mydlo']/x,row['kurczak']/x,row['jajka']/x,row['rolex']/x,row['whisky']/x,row['piwo']/x,row['buty']/x,row['auto_Mean']/x,row['auto_Median']/x,row['telefon']/x,row['bigmac']/x,row['m2wtorny']/x,row['m2pierwotny']/x,row['benzyna']/x,row['lot']/x,row['fryzjer']/x,row['upc']/x,row['prad']/x,row['lekarz_Mean']/x,row['lekarz_Median']/x,row['aspiryna']/x,row['karma']/x,row['kasjer']/x,row['kindle']/x,row['xau']/x,row['chf']/x,row['usd']/x)
     sql_insert(con, zikEnt,'zik')
     print ('Inserting row in DB')
+
+def DBgetTimestamps():
+    con = sql_connection()
+    cur = con.cursor()
+    cur.execute("SELECT timestamp FROM ceny")
+    rows = cur.fetchall()
+    cur.close()
+    return rows
+
+def DBgetRowByTimestamp(timestamp):
+    con = sql_connection()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM ceny WHERE timestamp=?", (timestamp,))
+    rows = cur.fetchall()
+    cur.close()
+    return rows

@@ -56,3 +56,15 @@ CBLUEBG2   = '\33[104m'
 CVIOLETBG2 = '\33[105m'
 CBEIGEBG2  = '\33[106m'
 CWHITEBG2  = '\33[107m'
+
+def printKoszyk(cart):
+    i = 0
+    xau = cart['xau']
+    for e,v in cart.items():
+        if i==0:
+            print(CGREYBG+'{:15}'.format(e)+CEND,': ',CGREEN2+str(v)+CEND)
+        elif i%2==0:
+            print(CGREYBG+'{:15}'.format(e)+CEND,': ',CGREEN2+'{:20}'.format(str(v))+CEND, CBEIGE2+'ZIK: ',CGREYBG+str(xau/float(v))+CEND)
+        else:
+            print('{:15}'.format(e),': ',CGREEN2+'{:20}'.format(str(v))+CEND,'ZIK: ',str(xau/float(v)))
+        i+=1

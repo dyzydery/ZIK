@@ -193,8 +193,12 @@ def benzyna(url):
 	return getPageClass(url,'price').get_text()
 
 def kindl(url):
-	return getPageClass(url,'value').get_text()
-
+	try:
+		return getPageClass(url,'value').get_text()
+	except:
+		print("problem z: ", url)
+		return '-1'
+		
 def kasjer(url):
 	try:
 		return getPageClass(url,'js-median-gross').get_text()

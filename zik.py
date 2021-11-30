@@ -75,30 +75,16 @@ def skanujKoszyk():
     cart['usd'] = currency['usd']
     cart['chf'] = currency['chf']
 
-def printKoszyk():
-    i = 0
-    xau = cart['xau']
-    for e,v in cart.items():
-        if i==0:
-            print(f.CGREYBG+'{:15}'.format(e)+f.CEND,': ',f.CGREEN2+str(v)+f.CEND)
-        elif i%2==0:
-            print(f.CGREYBG+'{:15}'.format(e)+f.CEND,': ',f.CGREEN2+'{:20}'.format(str(v))+f.CEND, f.CBEIGE2+'ZIK: ',f.CGREYBG+str(xau/float(v))+f.CEND)
-        else:
-            print('{:15}'.format(e),': ',f.CGREEN2+'{:20}'.format(str(v))+f.CEND,'ZIK: ',str(xau/float(v)))
-        i+=1
 
 
 
-# a = koszyk.koszyk[1]
-# printPage('https://www.rezerwacje-jeanlouisdavid.pl/salons/Krakow/C.H.Krokus/M58')
-# print(carrefour('kielecki','https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml'))
-# bigmac(a[2])
-# printPageHeader(a[2],{'accept' : 'text/html'})
-# print('Cena srednia', otomoto(a[2])[0])
+
+# printPage('https://www.skyscanner.pl/transport/loty/krk/rome/220328/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&outboundaltsenabled=false&preferdirects=true&preferflexible=false&ref=home&rtn=0')
 
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
 skanujKoszyk()
-printKoszyk()
+f.printKoszyk(cart)
+calculateInflation(cart)
 f.saveCSV(cart)
 DBinsert(cart)
 wykresuj()
