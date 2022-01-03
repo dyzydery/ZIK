@@ -18,8 +18,8 @@ def calculateInflation(cart):
     row = DBgetRowByTimestamp(get365timestamp(datetime.now()))
     cartOld = []
     names = ['timestamp','kielecki','pizza','maslo','jablka','makaron','chleb','mydlo','kurczak','jajka','rolex','whisky','piwo','buty','auto_Mean','auto_Median','telefon','bigmac','m2wtorny','m2pierwotny','benzyna','lot','fryzjer','upc','prad','lekarz_Mean','lekarz_Median','aspiryna','karma','kasjer','kindle','xau','chf','usd']
-    for x in row:
-        cart
+    # for x in row:
+    #     cart
     # printKoszyk(row)
 
 

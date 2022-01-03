@@ -12,12 +12,10 @@ from skrobaczka import *
 import statistics
 from baza import DBinsert
 from plot import wykresuj
+from inflacja import calculateInflation
 print('Złoty Indeks Kieleckiego')
 print(datetime.datetime.now())
-
-
-
-
+cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
 def skanujKoszyk():
     l = len(koszyk.koszyk)+1
     i = 0
@@ -75,16 +73,15 @@ def skanujKoszyk():
     cart['usd'] = currency['usd']
     cart['chf'] = currency['chf']
 
+def WyliczZIK():
+    skanujKoszyk()
+    f.printKoszyk(cart)
+    calculateInflation(cart)
+    f.saveCSV(cart)
+    DBinsert(cart)
+    wykresuj()
 
 
 
-
-# printPage('https://www.skyscanner.pl/transport/loty/krk/rome/220328/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&outboundaltsenabled=false&preferdirects=true&preferflexible=false&ref=home&rtn=0')
-
-cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
-skanujKoszyk()
-f.printKoszyk(cart)
-calculateInflation(cart)
-f.saveCSV(cart)
-DBinsert(cart)
-wykresuj()
+# printPage('http://www.cena-pradu.pl/tauron.html')
+WyliczZIK()

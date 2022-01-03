@@ -80,11 +80,11 @@ def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
 	try:
-		kod = getPageClass(url,'om-pager rel')
-		stron = kod.findChildren('li', recursive=True)
+		stron = int(getPageClassAll(url,'pagination-item optimus-app-wak9h6')[-1].get_text())
+
 		kwota = []
-		for i in range(1,len(stron)):
-			car = getPageClassAll(url+'&page='+str(i),'offer-price__number ds-price-number')
+		for i in range(1,stron):
+			car = getPageClassAll(url+'&page='+str(i),'optimus-app-epvm6 e1b25f6f8')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
@@ -101,7 +101,7 @@ def otomoto(url):
 	except Exception as e:
 		print(e)
 		print("problem z: ", url)
-		return '-1'
+		return [-1.0,-1.0]
 
 
 def carrefour(rzecz,url):
@@ -151,11 +151,14 @@ def fryzjer(url):
 		return '-1'
 
 def prad(url):
-	kod = getPage(url)
-	cena = kod.find('background:yellow;mso-highlight:yellow')
-	kwota = kod[cena+41:cena+100]
-	kwota = kwota[:kwota.find('-')]
-	return kwota
+	try:
+		kod = getPage(url)
+		cena = kod.find('mso-highlight:yellow')
+		kwota = kod[cena+23:cena+27]
+		return kwota
+	except:
+		print("problem z: ", url)
+		return '-1'
 
 def auchan(url):
 
@@ -177,7 +180,11 @@ def m2(url):
 	return kwota
 
 def karma(url):
-	return getPageClass(url,'main-price color').get_text()
+	try:
+		return getPageClass(url,'main-price color').get_text()
+	except:
+		print("problem z: ", url)
+		return '-1'
 
 def aspiryna(url):
 	return getPageClass(url,'product-card-product-price').get_text()
@@ -198,7 +205,7 @@ def kindl(url):
 	except:
 		print("problem z: ", url)
 		return '-1'
-		
+
 def kasjer(url):
 	try:
 		return getPageClass(url,'js-median-gross').get_text()
