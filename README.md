@@ -1,5 +1,9 @@
 # ZIK
-Złoty Indeks Kieleckiego
+Złoty Indeks Kieleckiego - project to confirm hypothesis that:
+* Inflation in Poland is bigger than what is offically presented
+* Gold preserve its value during time
+So for ounce of gold you can buy the same (similar) number of liters of Kielecki mayonaise (https://pl.wikipedia.org/wiki/Majonez_Kielecki). today and in 100 years (doesn't matter if official currency would still be złoty, dollars, bitcoin, sea mushels or anything else.
+
 ## Kielecki
 ![kielecki/xau](wykresy/kielecki.png)
 ## Aspiryna
