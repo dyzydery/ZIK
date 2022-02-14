@@ -28,13 +28,12 @@ def bigmac(url):
 	try:
 		header = {'accept' : 'text/html'}
 		kod = getPageHeader(url,header)
-		cena = kod.find('>Big Mac')
-
-		# print("bigmac:", kod[cena:cena+100])
-		kwota = kod[cena+79:cena+87]
+		cena = kod.find("Big Mac")
+		kwota = kod[cena+61:cena+63]+'.'+kod[cena+63:cena+65]
 		# print("bigmac:", kwota)
 		return kwota
-	except:
+	except Exception as e:
+		print(e)
 		print ("Problem z: ",url)
 		return '-1'
 
@@ -80,11 +79,10 @@ def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
 	try:
-		stron = int(getPageClassAll(url,'pagination-item optimus-app-wak9h6')[-1].get_text())
-
+		stron = int(getPageClassAll(url,'ooa-g4wbjr ekxs86z0')[-1].get_text())
 		kwota = []
 		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'optimus-app-epvm6 e1b25f6f8')
+			car = getPageClassAll(url+'&page='+str(i),'ooa-epvm6 e1b25f6f8')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
@@ -208,7 +206,7 @@ def kindl(url):
 
 def kasjer(url):
 	try:
-		return getPageClass(url,'js-median-gross').get_text()
+		return getPageClass(url,'salary-info-value').get_text()
 	except:
 		print("problem z: ", url)
 		return '-1'

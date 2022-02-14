@@ -75,13 +75,15 @@ def skanujKoszyk():
 
 def WyliczZIK():
     skanujKoszyk()
-    f.printKoszyk(cart)
-    calculateInflation(cart)
-    f.saveCSV(cart)
     DBinsert(cart)
+    inf = calculateInflation()
+    # f.printKoszyk(cart)
+    f.printKoszykInflacja(cart,inf)
+    f.saveCSV(cart)
+
     wykresuj()
 
 
 
-# printPage('http://www.cena-pradu.pl/tauron.html')
+# printPage('https://www.jobted.pl/wynagrodzenie/kasjer')
 WyliczZIK()

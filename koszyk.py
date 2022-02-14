@@ -26,7 +26,7 @@ koszyk = [
 ['lekarz','Cena wizyty konsultacja ortopedyczna srednia 10 ofert z znany lekarz	','https://www.znanylekarz.pl/szukaj?q=ortopeda&loc=Kraków%2C%20Polska&filters%5Bspecializations%5D%5B%5D=76&filters%5Bservices%5D%5B%5D=631&sorter=recommended'],
 ['aspiryna','Aspirin 500 mg 10 tabletek Bayer	','https://www.wapteka.pl/aspirin-500-mg-10-tabletek-2621,p'],
 ['karma','Karma Wiejska Zagroda Indyk z jagnięciną 9kg	','https://www.psiechrupki.pl/pl/p/Indyk-z-jagniecina-9kg-GRYZAKI-naturalne%2C-Wiejska-Zagroda/1001'],
-['kasjer','Brutto Kasjera','https://wynagrodzenia.pl/moja-placa/ile-zarabia-kasjer'],
+['kasjer','Brutto Kasjera','https://www.jobted.pl/wynagrodzenie/kasjer'],
 ['xau','1 uncja Złota	','https://www.xe.com/currencyconverter/convert/?From=XAU&To=PLN'],
 ['chf','1 CHF	','https://www.xe.com/currencyconverter/convert/?Amount=1&From=chf&To=PLN'],
 ['usd','1 USD','https://www.xe.com/currencyconverter/convert/?Amount=1&From=usd&To=PLN'],

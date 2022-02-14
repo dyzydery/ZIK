@@ -68,3 +68,17 @@ def printKoszyk(cart):
         else:
             print('{:15}'.format(e),': ',CGREEN2+'{:20}'.format(str(v))+CEND,'ZIK: ',str(xau/float(v)))
         i+=1
+
+def printKoszykInflacja(cart,inf):
+    i = 0
+    xau = cart['xau']
+    for e,v in cart.items():
+        if i==0:
+            print(CGREYBG+'{:15}'.format(e)+CEND,': ',CGREEN2+str(v)+CEND)
+            i+=1
+            continue
+        elif i%2==0:
+            print(CGREYBG+'{:15}'.format(e)+CEND,': ',CGREEN2+'{:20}'.format(str(v))+CEND,CBEIGE2+'iY2Y: ',  CGREEN2+'{:.2f}'.format(inf[i+1])+'{:3}'.format('%')+CEND,CBEIGE2+'ZIK: ',CGREYBG+str(xau/float(v))+CEND)
+        else:
+            print('{:15}'.format(e),': ',CGREEN2+'{:20}'.format(str(v))+CEND,CBEIGE2+'iY2Y: ',  CGREEN2+'{:.2f}'.format(inf[i+1])+'{:3}'.format('%')+CEND,'ZIK: ',str(xau/float(v)))
+        i+=1

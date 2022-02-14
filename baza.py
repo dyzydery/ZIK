@@ -41,3 +41,11 @@ def DBgetRowByTimestamp(timestamp):
     rows = cur.fetchall()
     cur.close()
     return rows
+
+def DBgetLastRow():
+    con = sql_connection()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM ceny ORDER BY timestamp DESC LIMIT 1")
+    rows = cur.fetchall()
+    cur.close()
+    return rows
