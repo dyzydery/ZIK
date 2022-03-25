@@ -85,5 +85,5 @@ def WyliczZIK():
 
 
 
-# printPage('https://www.jobted.pl/wynagrodzenie/kasjer')
+# printPage('https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml')
 WyliczZIK()

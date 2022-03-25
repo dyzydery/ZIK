@@ -104,15 +104,15 @@ def otomoto(url):
 
 def carrefour(rzecz,url):
 	try:
-		kwota = getPageClass(url,'MuiTypography-root MuiTypography-h1 MuiTypography-noWrap')
-		if (not kwota):
-			kwota = getPageClass(url,'MuiTypography-root MuiTypography-h1 MuiTypography-colorError MuiTypography-noWrap')
+
 		if (rzecz=='jablka' or rzecz=='jajka' or rzecz=='kurczak'):
 			kwota = getPageClassAll(url,'MuiTypography-root MuiTypography-caption MuiTypography-colorTextSecondary')[1]
 			kwota = kwota.get_text()
 			kwota = kwota[0:kwota.find("zł")]
 		else:
-			kwota = kwota.get_text()
+			kwota1 = getPageClass(url,'MuiTypography-root jss128 MuiTypography-h1').get_text()
+			kwota2 = getPageClass(url,'MuiTypography-root jss128 jss182 MuiTypography-h3').get_text()
+			kwota = kwota1+','+kwota2
 		return kwota
 	except:
 		print("problem z: ", url)
