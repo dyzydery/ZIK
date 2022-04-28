@@ -110,8 +110,8 @@ def carrefour(rzecz,url):
 			kwota = kwota.get_text()
 			kwota = kwota[0:kwota.find("zł")]
 		else:
-			kwota1 = getPageClass(url,'MuiTypography-root jss128 MuiTypography-h1').get_text()
-			kwota2 = getPageClass(url,'MuiTypography-root jss128 jss182 MuiTypography-h3').get_text()
+			kwota1 = getPageClass(url,'MuiTypography-root jss132 MuiTypography-h1').get_text()
+			kwota2 = getPageClass(url,'MuiTypography-root jss132 jss186 MuiTypography-h3').get_text()
 			kwota = kwota1+','+kwota2
 		return kwota
 	except:
@@ -185,7 +185,15 @@ def karma(url):
 		return '-1'
 
 def aspiryna(url):
-	return getPageClass(url,'product-card-product-price').get_text()
+	try:
+		page = requests.get(url)
+		soup = BeautifulSoup(page.content, 'html.parser')
+		cena = soup.find("price", property="itemprop")
+		return cena["content"]
+		# return getPageClass(url,'product-card-product-price').get_text()
+	except:
+		print("problem z: ", url)
+		return '-1'
 
 def rolex(url):
 	try:
