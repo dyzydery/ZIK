@@ -8,6 +8,7 @@ def zrobCene(x):
         x = x.replace(',','.')
         return float(re.sub('[^0-9.-]', '', x))
     except Exception as e:
+        print(e)
         print ('ZrobCene problem z: ',x)
         return float(-1)
 

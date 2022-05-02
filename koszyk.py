@@ -13,7 +13,7 @@ koszyk = [
 ['piwo','Piwo Żywiec  czteropak puszka','https://sklep.spolemkielce.pl/produkt/piwo-zywiec-56-puszka-4x-500ml-zywiec/'],
 ['buty','Kazar damskie szpilki czułenka najtansze skórzane	','https://www.kazar.com/pl/sklep/kobieta/buty/czolenka/filtry/material,skora-cieleca/order,sortPriceUp/wysokosc-obcasa,wysoki-powyzej-8-cm'],
 ['auto','3 letnie używany golf srednia/mediana ze 100 ofert	','https://www.otomoto.pl/osobowe/volkswagen/golf/od-2018/?search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol&search%5Bfilter_enum_no_accident%5D=1&search%5Border%5D=filter_float_price%3Aasc&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D='],
-['telefon','Najlepszy flagowiec Samsunga','https://www.mediaexpert.pl/smartfony-i-zegarki/smartfony/smartfon-samsung-sm-s901-galaxy-s22-5g-8-128gb-black'],
+['telefon','Najlepszy flagowiec Samsunga','https://www.electro.pl/telefony-i-smartfony/smartfony/smartfon-samsung-sm-s901-galaxy-s22-5g-8-128gb-black'],
 ['bigmac','BigMac','https://www.ubereats.com/pl/krakow/food-delivery/mcdonalds-galeria-krakowska-pietro/GsQ-ThCQQT6OQUCuTTFtJQ'],
 ['m2wtorny','Średnia cena m2 w Krakowie 50-60m2 wtórny	','https://www.morizon.pl/mieszkania/krakow/?ps%5Bliving_area_from%5D=50&ps%5Bliving_area_to%5D=60&ps%5Bmarket_type%5D%5B0%5D=2'],
 ['m2pierwotny','Średnia cena m2 w Krakowie 50-60m2 pierwotny','https://www.morizon.pl/mieszkania/rynek-pierwotny/krakow/?ps%5Bliving_area_from%5D=50&ps%5Bliving_area_to%5D=60'],

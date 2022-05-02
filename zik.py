@@ -75,15 +75,15 @@ def skanujKoszyk():
 
 def WyliczZIK():
     skanujKoszyk()
-    DBinsert(cart)
     inf = calculateInflation()
     # f.printKoszyk(cart)
     f.printKoszykInflacja(cart,inf)
+    DBinsert(cart)
     f.saveCSV(cart)
-
     wykresuj()
 
 
-
-# printPage('https://www.carrefour.pl/artykuly-spozywcze/sosy-oleje-ocet/majonez/majonez-kielecki-700-ml')
+# url='https://www.electro.pl/telefony-i-smartfony/smartfony/smartfon-samsung-sm-s901-galaxy-s22-5g-8-128gb-black'
+# printPage(url)
+# print(telefon(url))
 WyliczZIK()

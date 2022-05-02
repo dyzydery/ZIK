@@ -81,6 +81,7 @@ def otomoto(url):
 	try:
 		stron = int(getPageClassAll(url,'ooa-g4wbjr ekxs86z0')[-1].get_text())
 		kwota = []
+		print(stron)
 		for i in range(1,stron):
 			car = getPageClassAll(url+'&page='+str(i),'ooa-epvm6 e1b25f6f8')
 			for x in car:
@@ -118,14 +119,13 @@ def carrefour(rzecz,url):
 		print("problem z: ", url)
 		return '-1'
 
-
 def kazar(url):
 	try:
 		kod = getPage(url)
-		tag = "price"
-		cena = kod.find(tag)
-		kwota = kod[cena+10:cena+17]
-		# print(kwota)
+		cena = kod.find('ELDERBERRY')
+		kod = kod[cena:]
+		cena = kod.find("price\"")
+		kwota = kod[cena+7:cena+11]
 		return kwota
 	except:
 		print("problem z: ", url)
@@ -186,11 +186,8 @@ def karma(url):
 
 def aspiryna(url):
 	try:
-		page = requests.get(url)
-		soup = BeautifulSoup(page.content, 'html.parser')
-		cena = soup.find("price", property="itemprop")
-		return cena["content"]
-		# return getPageClass(url,'product-card-product-price').get_text()
+		cena = getPageClass(url,'fw-bold text-end').get_text()#.strip()
+		return cena
 	except:
 		print("problem z: ", url)
 		return '-1'
@@ -245,8 +242,9 @@ def lot(url):
 
 def upc(url):
 		try:
-			kwota = getPageClass(url,'lgi-hdr-9 ph2-d l-h6 m-h11 lgi-txtsd-default').get_text()
-			kwota = kwota[:kwota.find('zł/mies')]
+			kwota = getPageClass(url,'lgi-hdr-9 ph2-d l-h6 m-h0 lgi-txtsd-default').get_text()
+			lok = kwota.find('zł/mies')
+			kwota = kwota[lok-6:lok]
 			return kwota
 		except:
 			print("problem z: ", url)
@@ -254,15 +252,11 @@ def upc(url):
 
 
 def telefon(url):
-		try:
-			page = requests.get(url)
-			soup = BeautifulSoup(page.content, 'html.parser')
-			cena = soup.find("meta", property="product:price:amount")
-			return cena["content"]
-		except Exception as e:
-			print(e)
-			print("problem z: ", url)
-			return '-1'
+	try:
+		return getPageClass(url,'a-price_price').get_text()
+	except:
+		print("problem z: ", url)
+		return '-1'
 
 def lekarz(url):
 	try:
