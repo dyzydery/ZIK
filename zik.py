@@ -82,8 +82,7 @@ def WyliczZIK():
     f.saveCSV(cart)
     wykresuj()
 
-
-# url='https://www.electro.pl/telefony-i-smartfony/smartfony/smartfon-samsung-sm-s901-galaxy-s22-5g-8-128gb-black'
+url='https://kazar.com/kobieta/buty/czolenka.html?_=1671796081391&heel_height=5505&material=5464'
 # printPage(url)
-# print(telefon(url))
+# print(f.zrobCene(kazar(url)))
 WyliczZIK()

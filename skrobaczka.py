@@ -28,7 +28,7 @@ def bigmac(url):
 	try:
 		header = {'accept' : 'text/html'}
 		kod = getPageHeader(url,header)
-		cena = kod.find("Big Mac")
+		cena = kod.find("Big Mac®\"")
 		kwota = kod[cena+61:cena+63]+'.'+kod[cena+63:cena+65]
 		# print("bigmac:", kwota)
 		return kwota
@@ -81,7 +81,6 @@ def otomoto(url):
 	try:
 		stron = int(getPageClassAll(url,'ooa-g4wbjr ekxs86z0')[-1].get_text())
 		kwota = []
-		print(stron)
 		for i in range(1,stron):
 			car = getPageClassAll(url+'&page='+str(i),'ooa-epvm6 e1b25f6f8')
 			for x in car:
@@ -111,8 +110,8 @@ def carrefour(rzecz,url):
 			kwota = kwota.get_text()
 			kwota = kwota[0:kwota.find("zł")]
 		else:
-			kwota1 = getPageClass(url,'MuiTypography-root jss132 MuiTypography-h1').get_text()
-			kwota2 = getPageClass(url,'MuiTypography-root jss132 jss186 MuiTypography-h3').get_text()
+			kwota1 = getPageClass(url,'MuiTypography-root jss133 MuiTypography-h1').get_text()
+			kwota2 = getPageClass(url,'MuiTypography-root jss133 jss187 MuiTypography-h3').get_text()
 			kwota = kwota1+','+kwota2
 		return kwota
 	except:
@@ -121,12 +120,8 @@ def carrefour(rzecz,url):
 
 def kazar(url):
 	try:
-		kod = getPage(url)
-		cena = kod.find('ELDERBERRY')
-		kod = kod[cena:]
-		cena = kod.find("price\"")
-		kwota = kod[cena+7:cena+11]
-		return kwota
+		cena = getPageClass(url,'price').get_text().replace(",-","")
+		return cena
 	except:
 		print("problem z: ", url)
 		return '-1'
@@ -186,7 +181,7 @@ def karma(url):
 
 def aspiryna(url):
 	try:
-		cena = getPageClass(url,'fw-bold text-end').get_text()#.strip()
+		cena = getPageClass(url,'col-3 col-lg-1 align-self-center fw-bold text-center').get_text()#.strip()
 		return cena
 	except:
 		print("problem z: ", url)
@@ -197,7 +192,7 @@ def rolex(url):
 		return getPageClass(url,'price dig').get_text()
 	except:
 		print("problem z: ", url)
-		return '0'
+		return '-1'
 
 def benzyna(url):
 	return getPageClass(url,'price').get_text()
@@ -253,7 +248,7 @@ def upc(url):
 
 def telefon(url):
 	try:
-		return getPageClass(url,'a-price_price').get_text()
+		return getPageClass(url,'price-normal').get_text()
 	except:
 		print("problem z: ", url)
 		return '-1'
