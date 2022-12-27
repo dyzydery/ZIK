@@ -29,7 +29,7 @@ def bigmac(url):
 		header = {'accept' : 'text/html'}
 		kod = getPageHeader(url,header)
 		cena = kod.find("Big Mac®\"")
-		kwota = kod[cena+61:cena+63]+'.'+kod[cena+63:cena+65]
+		kwota = kod[cena+62:cena+67]
 		# print("bigmac:", kwota)
 		return kwota
 	except Exception as e:
@@ -79,10 +79,10 @@ def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
 	try:
-		stron = int(getPageClassAll(url,'ooa-g4wbjr ekxs86z0')[-1].get_text())
+		stron = int(getPageClassAll(url,'ooa-xdlax9 ekxs86z0')[-1].get_text())
 		kwota = []
 		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'ooa-epvm6 e1b25f6f8')
+			car = getPageClassAll(url+'&page='+str(i),'ooa-1bmnxg7 e1b25f6f11')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
@@ -255,11 +255,11 @@ def telefon(url):
 
 def lekarz(url):
 	try:
-		lek = getPageClassAll(url,'m-0 text-nowrap')
+		lek = getPageClassAll(url,'m-0 text-nowrap font-weight-bold')
 		kwota = []
 		for x in lek:
 			# print("####",x,"####")
-			x = x.get_text()[20:]
+			x = x.get_text()[20:].strip()
 			# print("@@@@@",x,"@@@@")
 			kwota.append(f.zrobCene(x))
 		return [statistics.mean(kwota),statistics.median(kwota)]

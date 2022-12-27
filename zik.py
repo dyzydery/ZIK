@@ -82,7 +82,7 @@ def WyliczZIK():
     f.saveCSV(cart)
     wykresuj()
 
-url='https://kazar.com/kobieta/buty/czolenka.html?_=1671796081391&heel_height=5505&material=5464'
+url='https://www.otomoto.pl/osobowe/volkswagen/golf/od-2019?search%5Bfilter_enum_fuel_type%5D=petrol&search%5Bfilter_enum_no_accident%5D=1&search%5Border%5D=filter_float_price%3Aasc'
 # printPage(url)
-# print(f.zrobCene(kazar(url)))
+# print(f.zrobCene(lekarz(url)))
 WyliczZIK()
