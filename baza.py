@@ -49,3 +49,12 @@ def DBgetLastRow():
     rows = cur.fetchall()
     cur.close()
     return rows
+
+def DBgetNotNullValue(lastID,lastItem):
+    con = sql_connection()
+    cur = con.cursor()
+    query = "SELECT "+lastItem+" FROM ceny WHERE ID<"+str(lastID)+" AND "+lastItem+">0 ORDER BY id DESC"
+    cur.execute(query)
+    rows = cur.fetchone()[0]
+    cur.close()
+    return rows

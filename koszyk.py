@@ -7,7 +7,7 @@ koszyk = [
 ['chleb','Chleb najtańszy bochen za 500g pszenny','https://www.carrefour.pl/piekarnia-ciastkarnia/chleb/chleb-danuty-450g-putka'],
 ['mydlo','Biały Jeleń Hipoalergiczne mydło naturalne premium z lnem 100 g','https://www.carrefour.pl/drogeria-kosmetyki-i-zdrowie/higienakosmetyki/mydlo-toaletowe/bialy-jelen-hipoalergiczne-mydlo-naturalne-100-g'],
 ['kurczak','Filet z piersi kurczaka','https://www.carrefour.pl/mieso/drob/kurczak/filet-z-piersi-kurczaka-tacka'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=filet%20z%20piersi%20kurczaka&sortBy=priceAscending'],
-['jajka','jaja z wolnego wybiegu L 10 sztuk','https://www.carrefour.pl/mleko-nabial-jaja/jaja/top-jaj-jaja-wiejskie-z-wolnego-wybiegu-l-10-sztuk'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=jajka%20z%20wolnego%20wybiegu'],
+['jajka','jaja z wolnego wybiegu L 10 sztuk,za sztuke','https://www.carrefour.pl/mleko-nabial-jaja/jaja/top-jaj-jaja-wiejskie-z-wolnego-wybiegu-l-10-sztuk'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=jajka%20z%20wolnego%20wybiegu'],
 ['rolex','ROLEX Submariner Niebieski/18 karatowe białe złoto Ø40 mm	','https://www.czaszegarkow.pl/rolex-submariner-niebieski-18-karatowe-biale-zloto-o41-mm-p-385557.html'],
 ['whisky','Whisky Jack Daniels 0.5L	','https://outletalkoholowy.pl/bourbon/57-jack-daniels-05l.html'],
 ['piwo','Piwo Żywiec  czteropak puszka','https://sklep.spolemkielce.pl/produkt/piwo-zywiec-56-puszka-4x-500ml-zywiec/'],
