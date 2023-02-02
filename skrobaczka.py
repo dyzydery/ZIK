@@ -111,10 +111,11 @@ def carrefour(rzecz,url):
 			kwota = kwota[0:kwota.find("zł")]
 		else:
 			kwota1 = getPageClass(url,'MuiTypography-root jss133 MuiTypography-h1').get_text()
-			kwota2 = getPageClass(url,'MuiTypography-root jss133 jss187 MuiTypography-h3').get_text()
+			kwota2 = getPageClass(url,'MuiTypography-root jss133 jss189 MuiTypography-h3').get_text()
 			kwota = kwota1+','+kwota2
 		return kwota
-	except:
+	except Exception as e:
+		print(e)
 		print("problem z: ", url)
 		return '-1'
 
