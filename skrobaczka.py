@@ -79,10 +79,10 @@ def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
 	try:
-		stron = int(getPageClassAll(url,'ooa-xdlax9 ekxs86z0')[-1].get_text())
+		stron = int(getPageClassAll(url,'ooa-xdlax9 eesa4ha0')[-1].get_text())
 		kwota = []
 		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'ooa-1bmnxg7 e1b25f6f11')
+			car = getPageClassAll(url+'&page='+str(i),'ooa-1bmnxg7 e1p19lg711')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
