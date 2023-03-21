@@ -82,7 +82,7 @@ def WyliczZIK():
     f.saveCSV(cart)
     wykresuj()
 
-url='https://www.otomoto.pl/osobowe/volkswagen/golf/od-2018/?search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol&search%5Bfilter_enum_no_accident%5D=1&search%5Border%5D=filter_float_price%3Aasc&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D='
+url='https://www.otomoto.pl/osobowe/volkswagen/golf/od-2020/?search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol&search%5Bfilter_enum_no_accident%5D=1&search%5Border%5D=filter_float_price%3Aasc&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D='
 # printPage(url)
-# print(f.zrobCene(carrefour('chleb',url)))
+# print(otomoto(url))
 WyliczZIK()
