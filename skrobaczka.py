@@ -79,10 +79,10 @@ def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
 	try:
-		stron = int(getPageClassAll(url,'ooa-xdlax9 eesa4ha0')[-1].get_text())
+		stron = int(getPageClassAll(url,'ooa-xdlax9 e1f09v7o0')[-1].get_text())
 		kwota = []
 		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'ooa-1bmnxg7 eayvfn611')
+			car = getPageClassAll(url+'&page='+str(i),'ooa-1bmnxg7 evg565y11')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
@@ -169,9 +169,14 @@ def auchan(url):
 		return '-1'
 
 def m2(url):
-	kwota = getPageId(url,'locationPageLink').get_text()
-	kwota = kwota[kwota.find('(')+1:kwota.find('zł/m')]
-	return kwota
+	try:
+		kwota = getPageClass(url,'list-header__average-price').get_text()
+		kwota = kwota[kwota.find('(')+1:kwota.find('zł/m')]
+		return kwota
+	except:
+		print("problem z: ", url)
+		return '-1'
+
 
 def karma(url):
 	try:
