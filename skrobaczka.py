@@ -180,7 +180,7 @@ def m2(url):
 
 def karma(url):
 	try:
-		return getPageClass(url,'main-price color').get_text()
+		return getPageClass(url,'main-price').get_text()
 	except:
 		print("problem z: ", url)
 		return '-1'
