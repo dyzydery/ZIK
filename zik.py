@@ -21,8 +21,8 @@ def skanujKoszyk():
     i = 0
     for x in koszyk.koszyk:
         print ('[==',int(i/l*100),'% ',f.CYELLOW2 + x[0] + f.CEND,' ==]',end="               \r")
-        if (x[2].find('carrefour')!=-1):
-            cart[x[0]] = f.zrobCene(carrefour(x[0],x[2]))
+        if (x[2].find('barbora')!=-1):
+            cart[x[0]] = f.zrobCene(barbora(x[2]))
         elif (x[0]=='buty'):
             cart[x[0]] = f.zrobCene(kazar(x[2]))
         elif (x[0]=='whisky'):
@@ -82,7 +82,7 @@ def WyliczZIK():
     f.saveCSV(cart)
     wykresuj()
 
-url='https://www.psiechrupki.pl/pl/p/Indyk-z-jagniecina-9kg-GRYZAKI-naturalne%2C-Wiejska-Zagroda/1001'
+url='https://www.play.pl/oferta/play-internet/internet-swiatlowodowy'
 # printPage(url)
-# print(otomoto(url))
+# print(f.zrobCene(barbora(url)))
 WyliczZIK()

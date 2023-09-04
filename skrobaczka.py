@@ -54,19 +54,44 @@ def printPageHeader(url,header):
 	text_file.close()
 
 def printPage(url):
-	page = requests.get(url)
+
+	Cookie = "SESSION=7896bb99-b689-487c-8492-844f1f0edcb6; GCLB=CM2Wu_C62cnXLQ; __cf_bm=JGxB7ulBrQSxd1UfHZrunK6oDdrnihTmWNAC1Zo0Fpo-1689935934-0-AbAtgePixWlokps/k3c99YRSqo8GPQbp+dS33Eve0lSNj8owc7PaW63dVsdqrJpYYmEq0HuCA7UoZo+AdBg9lWc=; cf_clearance=04Y8h221XF1Y68sFkylUvLsZurp2E3_IuyWh49FAv68-1689935934-0-0.2.1689935934; OptanonConsent=isGpcEnabled=0&datestamp=Fri+Jul+21+2023+12%3A38%3A58+GMT%2B0200+(Central+European+Summer+Time)&version=6.35.0&isIABGlobal=false&hosts=&consentId=7e0c54d0-9e8d-4d1a-bd75-181af5b244a8&interactionCount=1&landingPath=NotLandingPage&groups=C0001%3A1%2CC0005%3A1%2CC0039%3A1%2CC0138%3A1%2CC0142%3A1%2CC0056%3A1%2CC0141%3A1%2CC0096%3A1%2CSTACK1%3A1%2CSTACK42%3A1; _snrs_sa=ssuid:85866b5f-eccd-43d6-93f0-8719230a4e28&appear:1689935937&sessionVisits:1; _snrs_sb=ssuid:85866b5f-eccd-43d6-93f0-8719230a4e28&leaves:1689935938; _snrs_p=host:www.carrefour.pl&permUuid:3e3e0279-5b47-4e51-b369-f6588a2ceb10&uuid:3e3e0279-5b47-4e51-b369-f6588a2ceb10&identityHash:&user_hash:&init:1689935937&last:1689935937&current:1689935937&uniqueVisits:1&allVisits:1; _snrs_uuid=3e3e0279-5b47-4e51-b369-f6588a2ceb10; _snrs_puuid=3e3e0279-5b47-4e51-b369-f6588a2ceb10; OptanonAlertBoxClosed=2023-07-21T10:38:58.408Z; eupubconsent-v2=CPvQM_APvQM_AAcABBENDPCsAP_AAH_AAChQJkNf_X__b2_r-_7_f_t0eY1P9_7__-0zjhfdl-8N3f_X_L8X52M5vF36tqoKuR4ku3bBIUdlHPHcTVmw6okVryPsbk2cr7NKJ7PEmlMbM2dYGH9_n9_z-ZKY7___f__z_v-v___9____7-3f3__5__--__e_V_-9zfn9_____9vP___9v-_9_3________3_79_7_D9-f_87_XQTHAJMNS4gC7IkZCbaMIoUQIwrCQqgUAFEAkLRAYQurgp2VwE-sBkAKEUATwQAhgBRkACAAASAJCIAJAjwQCAQCAQAAgAVCAQAMbAAPAC0EAgAFAdCxTigCUCwgyICIhTAhKkSCgnsqEEoP9BXCEOssCKDR_xUICNZAxWBEJCxchwRICXiSQPdUb4ACEAKAUSoViKT80BCgmbLVAAA.f_gAD_gAAAAA; _ga=GA1.2.1116619709.1689935939; _gid=GA1.2.1003232120.1689935939; _ga_J6DEHPJ090=GS1.1.1689935938.1.0.1689935939.59.0.0; _ga_NN2HTTVE2S=GS1.1.1689935938.1.0.1689935938.0.0.0; _fbp=fb.1.1689935939315.511211510"
+
+
+	headers = requests.utils.default_headers()
+	headers.update({
+	    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+	    "Accept-Encoding": "gzip, deflate, br",
+	    "Accept-Language": "en-US,en;q=0.5",
+		"Connection": "keep-alive",
+		"Sec-Fetch-Dest": "document",
+	    "Sec-Fetch-Mode": "navigate",
+		"Sec-Fetch-Site": "cross-site",
+		"Upgrade-Insecure-Requests": "1",
+	    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+
+	})
+	page = requests.get(url,headers=headers)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	text_file = open("s.html", "w")
 	text_file.write(soup.prettify())
 	text_file.close()
 
 def getPageClass(url,klasa):
-	page = requests.get(url)
+	headers = requests.utils.default_headers()
+	headers.update({
+	    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0',
+	})
+	page = requests.get(url,headers=headers)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find(class_=klasa)
 
 def getPageClassAll(url,klasa):
-	page = requests.get(url)
+	headers = requests.utils.default_headers()
+	headers.update({
+	    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0',
+	})
+	page = requests.get(url,headers=headers)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find_all(class_=klasa)
 
@@ -101,6 +126,16 @@ def otomoto(url):
 		print("problem z: ", url)
 		return [-1.0,-1.0]
 
+def barbora(url):
+	try:
+		kwota = getPageClass(url,'b-product-price-current-number').get_text()
+		if (url.find('jaja')!=-1):
+			kwota = str(f.zrobCene(kwota)/10)
+		return kwota
+	except Exception as e:
+		print(e)
+		print("problem z: ", url)
+		return '-1'
 
 def carrefour(rzecz,url):
 	try:
