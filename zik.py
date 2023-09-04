@@ -82,7 +82,7 @@ def WyliczZIK():
     f.saveCSV(cart)
     wykresuj()
 
-url='https://www.play.pl/oferta/play-internet/internet-swiatlowodowy'
+url='https://barbora.pl/alkohole/piwo-i-cydr/piwo-jasne'
 # printPage(url)
-# print(f.zrobCene(barbora(url)))
-WyliczZIK()
+print(piwo(url))
+# WyliczZIK()

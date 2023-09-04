@@ -137,6 +137,19 @@ def barbora(url):
 		print("problem z: ", url)
 		return '-1'
 
+def piwo(url):
+	try:
+		page = getPage(url)
+		x = page.find('/produkty/piwo-zywiec-4-x-500-ml-puszka')
+		kwota = page[x:].find('itemprop="price"')
+		print(page[x+kwota:x+kwota+100])
+		return x
+	except Exception as e:
+		print(e)
+		print("problem z: ", url)
+		return '-1'
+
+
 def carrefour(rzecz,url):
 	try:
 
