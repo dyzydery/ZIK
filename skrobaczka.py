@@ -107,7 +107,7 @@ def otomoto(url):
 		stron = int(getPageClassAll(url,'ooa-xdlax9 e1f09v7o0')[-1].get_text())
 		kwota = []
 		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'ooa-1bmnxg7 evg565y11')
+			car = getPageClassAll(url+'&page='+str(i),'ev7e6t82 ooa-bz4efo er34gjf0')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
@@ -141,9 +141,11 @@ def piwo(url):
 	try:
 		page = getPage(url)
 		x = page.find('/produkty/piwo-zywiec-4-x-500-ml-puszka')
-		kwota = page[x:].find('itemprop="price"')
-		print(page[x+kwota:x+kwota+100])
-		return x
+		page = page[x:]
+		kwota = page.find('itemprop="price"')
+		page = page[kwota:]
+		kwota = page.find('>')
+		return page[kwota+3:kwota+30]
 	except Exception as e:
 		print(e)
 		print("problem z: ", url)

@@ -28,7 +28,7 @@ def skanujKoszyk():
         elif (x[0]=='whisky'):
             cart[x[0]] = f.zrobCene(alkohol(x[2]))
         elif (x[0]=='piwo'):
-            cart[x[0]] = f.zrobCene(spolem(x[2]))
+            cart[x[0]] = f.zrobCene(piwo(x[2]))
         elif (x[0]=='karma'):
             cart[x[0]] = f.zrobCene(karma(x[2]))
         elif (x[0]=='aspiryna'):
@@ -82,7 +82,8 @@ def WyliczZIK():
     f.saveCSV(cart)
     wykresuj()
 
-url='https://barbora.pl/alkohole/piwo-i-cydr/piwo-jasne'
+
+url=koszyk.getURL('piwo')
 # printPage(url)
-print(piwo(url))
-# WyliczZIK()
+# print(piwo(url))
+WyliczZIK()
