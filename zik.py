@@ -83,7 +83,7 @@ def WyliczZIK():
     wykresuj()
 
 
-url=koszyk.getURL('piwo')
+url=koszyk.getURL('upc')
 # printPage(url)
-# print(piwo(url))
+# print(upc(url))
 WyliczZIK()

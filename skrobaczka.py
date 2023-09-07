@@ -293,10 +293,11 @@ def lot(url):
 
 def upc(url):
 		try:
-			kwota = getPageClass(url,'lgi-hdr-9 ph2-d l-h6 m-h0 lgi-txtsd-default').get_text()
-			lok = kwota.find('zł/mies')
-			kwota = kwota[lok-6:lok]
-			return kwota
+			strona = getPage(url)
+			kwota = strona.find('v-rich-text__old-price')
+			strona = strona[kwota:]
+			kwota = strona.find('003E')
+			return strona[kwota+4:kwota+7]
 		except:
 			print("problem z: ", url)
 			return '-1'

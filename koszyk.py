@@ -21,7 +21,7 @@ koszyk = [
 ['lot','Krakow-Rzym za 3 miesiace	','https://www.ryanair.com/ie/en/trip/flights/select?adults=1&teens=0&children=0&infants=0&dateOut=2022-02-01&dateIn=&isConnectedFlight=false&isReturn=false&discount=0&promoCode=&originIata=KRK&destinationIata=CIA&tpAdults=1&tpTeens=0&tpChildren=0&tpInfants=0&tpStartDate=2022-02-01&tpEndDate=&tpDiscount=0&tpPromoCode=&tpOriginIata=KRK&tpDestinationIata=CIA'],
 #['Bilet to kina Cinecity w sobote wieczorem	'],
 ['fryzjer','Strzyżenie męskie Jean Luis David	','https://www.rezerwacje-jeanlouisdavid.pl/api/salon-prices/M58'],
-['upc','Łącze internetowe najtanszne upc	','https://www.upc.pl/internet/kup-internet/'],
+['upc','Łącze internetowe najtanszne upc	','https://www.play.pl/oferta/play-internet/internet-swiatlowodowy'],
 ['prad','1Kwh w Tauron w dzień	','http://www.cena-pradu.pl/tauron.html'],
 ['lekarz','Cena wizyty konsultacja ortopedyczna srednia 10 ofert z znany lekarz	','https://www.znanylekarz.pl/szukaj?q=ortopeda&loc=Kraków%2C%20Polska&filters%5Bspecializations%5D%5B%5D=76&filters%5Bservices%5D%5B%5D=631&sorter=recommended'],
 ['aspiryna','Aspirin 500 mg 10 tabletek Bayer	','https://www.wapteka.pl/aspirin-500-mg-10-tabletek-2621,p'],
