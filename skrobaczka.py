@@ -104,10 +104,10 @@ def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
 	try:
-		stron = int(getPageClassAll(url,'ooa-xdlax9 e1f09v7o0')[-1].get_text())
+		stron = int(getPageClassAll(url,'pagination-item ooa-1xgr17q')[-1].get_text())
 		kwota = []
 		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'ev7e6t82 ooa-bz4efo er34gjf0')
+			car = getPageClassAll(url+'&page='+str(i),'e1ajxysh16 ooa-1n2paoq er34gjf0')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
@@ -197,8 +197,8 @@ def fryzjer(url):
 def prad(url):
 	try:
 		kod = getPage(url)
-		cena = kod.find('mso-highlight:yellow')
-		kwota = kod[cena+23:cena+27]
+		cena = kod.find('/kWh')
+		kwota = kod[cena-10:cena-5]
 		return kwota
 	except:
 		print("problem z: ", url)
@@ -220,7 +220,7 @@ def auchan(url):
 
 def m2(url):
 	try:
-		kwota = getPageClass(url,'list-header__average-price').get_text()
+		kwota = getPageClass(url,'XCWSlq').get_text()
 		kwota = kwota[kwota.find('(')+1:kwota.find('zł/m')]
 		return kwota
 	except:
@@ -294,10 +294,12 @@ def lot(url):
 def upc(url):
 		try:
 			strona = getPage(url)
-			kwota = strona.find('v-rich-text__old-price')
+			kwota = strona.find('v-rich-text__main-price')
+			strona = strona[kwota+10:]
+			kwota = strona.find('v-rich-text__main-price')
 			strona = strona[kwota:]
 			kwota = strona.find('003E')
-			return strona[kwota+4:kwota+7]
+			return strona[kwota+4:kwota+6]
 		except:
 			print("problem z: ", url)
 			return '-1'

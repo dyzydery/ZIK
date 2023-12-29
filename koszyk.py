@@ -2,7 +2,7 @@ koszyk = [
 ['kielecki','Majonez Kielecki 700ml','https://barbora.pl/produkty/wsp-kielce-majonez-kielecki-700-ml'],
 ['pizza','Dr. Oetker Guseppe Pizza z szynką i pieczarkami 425g','https://barbora.pl/produkty/guseppe-pizza-z-szynka-i-pieczarkami-425-g'],
 ['maslo', 'Mlekovita Masło Polskie ekstra bez dodatków 82% 200g','https://barbora.pl/produkty/mlekovita-mas-o-polskie-ekstra-200-g'],
-['jablka','Jabłka 1kg	','https://barbora.pl/produkty/jab-ka-wczesne-paulared-kg'],
+['jablka','Jabłka 1kg	','https://barbora.pl/produkty/jab-ka-ligol-kg'],
 ['makaron','Lubella Penne Rigate Makaron Pióra 400g','https://barbora.pl/produkty/lubella-makaron-piora-400-g'],
 ['chleb','Chleb najtańszy bochen za 500g pszenny','https://barbora.pl/produkty/putka-chleb-zwyk-y-500-g'],
 ['mydlo','BIAŁY JELEŃ Mydło naturalne 150g','https://barbora.pl/produkty/bia-y-jelen-myd-o-naturalne-150-g'],
