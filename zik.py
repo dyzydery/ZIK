@@ -21,14 +21,14 @@ def skanujKoszyk():
     i = 0
     for x in koszyk.koszyk:
         print ('[==',int(i/l*100),'% ',f.CYELLOW2 + x[0] + f.CEND,' ==]',end="               \r")
-        if (x[2].find('barbora')!=-1):
-            cart[x[0]] = f.zrobCene(barbora(x[2]))
+        if (x[2].find('frisco')!=-1):
+            cart[x[0]] = f.zrobCene(frisco(x[2]))
         elif (x[0]=='buty'):
             cart[x[0]] = f.zrobCene(kazar(x[2]))
         elif (x[0]=='whisky'):
             cart[x[0]] = f.zrobCene(alkohol(x[2]))
-        elif (x[0]=='piwo'):
-            cart[x[0]] = f.zrobCene(piwo(x[2]))
+        # elif (x[0]=='piwo'):
+        #     cart[x[0]] = f.zrobCene(piwo(x[2]))
         elif (x[0]=='karma'):
             cart[x[0]] = f.zrobCene(karma(x[2]))
         elif (x[0]=='aspiryna'):
@@ -83,7 +83,8 @@ def WyliczZIK():
     wykresuj()
 
 
-url=koszyk.getURL('upc')
+# url=koszyk.getURL('chleb')
+url='https://www.ubereats.com/pl/krakow/food-delivery/mcdonalds-galeria-krakowska-pietro/GsQ-ThCQQT6OQUCuTTFtJQ'
 # printPage(url)
-# print(upc(url))
+# print(bigmac(url))
 WyliczZIK()
