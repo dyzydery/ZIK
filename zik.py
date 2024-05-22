@@ -83,8 +83,8 @@ def WyliczZIK():
     wykresuj()
 
 
-# url=koszyk.getURL('chleb')
-url='https://www.ubereats.com/pl/krakow/food-delivery/mcdonalds-galeria-krakowska-pietro/GsQ-ThCQQT6OQUCuTTFtJQ'
+url=koszyk.getURL('auto')
+# url='https://ismartfony.pl/samsung-galaxy-s24-ultra-5g-12-512-gb-czarny'
 # printPage(url)
-# print(bigmac(url))
+# print((otomoto(url)))
 WyliczZIK()

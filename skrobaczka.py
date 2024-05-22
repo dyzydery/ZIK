@@ -90,7 +90,7 @@ def otomoto(url):
 		stron = int(getPageClassAll(url,'pagination-item ooa-1xgr17q')[-1].get_text())
 		kwota = []
 		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'eszxync16 ooa-1n2paoq er34gjf0')
+			car = getPageClassAll(url+'&page='+str(i),'e1i3khom16 ooa-1n2paoq er34gjf0')
 			for x in car:
 				cenaAuta = x.get_text().replace("\n", "")
 				if ("Miesiąc" in cenaAuta):
@@ -261,8 +261,8 @@ def upc(url):
 
 def telefon(url):
 	try:
-		cena =  getPageClass(url,'price__value').get_text()
-		cena = cena.replace(" ", "")
+		cena =  getPageClass(url,'main-price').get_text()
+		# cena = cena.replace(" ", "")
 		return cena
 	except Exception as e:
 		print(e)
