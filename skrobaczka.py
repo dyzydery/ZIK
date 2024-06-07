@@ -248,10 +248,8 @@ def lot(url):
 def upc(url):
 		try:
 			strona = getPage(url)
-			kwota = strona.find('v-rich-text__main-price')
-			strona = strona[kwota+10:]
-			kwota = strona.find('v-rich-text__main-price')
-			strona = strona[kwota:]
+			kwota = strona.find('v-rich-text__old-price')
+			strona=strona[kwota:kwota+100]
 			kwota = strona.find('003E')
 			return strona[kwota+4:kwota+6]
 		except:

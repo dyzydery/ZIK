@@ -83,8 +83,8 @@ def WyliczZIK():
     wykresuj()
 
 
-url=koszyk.getURL('auto')
-# url='https://ismartfony.pl/samsung-galaxy-s24-ultra-5g-12-512-gb-czarny'
+url=koszyk.getURL('upc')
 # printPage(url)
-# print((otomoto(url)))
+# url='https://ismartfony.pl/samsung-galaxy-s24-ultra-5g-12-512-gb-czarny'
+# print((upc(url)))
 WyliczZIK()
