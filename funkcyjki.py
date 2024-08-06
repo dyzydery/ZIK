@@ -5,7 +5,7 @@ import csv
 import koszyk
 def zrobCene(x):
     try:
-        x = x.replace(',','.')
+        x = str(x).replace(',','.')
         return float(re.sub('[^0-9.-]', '', x))
     except Exception as e:
         print(e)

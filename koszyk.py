@@ -37,3 +37,8 @@ def getURL(element):
     for x in koszyk:
         if x[0] == element:
             return x[2]
+
+def getProduct(element):
+    for x in koszyk:
+        if x[2] == element:
+            return x[0]
