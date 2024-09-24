@@ -30,13 +30,15 @@ def bigmac(url):
 		header = {'accept' : 'text/html'}
 		kod = getPageHeader(url,header)
 		cena = kod.find("Big Mac®\"")
+		if cena==-1:
+			raise
 		kwota = kod[cena+62:cena+67]
 		# print("bigmac:", kwota)
-		return kwota
+		return f.zrobCene(kwota)
 	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return '-1'
+		#print(e)
+		print ("Problem z: BigMac")
+		return float(-1)
 
 
 def getPage(url):
@@ -104,11 +106,11 @@ def otomoto(url):
 				nowacenaAutaF = float(nowacenaAuta)
 				kwota.append(float(nowacenaAuta))
 		print('Ofert aut: ',len(kwota))
-		return [statistics.mean(kwota),statistics.median(kwota)]
+		return [f.zrobCene(statistics.mean(kwota)),f.zrobCene(statistics.median(kwota))]
 	except Exception as e:
 		print(e)
 		print ("Problem z: ",getProduct(url))
-		return [-1.0,-1.0]
+		return [float(-1),float(-1)]
 
 def frisco(url):
 	try:
@@ -117,21 +119,21 @@ def frisco(url):
 		cena = main+'.'+decim
 		if(cena=="0.00"):
 			print ("Problem z: ",getProduct(url))
-			return -1
+			return float(-1)
 		# print (cena)
-		return cena
+		return f.zrobCene(cena)
 	except Exception as e:
 		print(e)
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def kazar(url):
 	try:
 		cena = getPageClass(url,'price').get_text().replace(",-","")
-		return cena
+		return f.zrobCene(cena)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def fryzjer(url):
 	try:
@@ -145,20 +147,20 @@ def fryzjer(url):
 			}
 		ceny = getPageHeader(url,headers)
 		gdzie = ceny.find("Mycie z masażem, strzyżenie")
-		return ceny[gdzie+37:gdzie+42]
+		return f.zrobCene(ceny[gdzie+37:gdzie+42])
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def prad(url):
 	try:
 		kod = getPage(url)
 		cena = kod.find('/kWh')
 		kwota = kod[cena-10:cena-5]
-		return kwota
+		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def auchan(url):
 
@@ -169,83 +171,85 @@ def auchan(url):
 		cena = kod.find('product_unitprice_ati')
 		kwota = kod[cena+23:cena+50]
 		kwota = kwota[:kwota.find(',')]
-		return kwota
+		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def m2(url):
 	try:
-		kwota = getPageClass(url,'uHQItN').get_text()
+		kwota = getPageClass(url,'gmjGpL').get_text()
 		kwota = kwota[kwota.find('(')+1:kwota.find('zł/m')]
-		return kwota
+		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 
 def karma(url):
 	try:
-		return getPageClass(url,'main-price').get_text()
+		return f.zrobCene(getPageClass(url,'main-price').get_text())
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def aspiryna(url):
 	try:
 		cena = getPageClass(url,'col-3 col-lg-1 align-self-center fw-bold text-center').get_text()#.strip()
-		return cena
+		return f.zrobCene(cena)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def rolex(url):
 	try:
-		return getPageClass(url,'price dig').get_text()
+		cena = getPageClass(url,'price dig').get_text()
+		cena = cena[:cena.find('z')]
+		return f.zrobCene(cena)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def benzyna(url):
-	return getPageClass(url,'price').get_text()
+	return f.zrobCene(getPageClass(url,'price').get_text())
 
 def kindl(url):
 	try:
-		return getPageClass(url,'value').get_text()
+		return f.zrobCene(getPageClass(url,'value').get_text())
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def kasjer(url):
 	try:
-		return getPageClass(url,'salary-info-value').get_text()
+		return f.zrobCene(getPageClass(url,'salary-info-value').get_text())
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def alkohol(url):
 	try:
 		kwota = getPageId(url,'our_price_display').get_text()
-		return kwota
+		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def spolem(url):
 	try:
 		kwota = getPageClassAll(url,'woocommerce-Price-amount amount')[3].get_text()
-		return kwota
+		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def lot(url):
 	try:
 		data = str(datetime.date.today()+datetime.timedelta(days=90))
-		return getPageClass(url+data,' length-5').get_text()
+		return f.zrobCene(getPageClass(url+data,' length-5').get_text())
 	except:
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def upc(url):
 		try:
@@ -253,21 +257,21 @@ def upc(url):
 			kwota = strona.find('v-rich-text__old-price')
 			strona=strona[kwota:kwota+100]
 			kwota = strona.find('003E')
-			return strona[kwota+4:kwota+6]
+			return f.zrobCene(strona[kwota+4:kwota+6])
 		except:
 			print ("Problem z: ",getProduct(url))
-			return '-1'
+			return float(-1)
 
 
 def telefon(url):
 	try:
 		cena =  getPageClass(url,'main-price').get_text()
 		# cena = cena.replace(" ", "")
-		return cena
+		return f.zrobCene(cena)
 	except Exception as e:
 		print(e)
 		print ("Problem z: ",getProduct(url))
-		return '-1'
+		return float(-1)
 
 def lekarz(url):
 	try:
@@ -278,7 +282,7 @@ def lekarz(url):
 			x = x.get_text()[20:].strip()
 			# print("@@@@@",x,"@@@@")
 			kwota.append(f.zrobCene(x))
-		return [statistics.mean(kwota),statistics.median(kwota)]
+		return [f.zrobCene(statistics.mean(kwota)),f.zrobCene(statistics.median(kwota))]
 	except Exception as e:
 		print(e)
 		print ("Problem z: ",getProduct(url))
