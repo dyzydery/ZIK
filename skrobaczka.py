@@ -178,7 +178,7 @@ def auchan(url):
 
 def m2(url):
 	try:
-		kwota = getPageClass(url,'gmjGpL').get_text()
+		kwota = getPageClass(url,'aAre96').get_text()
 		kwota = kwota[kwota.find('(')+1:kwota.find('zł/m')]
 		return f.zrobCene(kwota)
 	except:
@@ -265,7 +265,7 @@ def upc(url):
 
 def telefon(url):
 	try:
-		cena =  getPageClass(url,'main-price').get_text()
+		cena =  getPageClass(url,'projector_prices__price').get_text()
 		# cena = cena.replace(" ", "")
 		return f.zrobCene(cena)
 	except Exception as e:
