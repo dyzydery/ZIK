@@ -265,7 +265,7 @@ def upc(url):
 
 def telefon(url):
 	try:
-		cena =  getPageClass(url,'projector_prices__price').get_text()
+		cena =  getPageClass(url,'main-price').get_text()
 		# cena = cena.replace(" ", "")
 		return f.zrobCene(cena)
 	except Exception as e:
