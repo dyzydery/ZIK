@@ -76,15 +76,16 @@ def skanujKoszyk():
 def WyliczZIK():
     skanujKoszyk()
     inf = calculateInflation()
-    # f.printKoszyk(cart)
+    f.printKoszyk(cart)
     # f.printKoszykInflacja(cart,inf)
-    DBinsert(cart)
-    f.saveCSV(cart)
+    # DBinsert(cart)
+    # f.saveCSV(cart)
     # wykresuj()
 
 
-url=koszyk.getURL('bigmac')
-# printPage(url)
-# url='https://ismartfony.pl/samsung-galaxy-s24-ultra-5g-12-512-gb-czarny'
-# print((bigmac(url)))
-WyliczZIK()
+url=koszyk.getURL('upc')
+
+# url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
+printPage(url)
+# print((alkohol(url)))
+# WyliczZIK()

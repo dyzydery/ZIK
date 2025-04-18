@@ -215,7 +215,7 @@ def benzyna(url):
 
 def kindl(url):
 	try:
-		return f.zrobCene(getPageClass(url,'value').get_text())
+		return f.zrobCene(getPageClass(url,'h2 price').get_text())
 	except:
 		print ("Problem z: ",getProduct(url))
 		return float(-1)
@@ -229,7 +229,7 @@ def kasjer(url):
 
 def alkohol(url):
 	try:
-		kwota = getPageId(url,'our_price_display').get_text()
+		kwota = getPageClassAll(url,'price')[1].get_text()
 		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))

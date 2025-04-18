@@ -9,7 +9,7 @@ koszyk = [
 ['kurczak','Filet z piersi kurczaka','https://www.frisco.pl/pid,22601/n,kurczak-zagrodowy-filety-swieze-klasa-a-(320g-480g)/stn,product'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=filet%20z%20piersi%20kurczaka&sortBy=priceAscending'],
 ['jajka','jaja z wolnego wybiegu L 10 sztuk,za sztuke','https://www.frisco.pl/pid,100769/n,wybiegane-kury-jaja-kurze-z-wolnego-wybiegu-(rozmiar-l)---10-szt./'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=jajka%20z%20wolnego%20wybiegu'],
 ['rolex','ROLEX Submariner Niebieski/18 karatowe białe złoto Ø40 mm	','https://www.czaszegarkow.pl/rolex-submariner-niebieski-18-karatowe-biale-zloto-o41-mm-p-385557.html'],
-['whisky','Whisky Jack Daniels 0.5L	','https://outletalkoholowy.pl/bourbon/57-jack-daniels-05l.html'],
+['whisky','Whisky Jack Daniels 0.5L	','https://alkoholeswiata24.pl/whisky-burbon-jack-daniel-s-0-5l-40proc'],
 ['piwo','Piwo Żywiec  czteropak puszka','https://www.frisco.pl/pid,3192/n,zywiec-piwo-4x500ml-(puszka)/stn,product'],
 ['buty','Kazar damskie szpilki czułenka najtansze skórzane	','https://kazar.com/kobieta/buty/czolenka.html?heel_height=5505&material=5465&product_list_order=price&shoes_type_multi=6862&size=5802'],
 ['auto','3 letnie używany golf srednia/mediana ze 100 ofert	','https://www.otomoto.pl/osobowe/volkswagen/golf/od-2018/?search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol&search%5Bfilter_enum_no_accident%5D=1&search%5Border%5D=filter_float_price%3Aasc&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D='],
@@ -30,7 +30,7 @@ koszyk = [
 ['xau','1 uncja Złota	','https://www.xe.com/currencyconverter/convert/?From=XAU&To=PLN'],
 ['chf','1 CHF	','https://www.xe.com/currencyconverter/convert/?Amount=1&From=chf&To=PLN'],
 ['usd','1 USD','https://www.xe.com/currencyconverter/convert/?Amount=1&From=usd&To=PLN'],
-['kindle','Kindle Paperwhite 8gb bez reklam','https://www.ceneo.pl/72562365']
+['kindle','Kindle Paperwhite 8gb bez reklam','https://czytio.pl/czytniki-ebookow/713/kindle-paperwhite-6-7-16gb-bez-reklam']
 ]
 
 def getURL(element):
