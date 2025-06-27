@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from skrobaczka import *
 import statistics
 from baza import DBinsert
-#from plot import wykresuj
+from plot import wykresuj
 from inflacja import calculateInflation
 print('Złoty Indeks Kieleckiego')
 print(datetime.datetime.now())
@@ -20,7 +20,7 @@ def skanujKoszyk():
     l = len(koszyk.koszyk)+1
     i = 0
     for x in koszyk.koszyk:
-        #print ('[==',int(i/l*100),'% ',f.CYELLOW2 + x[0] + f.CEND,' ==]',end="               \r")
+        print ('[==',int(i/l*100),'% ',f.CYELLOW2 + x[0] + f.CEND,' ==]',end="               \r")
         if (x[2].find('frisco')!=-1):
             cart[x[0]] = frisco(x[2])
         elif (x[0]=='buty'):
@@ -67,7 +67,7 @@ def skanujKoszyk():
             cart[x[0]+'_Mean'] = z[0]
             cart[x[0]+'_Median'] = z[1]
         i+=1
-    #print ('[==',int(i/l*100),'% ',f.CYELLOW2 + 'waluty' + f.CEND,' ==]',end ="               \r")
+    print ('[==',int(i/l*100),'% ',f.CYELLOW2 + 'waluty' + f.CEND,' ==]',end ="               \r")
     currency = waluty()
     cart['xau'] = currency['xau']
     cart['usd'] = currency['usd']
@@ -83,9 +83,9 @@ def WyliczZIK():
     # wykresuj()
 
 
-url=koszyk.getURL('upc')
+url=koszyk.getURL('m2wtorny')
 
 # url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
-printPage(url)
-# print((alkohol(url)))
+# printPage(url)
+print((m2(url)))
 # WyliczZIK()

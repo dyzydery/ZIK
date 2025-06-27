@@ -178,8 +178,12 @@ def auchan(url):
 
 def m2(url):
 	try:
-		kwota = getPageClass(url,'aAre96').get_text()
-		kwota = kwota[kwota.find('(')+1:kwota.find('zł/m')]
+		kod = getPage(url)
+		cena = kod.rfind("data-v-abc7ea77")
+		kwota = kod[cena:cena+100]
+		beg = kwota.find('(')+1
+		kwota = kwota[beg:beg+7]
+
 		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
