@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from skrobaczka import *
 import statistics
 from baza import DBinsert
-from plot import wykresuj
+#from plot import wykresuj
 from inflacja import calculateInflation
 print('Złoty Indeks Kieleckiego')
 print(datetime.datetime.now())
