@@ -192,7 +192,8 @@ def m2(url):
 
 def karma(url):
 	try:
-		return f.zrobCene(getPageClass(url,'main-price').get_text())
+		kwota = getPageClassAll(url,'price__value price__value_bold js__price-value')[1].get_text()
+		return f.zrobCene(kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
 		return float(-1)
