@@ -3,13 +3,12 @@
 import re
 import csv
 import koszyk
-def zrobCene(x):
+def zrobCene(item,x):
     try:
         x = str(x).replace(',','.')
         return float(re.sub('[^0-9.-]', '', x))
     except Exception as e:
-        print(e)
-        print ('ZrobCene problem z: ',x)
+        print (f'ZrobCene problem z {item}: {e} ')
         return float(-1)
 
 def saveCSV(cart):
