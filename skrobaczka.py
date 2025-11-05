@@ -200,7 +200,9 @@ def karma(url):
 
 def aspiryna(url):
 	try:
-		cena = getPageClass(url,'col-3 col-lg-1 align-self-center fw-bold text-center').get_text()#.strip()
+		main = getPageClass(url,'priceFormat--lg leading-base').get_text()
+		decim = getPageClass(url,'leading-base text-nowrap font-semibold text-base').get_text()
+		cena = main+decim
 		return f.zrobCene("aspiryna",cena)
 	except:
 		print ("Problem z: ",getProduct(url))
