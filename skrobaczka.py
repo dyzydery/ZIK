@@ -114,8 +114,11 @@ def otomoto(url):
 
 def frisco(url):
 	try:
-		main = getPageClassAll(url,'price_num')[-1].get_text()
-		decim = getPageClassAll(url,'price_decimals')[-1].get_text()
+		zakg = -1
+		if (url.find('chleb')):
+			zakg = 1
+		main = getPageClassAll(url,'price_num')[zakg].get_text()
+		decim = getPageClassAll(url,'price_decimals')[zakg].get_text()
 		cena = main+'.'+decim
 		if(cena=="0.00"):
 			print ("Problem z: ",getProduct(url))

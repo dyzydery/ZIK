@@ -4,7 +4,7 @@ koszyk = [
 ['maslo', 'Mlekovita Masło Polskie ekstra bez dodatków 82% 200g','https://www.frisco.pl/pid,13500/n,mlekovita-maslo-polskie-extra/stn,product'],
 ['jablka','Jabłka 1kg	','https://www.frisco.pl/pid,95701/n,frisco-fresh-jablka-slodkie-jonaprince-4-szt./stn,product'],
 ['makaron','Lubella Penne Rigate Makaron Pióra 400g','https://www.frisco.pl/pid,363/n,lubella-makaron-piora-(penne-rigate)/stn,product'],
-['chleb','Chleb najtańszy bochen za 500g pszenny','https://www.frisco.pl/pid,134650/n,zloty-klos-chleb-wieloziarnisty/stn,product'],
+['chleb','Chleb najtańszy bochen za 500g pszenny','https://www.frisco.pl/pid,81511/n,putka-chleb-zwykly-firmowy/stn,product'],
 ['mydlo','BIAŁY JELEŃ Mydło naturalne 150g','https://www.frisco.pl/pid,129281/n,barwa-mydlo-szare-tradycyjne/stn,product'],
 ['kurczak','Filet z piersi kurczaka','https://www.frisco.pl/pid,22601/n,kurczak-zagrodowy-filety-swieze-klasa-a-(320g-480g)/stn,product'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=filet%20z%20piersi%20kurczaka&sortBy=priceAscending'],
 ['jajka','jaja z wolnego wybiegu L 10 sztuk,za sztuke','https://www.frisco.pl/pid,100769/n,wybiegane-kury-jaja-kurze-z-wolnego-wybiegu-(rozmiar-l)---10-szt./'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=jajka%20z%20wolnego%20wybiegu'],
