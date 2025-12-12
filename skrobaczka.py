@@ -109,7 +109,7 @@ def otomoto(url):
 		return [f.zrobCene("otomoto",statistics.mean(kwota)),f.zrobCene("otomoto",statistics.median(kwota))]
 	except Exception as e:
 		print(e)
-		print ("Problem z: ",getProduct(url))
+		print ("Problem z: otomoto")
 		return [float(-1),float(-1)]
 
 def frisco(url):
