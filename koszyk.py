@@ -7,7 +7,7 @@ koszyk = [
 ['chleb','Chleb najtańszy bochen za 500g pszenny','https://www.frisco.pl/pid,81511/n,putka-chleb-zwykly-firmowy/stn,product'],
 ['mydlo','BIAŁY JELEŃ Mydło naturalne 150g','https://www.frisco.pl/pid,129281/n,barwa-mydlo-szare-tradycyjne/stn,product'],
 ['kurczak','Filet z piersi kurczaka','https://www.frisco.pl/pid,22601/n,kurczak-zagrodowy-filety-swieze-klasa-a-(320g-480g)/stn,product'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=filet%20z%20piersi%20kurczaka&sortBy=priceAscending'],
-['jajka','jaja z wolnego wybiegu L 10 sztuk,za sztuke','https://www.frisco.pl/pid,100769/n,wybiegane-kury-jaja-kurze-z-wolnego-wybiegu-(rozmiar-l)---10-szt./'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=jajka%20z%20wolnego%20wybiegu'],
+['jajka','jaja z wolnego wybiegu L 10 sztuk','https://www.frisco.pl/pid,100769/n,wybiegane-kury-jaja-kurze-z-wolnego-wybiegu-(rozmiar-l)---10-szt./'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=jajka%20z%20wolnego%20wybiegu'],
 ['rolex','ROLEX Submariner Niebieski/18 karatowe białe złoto Ø40 mm	','https://www.czaszegarkow.pl/rolex-submariner-niebieski-18-karatowe-biale-zloto-o41-mm-p-385557.html'],
 ['whisky','Whisky Jack Daniels 0.5L	','https://alkoholeswiata24.pl/whisky-burbon-jack-daniel-s-0-5l-40proc'],
 ['piwo','Piwo Żywiec  czteropak puszka','https://www.frisco.pl/pid,3192/n,zywiec-piwo-4x500ml-(puszka)/stn,product'],
