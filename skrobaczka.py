@@ -42,7 +42,10 @@ def bigmac(url):
 
 
 def getPage(url):
-	return str(urlopen(url).read())
+	page = requests.get(url)
+	soup = BeautifulSoup(page.content, 'html.parser')
+	return soup.prettify()
+	# return str(urlopen(url).read())
 
 def getPageHeader(url,header):
 	page = requests.get(url,headers=header)
@@ -182,13 +185,15 @@ def auchan(url):
 def m2(url):
 	try:
 		kod = getPage(url)
+
 		cena = kod.rfind("data-v-0d6d0a35")
 		kwota = kod[cena:cena+100]
 		beg = kwota.find('(')+1
 		kwota = kwota[beg:beg+7]
 
 		return f.zrobCene("m2",kwota)
-	except:
+	except Exception as e:
+		print(e)
 		print ("Problem z: ",getProduct(url))
 		return float(-1)
 
