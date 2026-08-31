@@ -7,12 +7,16 @@ import funkcyjki as f
 import statistics
 import json
 import datetime
+import os
+from dotenv import load_dotenv
 from koszyk import getProduct
 
+load_dotenv()
+
 def waluty():
-	# Key Fixerio 82115c700a7d9d17d383a6f386a67a92
-	# http://data.fixer.io/api/latest?access_key=82115c700a7d9d17d383a6f386a67a92
-	url = "http://data.fixer.io/api/latest?access_key=82115c700a7d9d17d383a6f386a67a92&symbols=USD,PLN,XAU,CHF"
+	# http://data.fixer.io/api/latest?access_key=...&symbols=USD,PLN,XAU,CHF
+	fixer_api_key = os.environ["FIXER_API_KEY"]
+	url = f"http://data.fixer.io/api/latest?access_key={fixer_api_key}&symbols=USD,PLN,XAU,CHF"
 	response = requests.get(url)
 	data = response.text
 	parsed = json.loads(data)
