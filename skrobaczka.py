@@ -8,14 +8,39 @@ import statistics
 import json
 import datetime
 import os
-from dotenv import load_dotenv
 from koszyk import getProduct
+import pathlib
 
-load_dotenv()
+ENV = pathlib.Path(__file__).resolve().parent / '.env'
+
+def wczytajEnv(sciezka=ENV):
+	"""Wczytuje zmienne z .env lezacego obok tego pliku.
+
+	Sciezka liczona od __file__, nie od CWD - cron startuje w $HOME.
+	Nie nadpisuje zmiennych juz obecnych w srodowisku, wiec da sie
+	podmienic klucz na czas testu: FIXER_API_KEY=inny python3 zik.py
+	"""
+	if not sciezka.exists():
+		return
+	for linia in sciezka.read_text(encoding='utf-8').splitlines():
+		linia = linia.strip()
+		if not linia or linia.startswith('#'):
+			continue
+		if linia.startswith('export '):
+			linia = linia[len('export '):]
+		klucz, znak, wartosc = linia.partition('=')
+		if not znak:
+			continue
+		os.environ.setdefault(klucz.strip(), wartosc.strip().strip('\'"'))
+
+wczytajEnv()
 
 def waluty():
 	# http://data.fixer.io/api/latest?access_key=...&symbols=USD,PLN,XAU,CHF
-	fixer_api_key = os.environ["FIXER_API_KEY"]
+	fixer_api_key = os.environ.get('FIXER_API_KEY')
+	if not fixer_api_key:
+		raise RuntimeError(f'brak FIXER_API_KEY - sprawdz {ENV}')
+	os.environ["FIXER_API_KEY"]
 	url = f"http://data.fixer.io/api/latest?access_key={fixer_api_key}&symbols=USD,PLN,XAU,CHF"
 	response = requests.get(url)
 	data = response.text
