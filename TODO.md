@@ -30,7 +30,7 @@
 - [ ] `skrobaczka.py:121` - `if (url.find('chleb')):` jest ZAWSZE prawdziwe (`find` zwraca -1 = truthy). Ma byc `if 'chleb' in url:`
 - [ ] `skrobaczka.py:228` - `benzyna()` jedyny scraper bez `try/except`, wywala caly nocny run
 - [ ] Brak `timeout=` we wszystkich `requests.get` -> cron moze zawisnac na zawsze
-- [ ] `waluty()` - klucz juz w `.env` (OK), zostaje reszta: brak obslugi `success: false` -> przy limicie API leci `KeyError` i caly run pada bez zapisania wiersza; `http` zamiast `https` (sprawdzone, https dziala); klejenie klucza w f-stringu zamiast `params=` (klucz wpada do URL-a w logach i tracebackach)
+- [x] `waluty()` - klucz juz w `.env` (OK), zostaje reszta: brak obslugi `success: false` -> przy limicie API leci `KeyError` i caly run pada bez zapisania wiersza; `http` zamiast `https` (sprawdzone, https dziala); klejenie klucza w f-stringu zamiast `params=` (klucz wpada do URL-a w logach i tracebackach)
 - [ ] `skrobaczka.py:32` - nagi `raise` bez aktywnego wyjatku (dziala przypadkiem)
 - [ ] Wyciac cookies sesyjne z 2021 z `fryzjer()` (`skrobaczka.py:146` i `:152`) - `permuserid`, `_ga`, `_fbp` w publicznym repo
 - [ ] Polaczenia sqlite nigdy nie zamykane (`baza.py`) - zamykane sa tylko kursory
@@ -60,7 +60,7 @@
 - [ ] `koszyk.py` jako jedyne zrodlo definicji (nazwa, opis, URL, parser, ile kolumn), INSERT/nazwy/wykresy generowane z tego
 - [ ] `requirements.txt` (requests, bs4, pandas, seaborn, matplotlib, python-dotenv)
 - [ ] `.env.example` jest nietrackowany - dodac do repo, zeby bylo wiadomo jakie zmienne sa potrzebne
-- [ ] Cron nie czyta `.bashrc` - sprawdzic, czy `FIXER_API_KEY` faktycznie dociera do runu na Mikrusie (`load_dotenv()` czyta `.env` z CWD, wiec w crontabie musi byc `cd` do katalogu projektu)
+- [x] Cron nie czyta `.bashrc` - sprawdzic, czy `FIXER_API_KEY` faktycznie dociera do runu na Mikrusie (`load_dotenv()` czyta `.env` z CWD, wiec w crontabie musi byc `cd` do katalogu projektu)
 
 ## Jakosc danych
 - [ ] Walidacja wiarygodnosci ceny - zmiana >30% wzgledem ostatniej dodatniej wartosci = flaga do przegladu. Dzis kazda sparsowana liczba wchodzi jako prawda (`mydlo` skacze 39.90 -> 45.90 -> 48.90 za kostke mydla, cos podmienilo produkt)
@@ -73,11 +73,11 @@
 - [ ] Zbierac rownolegle NBP `api.nbp.pl/api/cenyzlota` (cena 1g zlota, za darmo, bez klucza, historia od 2013) w nowej kolumnie - nie tracac ciaglosci szeregu
 
 ## Repo
-- [ ] `lazygit` - 21 MB binarki w gicie, do `.gitignore`
-- [ ] `zik.db` commitowany codziennie (588 kB pelnego snapshotu dziennie) - wystarczy CSV, baze odtwarzac z CSV
+- [x] `lazygit` - 21 MB binarki w gicie, do `.gitignore`
+- [x] `zik.db` commitowany codziennie (588 kB pelnego snapshotu dziennie) - wystarczy CSV, baze odtwarzac z CSV
 - [ ] `TODO` (bez rozszerzenia) - starsza kopia tego pliku, do usuniecia
 - [ ] `test.py` to demo kolorow ANSI, nie test - kolory zduplikowane z `funkcyjki.py`
 - [ ] `funkcyjki.znajdzSrednia` - martwy kod, jest `statistics.mean`
 - [ ] Miks tabow (`skrobaczka.py`) i 4 spacji (reszta)
 - [ ] `wykresuj()` zakomentowane w `zik.py:83` - wykresy w README sa z 2025-10-24
-- [ ] Pilnowac, zeby debugowy stan `zik.py` (`WyliczZIK()` zakomentowane, aktywne `printPage`) nie wjechal na master
+- [x] Pilnowac, zeby debugowy stan `zik.py` (`WyliczZIK()` zakomentowane, aktywne `printPage`) nie wjechal na master

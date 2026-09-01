@@ -40,19 +40,22 @@ def waluty():
 	fixer_api_key = os.environ.get('FIXER_API_KEY')
 	if not fixer_api_key:
 		raise RuntimeError(f'brak FIXER_API_KEY - sprawdz {ENV}')
-	os.environ["FIXER_API_KEY"]
-	url = f"http://data.fixer.io/api/latest?access_key={fixer_api_key}&symbols=USD,PLN,XAU,CHF"
-	response = requests.get(url)
-	data = response.text
-	parsed = json.loads(data)
-	pln = parsed["rates"]["PLN"]
-	usd = parsed["rates"]["USD"]
-	xau = parsed["rates"]["XAU"]
-	chf = parsed["rates"]["CHF"]
-	return {'eur':float(pln),
-			'xau':float(pln)/float(xau),
-			'chf':float(pln)/float(chf),
-			'usd':float(pln)/float(usd)}
+	try:
+		url = f"http://data.fixer.io/api/latest?access_key={fixer_api_key}&symbols=USD,PLN,XAU,CHF"
+		response = requests.get(url)
+		data = response.text
+		parsed = json.loads(data)
+		pln = parsed["rates"]["PLN"]
+		usd = parsed["rates"]["USD"]
+		xau = parsed["rates"]["XAU"]
+		chf = parsed["rates"]["CHF"]
+		return {'eur':float(pln),
+				'xau':float(pln)/float(xau),
+				'chf':float(pln)/float(chf),
+				'usd':float(pln)/float(usd)}
+	except requests.RequestException as e:
+		raise RuntimeError(f'fixer.io nieosiagalny: {type(e).__name__}') from None
+
 
 def bigmac(url):
 	try:
