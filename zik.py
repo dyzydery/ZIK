@@ -83,9 +83,9 @@ def WyliczZIK():
     # wykresuj()
 
 
-url=koszyk.getURL('bigmac')
+# url=koszyk.getURL('bigmac')
 
 # url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
-printPage(url)
+# printPage(url)
 # print((m2(url)))
-# WyliczZIK()
+WyliczZIK()
