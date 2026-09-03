@@ -36,25 +36,42 @@ def wczytajEnv(sciezka=ENV):
 wczytajEnv()
 
 def waluty():
-	# http://data.fixer.io/api/latest?access_key=...&symbols=USD,PLN,XAU,CHF
 	fixer_api_key = os.environ.get('FIXER_API_KEY')
 	if not fixer_api_key:
 		raise RuntimeError(f'brak FIXER_API_KEY - sprawdz {ENV}')
+	url = f"https://data.fixer.io/api/latest?access_key={fixer_api_key}&symbols=USD,PLN,XAU,CHF"
+
+	# warstwa 1: TRANSPORT - siec, DNS, timeout.
 	try:
-		url = f"http://data.fixer.io/api/latest?access_key={fixer_api_key}&symbols=USD,PLN,XAU,CHF"
-		response = requests.get(url)
-		data = response.text
-		parsed = json.loads(data)
-		pln = parsed["rates"]["PLN"]
-		usd = parsed["rates"]["USD"]
-		xau = parsed["rates"]["XAU"]
-		chf = parsed["rates"]["CHF"]
-		return {'eur':float(pln),
-				'xau':float(pln)/float(xau),
-				'chf':float(pln)/float(chf),
-				'usd':float(pln)/float(usd)}
+		response = requests.get(url, timeout=15)
 	except requests.RequestException as e:
-		raise RuntimeError(f'fixer.io nieosiagalny: {type(e).__name__}') from None
+		raise RuntimeError(f'fixer.io [transport]: {type(e).__name__}') from None
+
+	# warstwa 2: PROTOKOL - HTTP 4xx/5xx nie rzuca samo z siebie.
+	if response.status_code != 200:
+		raise RuntimeError(f'fixer.io [protokol] HTTP {response.status_code}')
+
+	# warstwa 3: FORMAT - cialo moze nie byc JSON-em (strona techniczna, proxy).
+	try:
+		parsed = json.loads(response.text)
+	except ValueError:
+		raise RuntimeError(f'fixer.io [format] nie JSON: {response.text[:80]!r}') from None
+
+	# warstwa 4a: TRESC - fixer zglasza blad przez success:false (np. limit API).
+	if not parsed.get('success'):
+		raise RuntimeError(f'fixer.io [tresc] blad API: {parsed.get("error")}')
+
+	# warstwa 4b: TRESC - brakujace lub zerowe kursy. "not rates.get(s)" lapie
+	rates = parsed.get('rates') or {}
+	brakujace = [s for s in ('PLN', 'USD', 'XAU', 'CHF') if not rates.get(s)]
+	if brakujace:
+		raise RuntimeError(f'fixer.io [tresc] brak lub zerowe kursy: {brakujace}')
+
+	pln = float(rates['PLN'])
+	return {'eur': pln,
+			'xau': pln/float(rates['XAU']),
+			'chf': pln/float(rates['CHF']),
+			'usd': pln/float(rates['USD'])}
 
 
 def bigmac(url):
