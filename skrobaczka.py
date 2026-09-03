@@ -193,8 +193,8 @@ def fryzjer(url):
 def prad(url):
 	try:
 		kod = getPage(url)
-		cena = kod.find('/kWh')
-		kwota = kod[cena-10:cena-5]
+		cena = kod.find('#0070C0')
+		kwota = kod[cena+8:cena+30]
 		return f.zrobCene("prad",kwota)
 	except:
 		print ("Problem z: ",getProduct(url))
