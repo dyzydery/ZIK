@@ -30,7 +30,7 @@
 - [ ] `skrobaczka.py:121` - `if (url.find('chleb')):` jest ZAWSZE prawdziwe (`find` zwraca -1 = truthy). Ma byc `if 'chleb' in url:`
 - [ ] `skrobaczka.py:228` - `benzyna()` jedyny scraper bez `try/except`, wywala caly nocny run
 - [ ] Brak `timeout=` we WSZYSTKICH 9 wywolaniach `requests.get` (sprawdzone 2026-09-03: `grep -c timeout` = 0) -> cron moze zawisnac bez konca. Bez tego `except requests.RequestException` jest martwym kodem, bo wyjatek nigdy nie powstanie
-- [ ] `waluty()` - zrobione: klucz w `.env`, `from None`. NIE zrobione: `timeout`, cztery bramki awarii (cofnely sie, patrz Regresje), oraz `http` zamiast `https` (sprawdzone 2026-09-03: nadal `http://data.fixer.io`, a https na tym kluczu dziala)
+- [x] `waluty()` - klucz w `.env`, `from None`, `timeout=15`, `https`, cztery bramki awarii (transport/protokol/format/tresc). Zweryfikowane sprawdzarka 6/6
 - [ ] `skrobaczka.py:32` - nagi `raise` bez aktywnego wyjatku (dziala przypadkiem)
 - [ ] Wyciac cookies sesyjne z 2021 z `fryzjer()` (`skrobaczka.py:146` i `:152`) - `permuserid`, `_ga`, `_fbp` w publicznym repo
 - [ ] Polaczenia sqlite nigdy nie zamykane (`baza.py`) - zamykane sa tylko kursory
@@ -76,7 +76,11 @@
 
 ## Repo
 - [x] `lazygit` - 21 MB binarki w gicie, do `.gitignore`
-- [ ] `zik.db` NADAL sledzony przez gita (sprawdzone 2026-09-03) - 588 kB snapshotu na commit. Odhaczone przedwczesnie, migracja nie zostala wykonana
+- [ ] `zik.db` NADAL sledzony (sprawdzone 2026-09-03 po commicie `039a113`). Wpis w `.gitignore:3` jest BEZSKUTECZNY - `.gitignore` dziala tylko na pliki nieśledzone, `git ls-files` wciaz pokazuje `zik.db`. Potrzebne `git rm --cached`. Kolejnosc ma znaczenie, bo uzbraja dwie miny:
+  1. najpierw LAPTOP: zdejmij `zik.db` z `.gitignore`, zmien w `runGit.sh` `git add zik.db zikDB.csv` na `git add zikDB.csv`, push - inaczej piatkowy run wywali sie na `git add` pliku ignorowanego (sprawdzone: kod wyjscia 1)
+  2. potem MIKRUS: kopia bazy poza repo, `git pull --rebase`, `git rm --cached zik.db`, wpis do `.gitignore`, commit, push. Odsledzenie robic NA MIKRUSIE - wtedy jego plik zostaje na dysku, a traci go laptop, gdzie kopia jest zbedna
+  3. na koncu LAPTOP: `git pull` (tu `zik.db` znika z dysku - tak ma byc). Baze do `plot.py` sciagac `scp`-em poza gitem
+  UWAGA: commit usuwajacy sledzony plik jest stosowany przy `pull` jak kazda inna zmiana - bez kroku 2 z kopia Mikrus straci baze, a run o 02:02 utworzy pusta i zacznie zbierac od zera
 - [x] `TODO` (bez rozszerzenia) - usuniete w fa8734a
 - [ ] `test.py` to demo kolorow ANSI, nie test - kolory zduplikowane z `funkcyjki.py`
 - [ ] `funkcyjki.znajdzSrednia` - martwy kod, jest `statistics.mean`
@@ -85,14 +89,15 @@
 - [x] Pilnowac, zeby debugowy stan `zik.py` (`WyliczZIK()` zakomentowane, aktywne `printPage`) nie wjechal na master
 
 ## Regresje (znalezione 2026-09-03)
-- [ ] PILNE: `waluty()` cofnieta do stanu z commita `4f28598` (2026-09-01 13:13). Cztery bramki awarii i `timeout=15` przestaly istniec - `git log -S` potwierdza, ze NIGDY nie byly w zadnym commicie, zyly tylko w katalogu roboczym. Do odtworzenia:
+- [x] `waluty()` ODTWORZONA i zacommitowana w `039a113` (2026-09-03). Sprawdzone: 6/6 przypadkow przechodzi, `timeout=15` obecny, `https` zamiast `http`. Cztery bramki awarii:
   - `timeout=15` w `requests.get`
   - zwezenie `try` do samego requestu
   - bramka `[protokol]`: `if response.status_code != 200`
   - bramka `[format]`: `try/except ValueError` wokol `json.loads` + wycinek ciala w komunikacie
   - bramka `[tresc]` a: `if not parsed.get('success')` + `parsed.get('error')`
   - bramka `[tresc]` b: lista brakujacych symboli z `('PLN','USD','XAU','CHF')`, warunek `not rates.get(s)` lapie brak, None i zero naraz
-- [ ] Wniosek: poprawka bez commita nie istnieje. Commitowac natychmiast po weryfikacji, nie na koniec dnia
+- [x] Wniosek: poprawka bez commita nie istnieje. Commitowac natychmiast po weryfikacji, nie na koniec dnia
+- [ ] `sprawdz_waluty.py` NIE zostal skopiowany do repo - zabezpieczenie przed powtorka tej regresji wciaz nie istnieje. Uruchamiac przed kazdym commitem ruszajacym `waluty()`
 
 ## Nowe znaleziska (2026-09-03)
 - [ ] `saveCSV` znow wprowadzi mieszane konce linii: `open(...,'a')` bez `newline=''` + `csv.DictWriter` pisze `\r\n`, a plik jest teraz caly na `\n`. Sprawdzone. Potrzebne `newline=''` ORAZ `lineterminator='\n'`
