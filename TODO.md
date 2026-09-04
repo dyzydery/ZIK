@@ -29,7 +29,8 @@
 - [ ] `DBgetNotNullValue` bierze ostatnia dodatnia wartosc z dowolnej daty -> "inflacja Y2Y" nie jest Y2Y (stad chleb 4836%)
 - [ ] `skrobaczka.py:121` - `if (url.find('chleb')):` jest ZAWSZE prawdziwe (`find` zwraca -1 = truthy). Ma byc `if 'chleb' in url:`
 - [ ] `skrobaczka.py:228` - `benzyna()` jedyny scraper bez `try/except`, wywala caly nocny run
-- [ ] Brak `timeout=` we WSZYSTKICH 9 wywolaniach `requests.get` (sprawdzone 2026-09-03: `grep -c timeout` = 0) -> cron moze zawisnac bez konca. Bez tego `except requests.RequestException` jest martwym kodem, bo wyjatek nigdy nie powstanie
+- [x] `timeout=15` dodany do WSZYSTKICH funkcji pomocniczych 2026-09-04 (`getPage`, `getPageHeader`, `printPage*`, `getPageClass*`, `getPageId`, `getJsonLD`). Cron nie moze juz zawisnac bez konca, a istniejace `except requests.RequestException` przestaly byc martwym kodem
+- [ ] `getPageClass(url, klasa, timeout=15)` - parametr `timeout` jest ZADEKLAROWANY, ale w srodku jest na sztywno `timeout=15`. Parametr jest ignorowany, czyli sygnatura klamie. Uzyc go albo usunac
 - [x] `waluty()` - klucz w `.env`, `from None`, `timeout=15`, `https`, cztery bramki awarii (transport/protokol/format/tresc). Zweryfikowane sprawdzarka 6/6
 - [ ] `skrobaczka.py:32` - nagi `raise` bez aktywnego wyjatku (dziala przypadkiem)
 - [ ] Wyciac cookies sesyjne z 2021 z `fryzjer()` (`skrobaczka.py:146` i `:152`) - `permuserid`, `_ga`, `_fbp` w publicznym repo
@@ -46,7 +47,7 @@
 ## Scrapery do naprawy (stan sprawdzony 2026-08-31)
 - [ ] `bigmac` - stary naglowek `{'accept':'text/html'}` dostaje 403 od Cloudflare ("Just a moment..."). ZRODLO JEST OK, nie trzeba wymieniac - cena 24.70 zl potwierdzona recznie 2026-08-31, ciaglosc szeregu (2020: 11.30 -> 2024: 22.90 -> 2025-10: 23.70) da sie utrzymac
 - [ ] `piwo` - NIE jednolinijkowiec. URL rzeczywiscie redirectuje na `pid,153955` (2 l, ten sam produkt), ale `frisco()` czyta wtedy 8.79 = cene ZA LITR. Prawdziwa cena czteropaku to 17,59. Naprawa razem z `frisco()` nizej
-- [ ] `aspiryna` - NIE jednolinijkowiec. Nowy URL to `https://www.wapteka.pl/produkt/aspirin-10-tabl,3795/` (ten sam produkt: "Aspirin 500 mg 10 tabletek"), ale OBIE klasy CSS z parsera zniknely. Dobra wiadomosc: strona ma JSON-LD z `{'@type':'Offer','price':9.47,'priceCurrency':'PLN'}` - przepisac na JSON-LD zamiast klas
+- [x] `aspiryna` NAPRAWIONA 2026-09-04: nowy URL `https://www.wapteka.pl/produkt/aspirin-10-tabl,3795/` w `koszyk.py` + parser na JSON-LD zamiast klas CSS. Zwraca 9.47. UWAGA: poprawka literowki (`produkt = e` -> `produkt = encja`) byla tylko ZASTAGOWANA, commit `10f3d8a` na origin ma jeszcze zepsuta wersje - do zacommitowania
 - [ ] `fryzjer` - API `/api/salon-prices/M58` nie istnieje, redirect na strone glowna
 - [ ] `jajka` - NIE jest martwe! Produkt jest dostepny, cena 13,99. Stary parser czytal `price_num`, ktorego na tej stronie nie ma. Naprawia sie samo po zmianie selektora `frisco()`
 - [ ] `lot` - SPA, cena tylko z JS (3.5 kB HTML), trzeba API Ryanaira
@@ -163,7 +164,7 @@ gdzie trzeba bylo skasowac.
 - [ ] `.*.kate-swp` do `.gitignore` (`.zik.py.kate-swp` lezal nietrackowany)
 - [ ] `runGit.sh`: zostaly 2 rzeczy - `exec >> LOG` musi byc PRZED `cd` (dzis komunikat "BLAD: brak katalogu repo" idzie na stdout, czyli pod cronem do maila), oraz `git diff --cached --quiet` przed commitem. To drugie nie jest kosmetyka: przy kolektorze chodzacym codziennie "nic do zacommitowania" ZAWSZE znaczy awarie, a dzis skrypt zameldowalby wtedy "OK: dane na origin"
 - [x] CRON DZIALA - poprawka `homr`->`home` zadzialala. Log ma wpis `Fri Sep  4 03:02:00 CEST 2026`, czyli skrypt ruszyl punktualnie. Brak commita na origin wynikal z czego innego (nizej)
-- [ ] MIKRUS ZABLOKOWANY po piatkowym runie - PRZYCZYNA USTALONA 2026-09-04: niezacommitowana zmiana w `.gitignore`, ktora jest brakujaca druga polowa migracji. Commit `9d1412c` z Mikrusa zawieral tylko `git rm --cached zik.db`, a dopisanie `zik.db` do `.gitignore` nigdy nie zostalo zacommitowane. Origin ma w linii 3 `#zik.db` (zakomentowane, zgodnie z krokiem 1 planu). Odblokowanie: `git add .gitignore && git commit && git push` - rebase NIE jest potrzebny, bo `a833e78` siedzi wprost na `origin/master`
+- [x] MIKRUS ODBLOKOWANY 2026-09-04 - commity `37c0be6` (dane z piatku) i `0dbf05c` (`.gitignore`) sa na origin, rebase przeszedl czysto. Przyczyna byla: niezacommitowana zmiana w `.gitignore`, ktora jest brakujaca druga polowa migracji. Commit `9d1412c` z Mikrusa zawieral tylko `git rm --cached zik.db`, a dopisanie `zik.db` do `.gitignore` nigdy nie zostalo zacommitowane. Origin ma w linii 3 `#zik.db` (zakomentowane, zgodnie z krokiem 1 planu). Odblokowanie: `git add .gitignore && git commit && git push` - rebase NIE jest potrzebny, bo `a833e78` siedzi wprost na `origin/master`
 - [ ] Piatkowe dane sa bezpieczne: sprawdzone, `git add zik.db zikDB.csv` na ignorowanej sciezce zwraca kod 1, ALE mimo to stawia `zikDB.csv` w indeksie. Blad w logu to halas, nie awaria zapisu
 - [ ] Po commicie `.gitignore` bedzie mial dwa wpisy o tym samym: `#zik.db` w linii 3 (komentarz) i `zik.db` na koncu (regula). Usunac `#zik.db` i `# Projektowe`, zeby plik nie klamal
 - [ ] Przebieg z logu, dla historii:
@@ -186,3 +187,21 @@ gdzie trzeba bylo skasowac.
 - `bigmac` psul sie na warstwie 2 (403), `upc` i `prad` na warstwie 4 - a kod raportowal identyczne "Problem z: X". Dlatego diagnoza kosztowala pol dnia
 - `raise ... from None` jest konieczne, gdy oryginalny wyjatek zawiera sekret. Sanityzacja samego komunikatu NIE wystarcza - Python dokleja oryginalny traceback pod naglowkiem "During handling of the above exception". Sprawdzone: `params=` NIE chroni klucza, `requests` wkleja pelny URL do komunikatu
 - Kod obslugi bledow jest jedyna czescia programu, ktora nie wykonuje sie na co dzien - dlatego zawiera bledy niewidoczne latami (`except e:` zamiast `except Exception as e:` przechodzi kompilacje i szczescliwa sciezke). Trzeba go testowac celowo, podstawiajac awarie
+
+## Zrobione 2026-09-04
+- [x] `frisco()` - selektor `f-pdp__price-amount--emphasized` zamiast `price_num`. Naprawia 9 produktow naraz. Zweryfikowane: kielecki 14,19 | pizza 10,29 | maslo 5,89 | jablka 6,19 | makaron 5,19 | chleb 4,69 | mydlo 4,59 | kurczak 24,19 | jajka 13,99. Bug `zakg` znikl razem ze starym selektorem
+- [x] `prad` potwierdzony NA PRODUKCJI - piatkowy run 2026-09-04 02:02 zapisal 0.97 (czwartek: -1)
+- [x] `getJsonLD(url)` - nowa funkcja pomocnicza. Obsluguje wszystkie trzy legalne ksztalty JSON-LD (jeden obiekt / lista / `@graph`), splaszcza do jednej listy encji przez `extend`, pomija zepsute bloki przez `continue` zamiast unieważniać wszystkie. Do wykorzystania przez `bigmac`, `m2`, `auto`
+- [x] `testowyZIK()` - osobna funkcja do debugowania w `zik.py`, zamiast edytowania linii wykonywanych przy imporcie. Pol kroku do `if __name__ == '__main__'`
+
+## Nowe znaleziska 2026-09-04
+- [ ] `except Exception as e` TWORZY zmienna lokalna calej funkcji. Uzycie `e` w ciele `try`, przed handlerem, daje `UnboundLocalError: cannot access local variable 'e'` - ktory ten sam handler lapie i zamienia na ciche `-1`. Tak wlasnie `aspiryna()` zwracala -1 mimo poprawnej logiki. Gdyby handler byl wezszy (`except (ValueError, AttributeError, KeyError)`), bug przelecialby na wierzch i krzyknal. Praktyczny argument za regula: awarie oczekiwane -> `-1`, bugi -> krzyk
+- [ ] Zdegenerowane odpowiedzi w `aspiryna()` daja `-1`, ale komunikaty sa nierozroznialne: brak encji Product, zero encji i brak `offers` wszystkie dawaly `'NoneType' object has no attribute 'get'`. Czesciowo naprawione jawna bramka `if produkt is None`. Ten sam problem maja pozostale scrapery
+- [ ] `getProduct(url)` zwraca `None`, gdy URL nie jest DOKLADNIE tym z `koszyk.py` - widac w komunikatach "Problem z: None". Handler, ktory nie umie podac nazwy produktu, jest o tyle mniej uzyteczny
+- [ ] Do BeautifulSoup podawac `.get_text()` na tagu `<script>`, nie `.string`. `.string` zwraca `None`, gdy tag ma wiecej niz jedno dziecko albo jest pusty - i wtedy `json.loads(None)` rzuca `TypeError`, ktorego `except ValueError` NIE zlapie. `.get_text()` na pustym tagu daje `''`, czyli `JSONDecodeError`, czyli `ValueError`. Jeden typ wyjatku zamiast dwoch
+- [ ] Kolejnosc warunkow przy rozpoznawaniu ksztaltu JSON-LD: `isinstance(dane, list)` MUSI byc przed `'@graph' in dane`, bo `in` na liscie szuka elementu, nie klucza - lista `['@graph']` dalaby prawde
+
+## Do sprawdzenia w sobote 2026-09-05
+- [ ] Sobotni run o 02:02 to pierwszy z naprawionym `frisco()`. Oczekiwane wartosci: kielecki 14,19 (dzis 20,27) | chleb 4,69 (dzis 9,38) | jajka 13,99 (dzis -1) | maslo 5,89 | makaron 5,19. Jesli kielecki nadal pokaze 20,27 - Mikrus nie ma kodu
+- [ ] `piwo` moze nadal dac `-1` - szansa na dobry wariant strony to 3/8
+- [ ] `aspiryna` da 9.47 TYLKO jesli zacommitujesz poprawke literowki przed 02:02

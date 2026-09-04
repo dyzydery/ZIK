@@ -265,11 +265,13 @@ def karma(url):
 def aspiryna(url):
 	try:
 		produkt = None
-		for e in getJsonLD(url):
-			tp = e.get('@type')
+		for encja in getJsonLD(url):
+			tp = encja.get('@type')
 			if tp == 'Product' or (isinstance(tp, list) and 'Product' in tp):
-				produkt = e
+				produkt = encja
 				break
+		if produkt is None:
+			raise ValueError('brak encji Product w JSON-LD')
 		of = produkt.get('offers')
 		if isinstance(of, list):
 			of = of[0]
