@@ -65,6 +65,49 @@
 - [ ] Dane historyczne z frisco sa niewiarygodne, nie tylko przesuniete: `chleb` skacze 17.99 (2024-09) -> 13.99 (2024-12) -> 0.09 -> 0.95 -> 0.19 -> 0.96 (maj 2025). To parser lapiacy losowy element zaleznie od liczby promocji na stronie. Do decyzji, co z tym zrobic - podobnie jak z `prad`
 - [ ] Opis `mydlo` w koszyku mowi 150 g, a `f-pdp__` daje 4,59 - sprawdzic gramature, bo stare 45,90 to bylo zl/kg
 
+
+## Co sie stalo w danych frisco - archeologia (ustalone 2026-09-04)
+
+Metoda: szukanie skokow, ktorych stosunek odpowiada przelicznikowi cena_jednostkowa/cena_produktu
+(czyli 1/gramatura). Daty zgadzaja sie dla WSZYSTKICH produktow naraz, wiec to zmiany po stronie
+frisco.pl, nie przypadek.
+
+- **do 2025-05-23** - cena PRODUKTU, w wiekszosci poprawna
+- **2025-05-24 .. 2025-12-11** - przelaczenie na cene JEDNOSTKOWA (zl/kg, zl/l).
+  Skoki tego dnia: pizza x2.35, maslo x5.00, makaron x2.35, mydlo x10.00
+- **2025-12-12 .. 2026-03-03** - powrot do ceny PRODUKTU.
+  Skoki: pizza /0.425, maslo /0.20, makaron /0.40, mydlo /0.10, kurczak /0.50, piwo /2.00
+- **2026-03-04 .. dzis** - znowu cena JEDNOSTKOWA.
+  Skoki: kielecki x1.428, pizza x2.353, maslo x5.00, makaron x2.499, chleb x2.00, mydlo x10.00, kurczak x2.00
+
+Czyli w ostatnich 16 miesiacach okolo 12,5 miesiaca danych to cena za kg/litr zamiast ceny produktu.
+Przelicznik jest znany i staly, wiec te okresy DA SIE przeliczyc wstecz - w odroznieniu od `prad`,
+gdzie trzeba bylo skasowac.
+
+- [ ] Zdecydowac, co z okresami jednostkowymi: przeliczyc przez gramature (przelicznik znany co do grosza)
+      czy oznaczyc jako `-1`. Przeliczenie jest tu obronialne, bo to ta sama wielkosc w innej jednostce,
+      a nie inny produkt
+- [ ] `kielecki` ma najmniejszy przelicznik (1.428), wiec jego skoki z 2021-11-25 i 2025-05-08 moga byc
+      zwyklymi zmianami ceny, nie przelaczeniem. Pewne jest tylko 2026-03-04
+- [ ] `chleb` to osobna awaria, nie przelaczenie jednostki: od 2025-06 wartosci 0.09 / 0.19 / 0.47 / 0.53 /
+      0.95 / 0.99 oscylujace z dnia na dzien. Parser lapal cos zupelnie innego (ocena? cena za 100 g?).
+      Zbadac osobno przed decyzja o przeliczeniu
+
+## piwo - dlaczego nadal `-1` po naprawie frisco() (2026-09-04)
+- [ ] frisco.pl serwuje DWA warianty strony produktu, niedeterministycznie, dla tego samego URL:
+      wariant nowy ~1,58 MB z klasa `f-pdp__price-amount--emphasized` (cena 17,59)
+      wariant stary ~518 kB, bez zadnej klasy `f-pdp__*`, w tekscie zero kwot `X,XX zl`
+- [ ] Rozklad jest ZALEZNY OD PRODUKTU, zmierzony na 8 probach: kielecki 8/8 nowy, chleb 8/8 nowy,
+      piwo tylko 3/8 nowy. Dlatego `piwo` wraca `-1`, a reszta dziala
+- [ ] To NIE jest kwestia przekierowania - sprawdzone, ten sam URL bez redirectu tez czasem daje stary wariant
+- [ ] To NIE jest weryfikacja wieku - w wariancie bez ceny nie ma zadnych markerow typu "pelnoletni",
+      "18 lat", "weryfikacja"
+- [ ] Mozliwe podejscia do rozwazenia: powtorzenie requestu az do trafienia w nowy wariant (z limitem prob),
+      albo parser obslugujacy oba uklady - ale w starym wariancie jest wylacznie cena jednostkowa,
+      wiec ceny produktu nie da sie stamtad odczytac wcale
+- [ ] URL piwa w `koszyk.py` to nadal stary `pid,3192` (redirectuje na `pid,153955`) - do aktualizacji
+      niezaleznie od powyzszego
+
 ## Architektura
 - [ ] Lista kolumn zduplikowana w 5 miejscach: `baza.py:15`, `baza.py:22`, `baza.py:25`, `inflacja.py:24`, `plot.py:52` + derywacja w `funkcyjki.saveCSV`
 - [ ] UWAGA: `saveCSV` bierze kolejnosc z `koszyk.koszyk` - wstawienie nowej pozycji W SRODKU listy przesunie kolumny CSV wzgledem historycznych wierszy, bez ostrzezenia
@@ -119,7 +162,19 @@
 - [ ] `chmod 600 .env` na laptopie (jest 644) i na Mikrusie
 - [ ] `.*.kate-swp` do `.gitignore` (`.zik.py.kate-swp` lezal nietrackowany)
 - [ ] `runGit.sh`: zostaly 2 rzeczy - `exec >> LOG` musi byc PRZED `cd` (dzis komunikat "BLAD: brak katalogu repo" idzie na stdout, czyli pod cronem do maila), oraz `git diff --cached --quiet` przed commitem. To drugie nie jest kosmetyka: przy kolektorze chodzacym codziennie "nic do zacommitowania" ZAWSZE znaczy awarie, a dzis skrypt zameldowalby wtedy "OK: dane na origin"
-- [ ] CRON NADAL NIE DZIALA: piatek 2026-09-04 (dzien 5 wg crona) minal, `runGit.sh` mial pojsc o 03:02, a ostatni commit na origin jest z 2026-09-03 16:09. Sprawdzic w tej kolejnosci: `crontab -l` (czy poprawka `homr`->`home` sie zapisala), `cat /home/frog/zik/GitRun.log` (czy jest wpis z 03:02 - jesli tak, skrypt ruszyl i padl pozniej; jesli nie, cron nadal nie odpala), `grep CRON /var/log/syslog`
+- [x] CRON DZIALA - poprawka `homr`->`home` zadzialala. Log ma wpis `Fri Sep  4 03:02:00 CEST 2026`, czyli skrypt ruszyl punktualnie. Brak commita na origin wynikal z czego innego (nizej)
+- [ ] MIKRUS ZABLOKOWANY po piatkowym runie - PRZYCZYNA USTALONA 2026-09-04: niezacommitowana zmiana w `.gitignore`, ktora jest brakujaca druga polowa migracji. Commit `9d1412c` z Mikrusa zawieral tylko `git rm --cached zik.db`, a dopisanie `zik.db` do `.gitignore` nigdy nie zostalo zacommitowane. Origin ma w linii 3 `#zik.db` (zakomentowane, zgodnie z krokiem 1 planu). Odblokowanie: `git add .gitignore && git commit && git push` - rebase NIE jest potrzebny, bo `a833e78` siedzi wprost na `origin/master`
+- [ ] Piatkowe dane sa bezpieczne: sprawdzone, `git add zik.db zikDB.csv` na ignorowanej sciezce zwraca kod 1, ALE mimo to stawia `zikDB.csv` w indeksie. Blad w logu to halas, nie awaria zapisu
+- [ ] Po commicie `.gitignore` bedzie mial dwa wpisy o tym samym: `#zik.db` w linii 3 (komentarz) i `zik.db` na koncu (regula). Usunac `#zik.db` i `# Projektowe`, zeby plik nie klamal
+- [ ] Przebieg z logu, dla historii:
+  1. `git add zik.db zikDB.csv` -> `The following paths are ignored by one of your .gitignore files: zik.db`. Dokladnie mina nr 2 z planu migracji - `runGit.sh` nadal dodaje odsledzony plik
+  2. `git commit` mimo to przeszedl -> lokalny commit `a833e78` (1 plik, `zikDB.csv`)
+  3. `git pull --rebase` -> `error: cannot pull with rebase: You have unstaged changes`
+  4. `git rebase --abort` -> `fatal: No rebase in progress?` - dokladnie ten szum, ktory zapowiadalem przy awarii innej niz konflikt
+  5. `exit 1`, pusha nie bylo. Commit `a833e78` siedzi lokalnie i nie wychodzi na origin
+- [ ] Wczesniejszy przebieg (2026-09-03 14:14) pokazuje, czemu binarna baza w gicie byla zla: `Cannot merge binary files: zik.db` + `CONFLICT (content): Merge conflict in zik.db` ORAZ w `zikDB.csv`. Odsledzenie `zik.db` usunelo polowe problemu, druga polowa (CSV) zostaje
+- [ ] `runGit.sh` i `runZik.sh` NIE SA W REPO - leza w `/home/frog/zik/`, obok katalogu projektu. Dlatego commity "runGit: tylko CSV" (`5e518b9`, `7205cc4`) zmienily `TODO.md` i `.gitignore`, ale samego skryptu nie tknely. Poprawke trzeba wprowadzic recznie na Mikrusie
+- [ ] Rozwazyc wciagniecie obu skryptow do repo (np. katalog `bin/`) - dzis nie ma ich historii, nie ma kopii, i nie da sie ich zmienic przez gita
 
 ## Metoda (do stosowania przy kolejnych scraperach)
 - Kazdy request ma CZTERY warstwy awarii, kazda z innym typem wyjatku i inna decyzja:
