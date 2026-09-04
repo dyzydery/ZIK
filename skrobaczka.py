@@ -89,27 +89,43 @@ def bigmac(url):
 		print ("Problem z: BigMac")
 		return float(-1)
 
+def getJsonLD(url):
+	page = requests.get(url, timeout=15)
+	soup = BeautifulSoup(page.content, 'html.parser')
+	encje = []
+	for tag in soup.find_all('script', type='application/ld+json'):
+		try:
+			dane = json.loads(tag.get_text())
+		except ValueError:
+			continue                                   # zepsuty blok pomijamy
+		if isinstance(dane, list):
+			encje.extend(dane)                         # kształt 2
+		elif isinstance(dane, dict) and '@graph' in dane:
+			encje.extend(dane['@graph'])               # kształt 3
+		else:
+			encje.append(dane)                         # kształt 1 - tu append je
+	return encje
 
 def getPage(url):
-	page = requests.get(url)
+	page = requests.get(url, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.prettify()
 	# return str(urlopen(url).read())
 
 def getPageHeader(url,header):
-	page = requests.get(url,headers=header)
+	page = requests.get(url,headers=header, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return str(soup)
 
 def printPageHeader(url,header):
-	page = requests.get(url,headers=header)
+	page = requests.get(url,headers=header, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	text_file = open("s.html", "w")
 	text_file.write(soup.prettify())
 	text_file.close()
 
 def printPage(url):
-	page = requests.get(url)
+	page = requests.get(url, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	text_file = open("s.html", "w")
 	text_file.write(soup.prettify())
@@ -120,7 +136,7 @@ def getPageClass(url,klasa):
 	headers.update({
 	    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0',
 	})
-	page = requests.get(url,headers=headers)
+	page = requests.get(url,headers=headers, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find(class_=klasa)
 
@@ -129,12 +145,12 @@ def getPageClassAll(url,klasa):
 	headers.update({
 	    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0',
 	})
-	page = requests.get(url,headers=headers)
+	page = requests.get(url,headers=headers, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find_all(class_=klasa)
 
 def getPageId(url,idx):
-	page = requests.get(url)
+	page = requests.get(url, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find(id=idx)
 
@@ -211,7 +227,7 @@ def prad(url):
 def auchan(url):
 
 	try:
-		page = requests.get(url)
+		page = requests.get(url, timeout=15)
 		kod = BeautifulSoup(page.content, 'html.parser')
 		kod = kod.get_text()
 		cena = kod.find('product_unitprice_ati')
@@ -248,11 +264,19 @@ def karma(url):
 
 def aspiryna(url):
 	try:
-		main = getPageClass(url,'priceFormat--lg leading-base').get_text()
-		decim = getPageClass(url,'leading-base text-nowrap font-semibold text-base').get_text()
-		cena = main+decim
+		produkt = None
+		for e in getJsonLD(url):
+			tp = e.get('@type')
+			if tp == 'Product' or (isinstance(tp, list) and 'Product' in tp):
+				produkt = e
+				break
+		of = produkt.get('offers')
+		if isinstance(of, list):
+			of = of[0]
+		cena = of.get('price')
 		return f.zrobCene("aspiryna",cena)
-	except:
+	except Exception as e:
+		print(e)
 		print ("Problem z: ",getProduct(url))
 		return float(-1)
 
