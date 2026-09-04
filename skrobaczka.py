@@ -166,16 +166,7 @@ def otomoto(url):
 
 def frisco(url):
 	try:
-		zakg = -1
-		if (url.find('chleb')):
-			zakg = 1
-		main = getPageClassAll(url,'price_num')[zakg].get_text()
-		decim = getPageClassAll(url,'price_decimals')[zakg].get_text()
-		cena = main+'.'+decim
-		if(cena=="0.00"):
-			print ("Problem z: ",getProduct(url))
-			return float(-1)
-		# print (cena)
+		cena = getPageClass(url,'f-pdp__price-amount--emphasized').get_text()
 		return f.zrobCene("frisco",cena)
 	except Exception as e:
 		print(e)

@@ -45,16 +45,25 @@
 
 ## Scrapery do naprawy (stan sprawdzony 2026-08-31)
 - [ ] `bigmac` - stary naglowek `{'accept':'text/html'}` dostaje 403 od Cloudflare ("Just a moment..."). ZRODLO JEST OK, nie trzeba wymieniac - cena 24.70 zl potwierdzona recznie 2026-08-31, ciaglosc szeregu (2020: 11.30 -> 2024: 22.90 -> 2025-10: 23.70) da sie utrzymac
-- [ ] `piwo` - URL `pid,3192` redirectuje na `pid,153955`, produkt zmienil ID, tylko zaktualizowac `koszyk.py`
-- [ ] `aspiryna` - redirect na `/produkt/aspirin-10-tabl,3795`, stary URL
+- [ ] `piwo` - NIE jednolinijkowiec. URL rzeczywiscie redirectuje na `pid,153955` (2 l, ten sam produkt), ale `frisco()` czyta wtedy 8.79 = cene ZA LITR. Prawdziwa cena czteropaku to 17,59. Naprawa razem z `frisco()` nizej
+- [ ] `aspiryna` - NIE jednolinijkowiec. Nowy URL to `https://www.wapteka.pl/produkt/aspirin-10-tabl,3795/` (ten sam produkt: "Aspirin 500 mg 10 tabletek"), ale OBIE klasy CSS z parsera zniknely. Dobra wiadomosc: strona ma JSON-LD z `{'@type':'Offer','price':9.47,'priceCurrency':'PLN'}` - przepisac na JSON-LD zamiast klas
 - [ ] `fryzjer` - API `/api/salon-prices/M58` nie istnieje, redirect na strone glowna
-- [ ] `jajka` - strona ma tylko cene `0`, produkt niedostepny we Frisco, znalezc inny
+- [ ] `jajka` - NIE jest martwe! Produkt jest dostepny, cena 13,99. Stary parser czytal `price_num`, ktorego na tej stronie nie ma. Naprawia sie samo po zmianie selektora `frisco()`
 - [ ] `lot` - SPA, cena tylko z JS (3.5 kB HTML), trzeba API Ryanaira
 - [ ] `auto`, `m2wtorny`, `m2pierwotny` - strona wraca 200 z pelna trescia, tylko selektory nie pasuja
 - [ ] `upc` - NIE selektor: 493 kB HTML ale tylko 1577 znakow tekstu, tresc renderowana JS-em
 - [ ] `kasjer` - NIE selektor: 987 B HTML, 74 znaki tekstu, sciana bot/consent
 - [ ] `auto` i `m2` opieraja sie na hashowanych klasach CSS (`efpuxbr16 ooa-1n2paoq er34gjf0`, `data-v-0d6d0a35`) - to sie zmienia przy kazdym deployu strony. Przepisac na JSON-LD / `__NEXT_DATA__` / `data-testid`
 - [ ] `aspiryna()` i `frisco()` robia 2x request na ta sama strone - rozdzielic "pobierz strone" od "wyciagnij cene"
+
+## frisco() czyta cene jednostkowa zamiast ceny produktu (2026-09-04)
+- [ ] KRYTYCZNE: klasa `price_num` na frisco.pl to CENA ZA KG/LITR, nie cena produktu. Dotyczy 9 z 33 kolumn - calego rdzenia koszyka spozywczego. Arytmetyka zgadza sie co do grosza: kielecki 14,19/0,7 l = 20,27 | pizza 10,29/0,425 kg = 24,21 | maslo 5,89/0,2 = 29,45 | makaron 5,19/0,4 = 12,97 | chleb 4,69/0,5 = 9,38 | piwo 17,59/2 l = 8,79
+- [ ] Wlasciwy selektor: `f-pdp__price-amount--emphasized` (pdp = product detail page, konwencja BEM, nie hash z bundlera). Sprawdzony na 10 produktach, dziala na wszystkich - w tym na `jajka`, gdzie `price_num` w ogole nie istnieje
+- [ ] Zmiana selektora naprawia naraz: kielecki, pizza, maslo, jablka, makaron, chleb, mydlo, kurczak, jajka, piwo
+- [ ] Przywraca tez ZNACZENIE historyczne: pierwszy odczyt kielecki z 2020 to 8,99 czyli cena produktu, nie 12,8 zl/l. Nowy selektor wraca do tego, co mierzono na poczatku
+- [ ] Przy okazji naprawic bug `zakg`: `if (url.find('chleb')):` jest zawsze prawdziwe, wiec indeks to zawsze 1. Po przejsciu na `f-pdp__` caly `zakg` znika, bo jest dokladnie jeden element z cena produktu
+- [ ] Dane historyczne z frisco sa niewiarygodne, nie tylko przesuniete: `chleb` skacze 17.99 (2024-09) -> 13.99 (2024-12) -> 0.09 -> 0.95 -> 0.19 -> 0.96 (maj 2025). To parser lapiacy losowy element zaleznie od liczby promocji na stronie. Do decyzji, co z tym zrobic - podobnie jak z `prad`
+- [ ] Opis `mydlo` w koszyku mowi 150 g, a `f-pdp__` daje 4,59 - sprawdzic gramature, bo stare 45,90 to bylo zl/kg
 
 ## Architektura
 - [ ] Lista kolumn zduplikowana w 5 miejscach: `baza.py:15`, `baza.py:22`, `baza.py:25`, `inflacja.py:24`, `plot.py:52` + derywacja w `funkcyjki.saveCSV`
@@ -76,11 +85,9 @@
 
 ## Repo
 - [x] `lazygit` - 21 MB binarki w gicie, do `.gitignore`
-- [ ] `zik.db` NADAL sledzony (sprawdzone 2026-09-03 po commicie `039a113`). Wpis w `.gitignore:3` jest BEZSKUTECZNY - `.gitignore` dziala tylko na pliki nieśledzone, `git ls-files` wciaz pokazuje `zik.db`. Potrzebne `git rm --cached`. Kolejnosc ma znaczenie, bo uzbraja dwie miny:
-  1. najpierw LAPTOP: zdejmij `zik.db` z `.gitignore`, zmien w `runGit.sh` `git add zik.db zikDB.csv` na `git add zikDB.csv`, push - inaczej piatkowy run wywali sie na `git add` pliku ignorowanego (sprawdzone: kod wyjscia 1)
-  2. potem MIKRUS: kopia bazy poza repo, `git pull --rebase`, `git rm --cached zik.db`, wpis do `.gitignore`, commit, push. Odsledzenie robic NA MIKRUSIE - wtedy jego plik zostaje na dysku, a traci go laptop, gdzie kopia jest zbedna
-  3. na koncu LAPTOP: `git pull` (tu `zik.db` znika z dysku - tak ma byc). Baze do `plot.py` sciagac `scp`-em poza gitem
-  UWAGA: commit usuwajacy sledzony plik jest stosowany przy `pull` jak kazda inna zmiana - bez kroku 2 z kopia Mikrus straci baze, a run o 02:02 utworzy pusta i zacznie zbierac od zera
+- [x] `zik.db` ODSLEDZONY 2026-09-03 w `9d1412c`. Zrobione na Mikrusie (autor commita: `mikrus`), wiec serwer zachowal plik na dysku, a laptop stracil swoja kopie przy pullu - tak mialo byc. `runGit.sh` wysyla juz tylko `zikDB.csv`. Baze do `plot.py` sciagac `scp`-em poza gitem
+- [x] Odroznic maszyny w historii gita - `user.name=mikrus` ustawione na serwerze, widac w autorze commitow
+- [ ] Historia gita nadal wazy 53.74 MiB i trzyma ~16.6 MB starych blobow `zik.db` + 30.9 MB `s.html` + 20.8 MB `lazygit`. Odsledzenie zatrzymuje TYLKO dalszy wzrost. Odchudzenie wymaga `git filter-repo` i force-pusha, plus swiezego klona na Mikrusie - do rozwazenia, czy warto
 - [x] `TODO` (bez rozszerzenia) - usuniete w fa8734a
 - [ ] `test.py` to demo kolorow ANSI, nie test - kolory zduplikowane z `funkcyjki.py`
 - [ ] `funkcyjki.znajdzSrednia` - martwy kod, jest `statistics.mean`
@@ -97,7 +104,7 @@
   - bramka `[tresc]` a: `if not parsed.get('success')` + `parsed.get('error')`
   - bramka `[tresc]` b: lista brakujacych symboli z `('PLN','USD','XAU','CHF')`, warunek `not rates.get(s)` lapie brak, None i zero naraz
 - [x] Wniosek: poprawka bez commita nie istnieje. Commitowac natychmiast po weryfikacji, nie na koniec dnia
-- [ ] `sprawdz_waluty.py` NIE zostal skopiowany do repo - zabezpieczenie przed powtorka tej regresji wciaz nie istnieje. Uruchamiac przed kazdym commitem ruszajacym `waluty()`
+- [~] `sprawdz_waluty.py` - DECYZJA 2026-09-03: nie dorzucamy do repo. Konsekwencja: nic nie pilnuje czterech bramek w `waluty()`, wiec kolejna regresja przejdzie niezauwazona az do awarii fixera. Jesli kiedys wroci - test lezal w scratchpadzie sesji
 
 ## Nowe znaleziska (2026-09-03)
 - [ ] `saveCSV` znow wprowadzi mieszane konce linii: `open(...,'a')` bez `newline=''` + `csv.DictWriter` pisze `\r\n`, a plik jest teraz caly na `\n`. Sprawdzone. Potrzebne `newline=''` ORAZ `lineterminator='\n'`
@@ -112,7 +119,7 @@
 - [ ] `chmod 600 .env` na laptopie (jest 644) i na Mikrusie
 - [ ] `.*.kate-swp` do `.gitignore` (`.zik.py.kate-swp` lezal nietrackowany)
 - [ ] `runGit.sh`: zostaly 2 rzeczy - `exec >> LOG` musi byc PRZED `cd` (dzis komunikat "BLAD: brak katalogu repo" idzie na stdout, czyli pod cronem do maila), oraz `git diff --cached --quiet` przed commitem. To drugie nie jest kosmetyka: przy kolektorze chodzacym codziennie "nic do zacommitowania" ZAWSZE znaczy awarie, a dzis skrypt zameldowalby wtedy "OK: dane na origin"
-- [ ] Weryfikacja crona po pierwszym piatku: `git log --format='%ad' --date=format:'%H:%M' -1` musi pokazac 03:02, nie pore lunchu
+- [ ] CRON NADAL NIE DZIALA: piatek 2026-09-04 (dzien 5 wg crona) minal, `runGit.sh` mial pojsc o 03:02, a ostatni commit na origin jest z 2026-09-03 16:09. Sprawdzic w tej kolejnosci: `crontab -l` (czy poprawka `homr`->`home` sie zapisala), `cat /home/frog/zik/GitRun.log` (czy jest wpis z 03:02 - jesli tak, skrypt ruszyl i padl pozniej; jesli nie, cron nadal nie odpala), `grep CRON /var/log/syslog`
 
 ## Metoda (do stosowania przy kolejnych scraperach)
 - Kazdy request ma CZTERY warstwy awarii, kazda z innym typem wyjatku i inna decyzja:

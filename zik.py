@@ -82,10 +82,13 @@ def WyliczZIK():
     f.saveCSV(cart)
     # wykresuj()
 
+def testowyZIK():
+    url=koszyk.getURL('kielecki')
+    # url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
+    # printPage(url)
+    # print((frisco(url)))
+    skanujKoszyk()
+    f.printKoszyk(cart)
 
-url=koszyk.getURL('prad')
-
-# url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
-# printPage(url)
-# print((prad(url)))
+# testowyZIK()
 WyliczZIK()
