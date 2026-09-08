@@ -54,8 +54,7 @@ def skanujKoszyk():
         elif (x[0]=='bigmac'):
             cart[x[0]] = bigmac(x[2])
         elif (x[0]=='lot'):
-            #na razie nie ma lotow, markujemy zeby nie bylo syfu w bazie
-            cart[x[0]] = -1.0
+            cart[x[0]] = lot(x[2])
         elif (x[0]=='kindle'):
             cart[x[0]] = kindl(x[2])
         elif (x[0]=='lekarz'):
@@ -83,10 +82,10 @@ def WyliczZIK():
     # wykresuj()
 
 def testowyZIK():
-    url=koszyk.getURL('aspiryna')
+    url=koszyk.getURL('lot')
     # url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
     # printPage(url)
-    print((aspiryna(url)))
+    print((lot(url)))
     # skanujKoszyk()
     # f.printKoszyk(cart)
 

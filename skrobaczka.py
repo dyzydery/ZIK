@@ -357,9 +357,33 @@ def spolem(url):
 
 def lot(url):
 	try:
-		data = str(datetime.date.today()+datetime.timedelta(days=90))
-		return f.zrobCene("lot",getPageClass(url+data,' length-5').get_text())
-	except:
+		miesiac = ((datetime.date.today()+datetime.timedelta(days=90))).replace(day=1)
+		params = {'outboundMonthOfDate': miesiac.isoformat(),
+						'currency': 'PLN',
+						'market': 'pl-pl'}
+		try:
+			response = requests.get(url, headers=NAGLOWKI, timeout=15, params=params)
+		except requests.RequestException as e:
+			raise RuntimeError(f'ryanair [transport]: {type(e).__name__}') from None
+		if response.status_code != 200:
+			raise RuntimeError(f'ryanair [protokol] HTTP {response.status_code}')
+		try:
+			r = json.loads(response.text)
+		except ValueError:
+			raise RuntimeError(f'ryanair [format] nie JSON: {response.text[:80]!r}') from None
+		loty = r["outbound"]["fares"]
+		ceny =[]
+		for l in loty:
+			if l.get('price') is None:
+				continue
+			ceny.append(l['price']['value'])
+		# print(lot)
+
+		return f.zrobCene("lot",statistics.median(ceny))
+
+
+	except Exception as e:
+		print(e)
 		print ("Problem z: ",getProduct(url))
 		return float(-1)
 
