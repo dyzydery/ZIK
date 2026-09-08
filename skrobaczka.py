@@ -12,6 +12,15 @@ from koszyk import getProduct
 import pathlib
 
 ENV = pathlib.Path(__file__).resolve().parent / '.env'
+NAGLOWKI = {
+      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Accept-Language': 'pl-PL,pl;q=0.9,en;q=0.8',
+      'Accept-Encoding': 'gzip, deflate',
+      'Upgrade-Insecure-Requests': '1',
+      'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none', 'Sec-Fetch-User': '?1',
+}
 
 def wczytajEnv(sciezka=ENV):
 	"""Wczytuje zmienne z .env lezacego obok tego pliku.
@@ -76,22 +85,33 @@ def waluty():
 
 def bigmac(url):
 	try:
-		header = {'accept' : 'text/html'}
-		kod = getPageHeader(url,header)
-		cena = kod.find("Big Mac®\"")
-		if cena==-1:
-			raise
-		kwota = kod[cena+62:cena+67]
-		# print("bigmac:", kwota)
-		return f.zrobCene("bigmac",kwota)
+		pozycje = szukajJsonLD(getJsonLD(url), 'MenuItem')
+		if not pozycje:
+			raise ValueError('jsonld [tresc] brak pozycji MenuItem')
+		trafienia = [p for p in pozycje if p.get('name') == 'Big Mac®']
+		if not trafienia:
+			podobne = sorted({p.get('name','') for p in pozycje if 'Mac' in p.get('name','')})
+			raise ValueError(f'jsonld [tresc] brak pozycji "Big Mac®" wsrod {len(pozycje)}; podobne: {podobne}')
+		of = trafienia[0].get('offers')
+		if isinstance(of, list):
+			of = of[0] if of else None
+		if not isinstance(of, dict):
+			raise ValueError(f'jsonld [tresc] "Big Mac®" bez oferty: offers={of!r}')
+		cena = of.get('price')
+		if not cena:
+			raise ValueError(f'jsonld [tresc] "Big Mac®" bez ceny: oferta={of!r}')
+		return f.zrobCene("bigmac",cena)
 	except Exception as e:
-		#print(e)
-		print ("Problem z: BigMac")
+		print(e)
 		return float(-1)
 
-def getJsonLD(url):
-	page = requests.get(url, timeout=15)
+def getJsonLD(url, headers=None):
+	page = requests.get(url, headers=headers or NAGLOWKI, timeout=15)
+	if page.status_code != 200:
+		raise RuntimeError(f'jsonld [protokol] HTTP {page.status_code} dla {url[:60]}')
 	soup = BeautifulSoup(page.content, 'html.parser')
+	if soup.head is None or soup.head.title.get_text(strip=True) == "":
+		raise RuntimeError(f'jsonld [antybot]  dla {url[:60]}')
 	encje = []
 	for tag in soup.find_all('script', type='application/ld+json'):
 		try:
@@ -105,6 +125,21 @@ def getJsonLD(url):
 		else:
 			encje.append(dane)                         # kształt 1 - tu append je
 	return encje
+
+def szukajJsonLD(dane, typ):
+	znalezione = []
+	def przejdz(obiekt):
+		if isinstance(obiekt, dict):
+			tp = obiekt.get('@type')
+			if tp == typ or (isinstance(tp, list) and typ in tp):
+				znalezione.append(obiekt)
+			for wartosc in obiekt.values():
+				przejdz(wartosc)
+		elif isinstance(obiekt, list):
+			for wartosc in obiekt:
+				przejdz(wartosc)
+	przejdz(dane)
+	return znalezione
 
 def getPage(url):
 	page = requests.get(url, timeout=15)
@@ -133,18 +168,14 @@ def printPage(url):
 
 def getPageClass(url,klasa):
 	headers = requests.utils.default_headers()
-	headers.update({
-	    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0',
-	})
+	headers.update(NAGLOWKI)
 	page = requests.get(url,headers=headers, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find(class_=klasa)
 
 def getPageClassAll(url,klasa):
 	headers = requests.utils.default_headers()
-	headers.update({
-	    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 OPR/100.0.0.0',
-	})
+	headers.update(NAGLOWKI)
 	page = requests.get(url,headers=headers, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.find_all(class_=klasa)
