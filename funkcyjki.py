@@ -21,9 +21,9 @@ def saveCSV(cart):
     fieldnames.insert(i+1,'auto_Median')
     # fieldnames.append('kindle')
     fieldnames.insert(0,'TimeStamp')
-    with open('zikDB.csv', 'a') as csvfile:
+    with open('zikDB.csv', 'a', newline='') as csvfile:
+        csvwriter = csv.DictWriter(csvfile, fieldnames=fieldnames, lineterminator='\n')
         print('Saved in CSV')
-        csvwriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csvwriter.writerow(cart)
 
 def znajdzSrednia(x):

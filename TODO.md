@@ -205,3 +205,21 @@ gdzie trzeba bylo skasowac.
 - [ ] Sobotni run o 02:02 to pierwszy z naprawionym `frisco()`. Oczekiwane wartosci: kielecki 14,19 (dzis 20,27) | chleb 4,69 (dzis 9,38) | jajka 13,99 (dzis -1) | maslo 5,89 | makaron 5,19. Jesli kielecki nadal pokaze 20,27 - Mikrus nie ma kodu
 - [ ] `piwo` moze nadal dac `-1` - szansa na dobry wariant strony to 3/8
 - [ ] `aspiryna` da 9.47 TYLKO jesli zacommitujesz poprawke literowki przed 02:02
+
+## Zrobione 2026-09-08/09 - potwierdzone w produkcji
+- [x] `frisco()` DZIALA od 2026-09-05: kielecki 14.19, pizza 10.29, maslo 5.89, jablka 6.49, makaron 5.19, chleb 4.69, mydlo 4.59, kurczak 24.19
+- [x] `jajka` = 13.99 - po 185 dniach jako `-1`. Nigdy nie byly martwe, tylko czytane zlym selektorem
+- [x] `lot` = 195.05 na 2026-09-09, po 988 dniach ciszy. Mediana z miesiaca przez publiczne API Ryanaira (`services-api.ryanair.com/farfnd/v4/oneWayFares/KRK/CIA/cheapestPerDay`), bez klucza, jeden request na dobe
+- [x] `bigmac` i `aspiryna` przepisane na JSON-LD (`getJsonLD` + `szukajJsonLD`) - parsery poprawne, ale oba dostaja HTTP 403 z IP Mikrusa (patrz nizej)
+- [x] Crontab naprawiony: `2 3 * * 5 /home/frog/zik/runGit.sh` - sciezka `home`, nie `homr`
+- [x] Warstwowe komunikaty sie oplacily: w logu widac `jsonld [protokol] HTTP 403 dla https://www.wapteka.pl/...` zamiast dawnego "Problem z: aspiryna". Od razu wiadomo, ze parser jest OK a problem to dostep
+
+## Znaleziska z logu produkcyjnego 2026-09-09
+- [ ] `saveCSV` FAKTYCZNIE wprowadzil `\r\n`: piec nowych wierszy (2026-09-05..09) konczy sie `^M`, a 1030 historycznych na `\n`. Przewidziane 2026-09-04, teraz potwierdzone w danych. Poprawka: `open('zikDB.csv','a', newline='')` ORAZ `csv.DictWriter(..., lineterminator='\n')` - samo `newline=''` nie wystarczy
+- [ ] `buty` skoczyly 239 -> 259 -> 549 w dwa dni (06->07->08.09). Opis mowi "najtansze szpilki", URL ma `product_list_order=price`, ale `getPageClass(url,'price')` bierze PIERWSZA cene, niekoniecznie najtansza. Ten sam mechanizm co przy `frisco` i `prad` - parser zwraca liczbe, tylko nie te, o ktora prosisz. Sprawdzic zanim utrwali sie w szeregu
+- [ ] `telefon` padl 2026-09-07 (bylo 3648, jest -1). W logu `'NoneType' object has no attribute 'get_text'` - selektor `main-price` przestal pasowac
+- [ ] `wapteka.pl` i `ubereats.com` zwracaja HTTP 403 z IP Mikrusa, choc z laptopa dzialaja. Parsery sa dobre. Przyczyna prawdopodobnie: blokada zakresow centrow danych. Do rozwazenia: `NAGLOWKI` wysylaja `Accept: text/html` i `Sec-Fetch-Dest: document` do endpointow zwracajacych JSON - prawdziwa przegladarka wysyla te naglowki tylko przy nawigacji, wiec z IP serwerowni to rozpoznawalny wzorzec
+- [ ] `webmaker.sh` dopisuje log do samego siebie: `runZik.sh` przekierowuje stdout do `zikLast.log`, a potem podaje ten sam plik webmakerowi jako wejscie. Efekt: caly przebieg widnieje w logu DWA razy z identyczna mikrosekunda, a `zikFull.log` puchnie podwojnie. NIE jest to podwojny insert - `git diff` pokazuje po jednym wierszu na dzien. Poprawka: `webmaker.sh ... >/dev/null 2>&1`
+- [ ] `runZik.sh`: `echo "BLAD: brak katalogu repo"` jest PRZED `exec`, wiec pod cronem idzie do maila, nie do logu. Ta sama pulapka co w `runGit.sh` - przeniesc `exec` nad `cd`
+- [ ] Liczby inflacji w logu sa bezwartosciowe i wiadomo dlaczego: `chleb` +887% (porownanie smiecia 0.95 z czerwca 2025 z cena z dzis), `jajka` -108% i `piwo` -112% (bo `nowe = -1` wchodzi do wzoru jako liczba). Rozwiazuja to dwie otwarte pozycje: przeliczenie historycznych danych frisco oraz obsluga `nowe < 0` w `inflacja.py`. Do tego czasu rozwazyc wylaczenie tych printow, zeby nie sugerowaly wiarygodnosci
+- [ ] Martwych pozycji: 10/33 (bylo 13). Zostaly: piwo, auto_Mean, auto_Median, telefon, bigmac, m2wtorny, m2pierwotny, fryzjer, upc, aspiryna, kasjer

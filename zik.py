@@ -82,10 +82,10 @@ def WyliczZIK():
     # wykresuj()
 
 def testowyZIK():
-    url=koszyk.getURL('lot')
+    url=koszyk.getURL('telefon')
     # url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
     # printPage(url)
-    print((lot(url)))
+    print((telefon(url)))
     # skanujKoszyk()
     # f.printKoszyk(cart)
 
