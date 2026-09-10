@@ -223,3 +223,47 @@ gdzie trzeba bylo skasowac.
 - [ ] `runZik.sh`: `echo "BLAD: brak katalogu repo"` jest PRZED `exec`, wiec pod cronem idzie do maila, nie do logu. Ta sama pulapka co w `runGit.sh` - przeniesc `exec` nad `cd`
 - [ ] Liczby inflacji w logu sa bezwartosciowe i wiadomo dlaczego: `chleb` +887% (porownanie smiecia 0.95 z czerwca 2025 z cena z dzis), `jajka` -108% i `piwo` -112% (bo `nowe = -1` wchodzi do wzoru jako liczba). Rozwiazuja to dwie otwarte pozycje: przeliczenie historycznych danych frisco oraz obsluga `nowe < 0` w `inflacja.py`. Do tego czasu rozwazyc wylaczenie tych printow, zeby nie sugerowaly wiarygodnosci
 - [ ] Martwych pozycji: 10/33 (bylo 13). Zostaly: piwo, auto_Mean, auto_Median, telefon, bigmac, m2wtorny, m2pierwotny, fryzjer, upc, aspiryna, kasjer
+
+## Zrobione 2026-09-09 (cd.)
+- [x] `zajecia` w logu WYJASNIONE: `webmaker.sh:25-27` ma zmienna `zajecia` (nazwa po innym projekcie) trzymajaca tresc loga i debugowy `echo "zajecia $zajecia"`. `runZik.sh` przekierowuje stdout do `zikLast.log`, wiec webmaker dopisuje log do samego siebie. `tail -n +2 | head -n -1` tlumaczy, dlaczego kopia nie ma pierwszej i ostatniej linii. Dzieje sie od 2024-08-07, **1269 razy** (2024: 152, 2025: 361, 2026: 747). NIE bylo podwojnego insertu - `git diff` pokazuje po jednym wierszu na dzien
+- [ ] Poprawka: usunac `echo` z `webmaker.sh:27` (pozostalosc po debugowaniu, `$zajecia` jest uzyte w linii 64 tam, gdzie ma byc). Alternatywnie `webmaker.sh ... >/dev/null 2>&1` w `runZik.sh`
+- [ ] `zikFull.log` jest od dwoch lat dwa razy wiekszy niz powinien. Po poprawce warto rozwazyc przepisanie go bez duplikatow - w historii sa slady starych awarii warte archeologii, m.in. `<<<<<<< Updated upstream` (nierozwiazany konflikt gita w pliku .py, ktory Python probowal wykonac) i tracebacki z `zik.py line 14`
+- [x] `telefon` naprawiony 2026-09-09 przez PODMIANE PRODUKTU (commit `54bf4c8`). Stary URL zwracal "Ten produkt jest niedostepny", a `.price` pokazywalo 179/247 zl (akcesoria). Stary parser szukal `main-price`, ktorego tam nie bylo, wiec zwracal `-1` - zepsul sie w najbezpieczniejszy mozliwy sposob. Nowy produkt: Samsung Galaxy S26 Ultra 256GB, cena 4253, klasa `main-price` dziala
+
+## Zmiany produktu - do zapisania w tabeli (pozycja z TODO od 2026-08-31)
+- [ ] `telefon`: do 2026-09-06 Samsung Galaxy S25 Ultra 256GB (ostatnia cena 3648) | od 2026-09-09 Samsung Galaxy S26 Ultra 256GB (pierwsza cena 4253). SKOK +16.6% NIE jest inflacja, to nowszy model. Definicja "Najlepszy flagowiec Samsunga" taka podmiane dopuszcza, ale trzeba wiedziec, ze ta kolumna mierzy "cene najnowszego flagowca", nie "cene tego samego telefonu w czasie"
+- [ ] `piwo`: pid 3192 -> pid 153955 (ten sam produkt, 2 l, zmiana ID we Frisco)
+- [ ] `aspiryna`: URL `/aspirin-500-mg-10-tabletek-2621,p` -> `/produkt/aspirin-10-tabl,3795/` (ten sam produkt)
+- [ ] `lot`: do 2020-05-06 cena konkretnego dnia (12 odczytow: 77, 78, 82) | od 2026-09-09 MEDIANA z miesiaca. Nieporownywalne - stare 12 odczytow oznaczyc `-1`
+
+## Historia kolumny telefon jest niewiarygodna (2026-09-09)
+- [ ] 62 skoki powyzej 10% na 888 dodatnich odczytow. Trzy rodzaje smiecia: ceny akcesoriow (119, 130, 160, 453, 542 zl), ceny x100 (638900, 664900, 549900 - zgubiony separator dziesietny), oraz oscylacje 3598 <-> 7998 z dnia na dzien (rozne warianty pamieci)
+- [ ] W odroznieniu od `frisco` NIE MA tu stalego przelicznika do przeliczenia wstecz. Trzeba by recznie ocenic, ktore odczyty sa wiarygodne - albo uznac kolumne za uzyteczna dopiero od 2026-09-09
+
+## REGRESJA 2026-09-10: frisco padlo 8 z 9 na Mikrusie
+- [ ] PILNE: run z 2026-09-10 02:02 zwrocil `-1` dla pizza, maslo, jablka, makaron, chleb, mydlo, kurczak, jajka, piwo. Przeszedl TYLKO `kielecki` (pierwszy frisco w koszyku). Dzien wczesniej wszystkie 9 dzialalo
+- [ ] Przyczyna NIE jest parserem ani limitem szybkosci - sprawdzone:
+  - laptop, 30 requestow: 30/30 nowy wariant
+  - laptop, seria 10 bez przerw (jak `skanujKoszyk`): 9/10 nowy, brak degradacji w miare serii
+  - laptop, `piwo` teraz: 1/1 nowy, w 10 probach NIE udalo sie trafic starego wariantu (wczesniej 3/8)
+  - Mikrus 2026-09-09: 9/9 nowy | Mikrus 2026-09-10: 1/9
+  Wniosek: decyduje KLIENT (adres IP), i zmienia sie w czasie. Wariant nie jest przypiety na stale
+- [ ] To TRZECI serwis w tym tygodniu obslugujacy Mikrusa gorzej niz laptopa: `wapteka.pl` (403 vs 200), `ubereats.com` (403), `frisco.pl` (stary wariant vs nowy). Wspolny mianownik: adres w centrum danych. Problem przesunal sie z "kod czyta zle" na "serwis nas nie chce"
+- [x] PONOWIENIE zrobione w `zik.py` (`skanujKoszyk`): jedna dodatkowa proba z `sleep(3)`, gdy `frisco()` zwroci -1
+- [ ] KOREKTA 2026-09-10: rada "najwyzej 3 razy" byla ZLA. Pomiar: `piwo`, 40 prob w ~2.5 minuty -> 0 sukcesow, przy pojedynczym requescie pol godziny wczesniej -> sukces. Ponawianie tego samego URL zamienia awarie przelotna w TRWALA. Po serii `kielecki` i `chleb` dzialaly dalej, wiec blokada jest NA URL, nie na IP. Ten sam mechanizm co obrona antybotowa Ubera przy testach `bigmac`, tylko na poziomie jednego adresu
+- [ ] JEDNA proba z przerwa to bezpieczny sufit. NIE podnosic
+- [ ] Pulapka metodologiczna do zapamietania: test 40 requestow prawdopodobnie SAM wywolal wynik, ktory zmierzyl. Nie da sie dzis odroznic "piwo trwale dostaje stary wariant" od "moje probki zablokowaly ten URL". Zmierzyc ponownie po dobie
+- [ ] `piwo` NIE naprawi sie ponowieniem - potrzebny inny produkt (inne `pid` czteropaku Zywca we Frisco) albo inny sklep. To decyzja o zrodle, nie o kodzie
+- [ ] Hipoteza do sprawdzenia: `piwo` jest jedynym alkoholem wsrod produktow frisco i jedynym trwale degradowanym. Polskie prawo ogranicza reklame alkoholu, a wariant bez ceny to dokladnie to, co zrobilby serwis dzialajacy ostroznie. Wczesniej nie znalazlem markerow weryfikacji wieku, ale 3/8 i potem 0/44 pasuje do reguly stosowanej niekonsekwentnie. Test rozstrzygajacy: wziac dowolny INNY alkohol z frisco i sprawdzic, czy tez dostaje stary wariant
+
+## Zrobione 2026-09-10
+- [x] `saveCSV` naprawione: `open(...,'a', newline='')` + `csv.DictWriter(..., lineterminator='\n')`. Nowe wiersze beda mialy `\n`
+- [ ] Zostaje jednorazowe posprzatanie 5 wierszy z `^M` (2026-09-05..09): `sed -i 's/\r$//' zikDB.csv` na Mikrusie
+- [x] `frisco` potwierdzone z laptopa 2026-09-10: 9 z 10 produktow zwraca ceny (kielecki 14.19, pizza 11.09, maslo 5.89, jablka 6.49, makaron 5.19, chleb 4.69, mydlo 4.59, kurczak 24.19, jajka 13.99). Wczorajsza regresja byla przelotna
+
+  - limit prob musi byc twardy: `timeout=15` chroni JEDEN request, nie petle
+  - `time.sleep` jest obowiazkowy: ponawianie bez przerwy wywolalo obrone antybotowa Ubera przy testach `bigmac`
+  - umiescic w osobnej funkcji pomocniczej (np. "pobierz element o tej klasie, ponawiajac N razy"), bo `kazar` (`buty`) tez dzis padl i prawdopodobnie ma ten sam problem
+- [ ] NIE wyliczac ceny ze starego wariantu (cena za kg x pojemnosc). Kusi, bo dane tam sa, ale w 10 probach nie udalo sie trafic starego wariantu - czyli tej sciezki NIE DA SIE przetestowac. Kod nietestowalny, wykonywany raz na kilka tygodni, to dokladnie miejsce, gdzie w tej sesji czterokrotnie znajdowalismy bledy
+- [ ] `buty` (kazar) tez padl 2026-09-10, ale w logu jest samo "Problem z: buty" bez zadnego komunikatu - bo `kazar()` ma gole `except:`. Nie wiadomo, czy to stary wariant, 403, czy cos innego. Konkretny koszt jednego z 13 otwartych golych `except:`
+- [ ] FOOD Inflantion skoczyla do 274.8% (dzien wczesniej 95.2%) - bo osiem pozycji spozywczych weszlo do wzoru jako `nowe = -1`. Kolejny dowod, ze `inflacja.py` musi obslugiwac `nowe < 0`

@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from skrobaczka import *
 import statistics
 from baza import DBinsert
+from time import sleep
 #from plot import wykresuj
 from inflacja import calculateInflation
 print('Złoty Indeks Kieleckiego')
@@ -23,6 +24,9 @@ def skanujKoszyk():
         # print ('[==',int(i/l*100),'% ',f.CYELLOW2 + x[0] + f.CEND,' ==]',end="               \r")
         if (x[2].find('frisco')!=-1):
             cart[x[0]] = frisco(x[2])
+            if cart[x[0]] == -1:
+                sleep(3)
+                cart[x[0]] = frisco(x[2])
         elif (x[0]=='buty'):
             cart[x[0]] = kazar(x[2])
         elif (x[0]=='whisky'):
