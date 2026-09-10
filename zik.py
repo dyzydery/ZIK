@@ -13,7 +13,7 @@ import statistics
 from baza import DBinsert
 from time import sleep
 #from plot import wykresuj
-from inflacja import calculateInflation
+# from inflacja import calculateInflation
 print('Złoty Indeks Kieleckiego')
 print(datetime.datetime.now())
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
@@ -78,7 +78,7 @@ def skanujKoszyk():
 
 def WyliczZIK():
     skanujKoszyk()
-    inf = calculateInflation()
+    # inf = calculateInflation()
     # f.printKoszyk(cart)
     # f.printKoszykInflacja(cart,inf)
     DBinsert(cart)
@@ -86,12 +86,12 @@ def WyliczZIK():
     # wykresuj()
 
 def testowyZIK():
-    url=koszyk.getURL('telefon')
+    url=koszyk.getURL('m2pierwotny')
     # url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
-    # printPage(url)
-    print((telefon(url)))
+    printPage(url)
+    print((m2(url)))
     # skanujKoszyk()
     # f.printKoszyk(cart)
 
 # testowyZIK()
-WyliczZIK()
+# WyliczZIK()

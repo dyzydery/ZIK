@@ -273,7 +273,7 @@ def m2(url):
 	try:
 		kod = getPage(url)
 
-		cena = kod.rfind("data-v-0d6d0a35")
+		cena = kod.rfind("data-v-f02966ee")
 		kwota = kod[cena:cena+100]
 		beg = kwota.find('(')+1
 		kwota = kwota[beg:beg+7]

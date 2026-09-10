@@ -267,3 +267,74 @@ gdzie trzeba bylo skasowac.
 - [ ] NIE wyliczac ceny ze starego wariantu (cena za kg x pojemnosc). Kusi, bo dane tam sa, ale w 10 probach nie udalo sie trafic starego wariantu - czyli tej sciezki NIE DA SIE przetestowac. Kod nietestowalny, wykonywany raz na kilka tygodni, to dokladnie miejsce, gdzie w tej sesji czterokrotnie znajdowalismy bledy
 - [ ] `buty` (kazar) tez padl 2026-09-10, ale w logu jest samo "Problem z: buty" bez zadnego komunikatu - bo `kazar()` ma gole `except:`. Nie wiadomo, czy to stary wariant, 403, czy cos innego. Konkretny koszt jednego z 13 otwartych golych `except:`
 - [ ] FOOD Inflantion skoczyla do 274.8% (dzien wczesniej 95.2%) - bo osiem pozycji spozywczych weszlo do wzoru jako `nowe = -1`. Kolejny dowod, ze `inflacja.py` musi obslugiwac `nowe < 0`
+
+# MODUL ANALITYKI (zaprojektowany 2026-09-10)
+
+Zasada, na ktorej opiera sie cala ta sekcja: **pomiar jest nieodtwarzalny, wyliczenie jest
+odtwarzalne**. Cena majonezu z 10 wrzesnia nie jest dostepna 11 wrzesnia. Inflacje Y2Y policzysz
+z zebranych danych kiedykolwiek, dowolna liczbe razy, i za kazdym razem tak samo.
+Wniosek: nic odtwarzalnego nie ma prawa stac miedzy Toba a zapisem pomiaru.
+
+- [x] `calculateInflation()` wyjete z `WyliczZIK` 2026-09-10 (import i wywolanie zakomentowane).
+      Kolektor robi teraz wylacznie: skanuj -> DBinsert -> saveCSV
+
+## Dlaczego to musialo wyjsc z kolektora
+- wynik `inf` NIE BYL uzywany nigdzie - jedyny konsument `f.printKoszykInflacja(cart,inf)` byl
+  zakomentowany. Funkcja byla wolana tylko dla trzech `print` w swoim wnetrzu
+- liczyla o DZIEN ZA POZNO: `DBgetLastRow()` wolane PRZED `DBinsert`, wiec "biezaca" strona
+  porownania to wiersz z wczoraj, nie dzisiejszy `cart`. Nikt tego nie zauwazyl, bo wynik
+  nigdzie nie trafial - kod bez odbiorcy cicho traci sens
+- mogla ZABIC ZBIERANIE: `DBgetRowByTimestamp(...)[0]` i `DBgetLastRow()[0]` sa PRZED blokiem
+  `try`. Gdy brak wiersza starszego niz 365 dni, `get365timestamp` zwraca `str(datetime.now())`
+  z mikrosekundami, nic nie pasuje, `[0]` rzuca `IndexError` i `DBinsert` z `saveCSV` nie wykonuja
+  sie wcale. Dzis nieosiagalne (baza od 2020), ale bylo na poczatku projektu i bedzie znowu przy
+  odbudowie bazy z krotszego okresu
+
+## Co nalezy do modulu analityki
+- [ ] **Inflacja Y2Y** - per pozycja + agregaty FOOD / Commodities / Luxury
+- [ ] **Indeks ZIK** - tabela `zik` jest w 100% wyliczalna z `ceny` (cena/xau). Powinna byc WIDOKIEM,
+      nie tabela. Migracja przetestowana na kopii (patrz sekcja o widoku wyzej)
+- [ ] **Wykresy** - `plot.py` juz jest osobno, ale `wykresuj()` jest zakomentowane w `zik.py`, wiec
+      wykresy w README sa z 2025-10-24
+- [ ] **Raport zdrowia scraperow** - ile dni z rzedu kazda pozycja jest `-1`. Czysto czytajacy,
+      zadnego zapisu
+- [ ] **Log zmian produktu** - to NIE jest dana pochodna, to metadana; ale analityka jej potrzebuje,
+      zeby rysowac pionowe kreski w miejscach podmiany (telefon S25->S26 = +16.6%, nie inflacja)
+
+## Bledy do naprawienia PRZY okazji przenoszenia
+- [ ] `nowe < 0` nieobslugiwane. Warunek w `inflacja.py:28` obsluguje tylko `stare < 0`. Pozycja,
+      ktora dzis nie zebrala sie, wchodzi do sredniej jako spadek o ~100%. Efekt z 2026-09-10:
+      `FOOD Inflantion: 274.8%` (dzien wczesniej 95.2%) - czysty artefakt osmiu `-1`
+- [ ] `DBgetNotNullValue` bierze ostatnia dodatnia wartosc z DOWOLNEJ daty, wiec "Y2Y" przestaje byc
+      Y2Y. Stad historyczne `chleb +887%`
+- [ ] `try` obejmuje CALA petle -> jeden wyjatek przerywa liczenie reszty i zostawia zera, ktore
+      potem wchodza do `statistics.mean`. Ma byc try per pozycja
+- [ ] TWARDE INDEKSY w `luxuryInflation` (`inf[11:13]`, `inf[14]`, `inf[17]`, `inf[23]`, `inf[31]`)
+      i `commoditiesInflation` (`inf[15:17]`, `inf[19:22]`, `inf[24:28]`). Kazda zmiana listy kolumn
+      przesuwa je BEZ BLEDU. Zamienic na adresowanie po nazwie
+- [ ] Kategorie w komentarzach NIE zgadzaja sie z kodem: komentarz przy `commoditiesInflation`
+      wymienia `karma` i `aspiryna`, a kod ich nie bierze. Kategorie maja byc DANYMI (slownik
+      nazwa -> kategoria), nie komentarzem obok twardych indeksow
+- [ ] Lista `names` w `inflacja.py:24` to jedna z 5 kopii listy kolumn. Przy przenoszeniu podlaczyc
+      do jednego zrodla (patrz sekcja Architektura)
+
+## Decyzje projektowe do podjecia
+- [ ] Pozycja bez danych po jednej stronie: pominac ja w sredniej, czy liczyc jako zero?
+      Pominiecie jest uczciwsze, ale zmienia liczbe skladnikow miedzy dniami - agregat przestaje
+      byc porownywalny w czasie. Do przemyslenia
+- [ ] Wagi: dzis kazda pozycja wazy tyle samo. Rolex i majonez maja ten sam wplyw na "inflacje
+      dobr luksusowych". Czy to celowe?
+- [ ] Podmiany produktu: `telefon` S25->S26 daje +16.6%, ktore nie jest inflacja. Analityka musi
+      umiec pominac dzien podmiany albo zrobic przeliczenie na styk
+- [ ] Okna cen jednostkowych frisco (2025-05-24..2025-12-11 i 2026-03-04..2026-09-04): dopoki nie
+      przeliczone, kazda inflacja Y2Y dotykajaca tych okresow jest bezwartosciowa
+- [ ] Wyjscie: `print`, plik, czy strona przez `webmaker.sh`? Dzis trzy `print` w logu, ktory i tak
+      jest publikowany jako HTML
+- [ ] Punkt wejscia: `if __name__ == '__main__'` w `inflacja.py`, czy nowy `analiza.py` spinajacy
+      inflacje, raport zdrowia i wykresy w jedno wywolanie na zadanie?
+
+## Ksztalt docelowy
+- [ ] Dostep do bazy TYLKO do czytania - modul analityki nie ma prawa nic zapisac
+- [ ] Jedno miejsce znajace liste kolumn i kategorie, wspolne z kolektorem
+- [ ] Uruchamiane na zadanie, nie z crona zbierajacego. Ewentualnie osobny wpis w cronie, o innej
+      godzinie, zeby awaria analityki nigdy nie spotkala sie z awaria zbierania
