@@ -94,4 +94,4 @@ def testowyZIK():
     # f.printKoszyk(cart)
 
 # testowyZIK()
-# WyliczZIK()
+WyliczZIK()
