@@ -216,7 +216,7 @@ def frisco(url):
 		cena = getPageClass(url,'f-pdp__price-amount--highlighted')
 		if cena == None:
 			cena = getPageClass(url,'f-pdp__price-amount--emphasized')
-			if cena == None:
+			if cena is None:
 				raise ValueError('Nieznaleziono ceny w frisco')
 		cena = f.zrobCene("frisco",cena.get_text())
 		if cena == 0.0:
