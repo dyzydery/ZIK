@@ -213,8 +213,15 @@ def otomoto(url):
 
 def frisco(url):
 	try:
-		cena = getPageClass(url,'f-pdp__price-amount--emphasized').get_text()
-		return f.zrobCene("frisco",cena)
+		cena = getPageClass(url,'f-pdp__price-amount--highlighted')
+		if cena == None:
+			cena = getPageClass(url,'f-pdp__price-amount--emphasized')
+			if cena == None:
+				raise ValueError('Nieznaleziono ceny w frisco')
+		cena = f.zrobCene("frisco",cena.get_text())
+		if cena == 0.0:
+			raise ValueError('Cena równa 0.0')
+		return cena
 	except Exception as e:
 		print(e)
 		print ("Problem z: ",getProduct(url))

@@ -81,15 +81,15 @@ def WyliczZIK():
     # inf = calculateInflation()
     # f.printKoszyk(cart)
     # f.printKoszykInflacja(cart,inf)
-    DBinsert(cart)
+    # DBinsert(cart)
     f.saveCSV(cart)
     # wykresuj()
 
 def testowyZIK():
-    url=koszyk.getURL('m2pierwotny')
+    url=koszyk.getURL('chleb')
     # url='https://deluxury.pl/pl/p/Samsung-Galaxy-S25-Ultra-S938-5G-Dual-Sim-12GB-RAM-1TB-Titanium-Whitesilver/19651'
-    printPage(url)
-    print((m2(url)))
+    # printPage(url)
+    print((frisco(url)))
     # skanujKoszyk()
     # f.printKoszyk(cart)
 

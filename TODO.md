@@ -338,3 +338,53 @@ Wniosek: nic odtwarzalnego nie ma prawa stac miedzy Toba a zapisem pomiaru.
 - [ ] Jedno miejsce znajace liste kolumn i kategorie, wspolne z kolektorem
 - [ ] Uruchamiane na zadanie, nie z crona zbierajacego. Ewentualnie osobny wpis w cronie, o innej
       godzinie, zeby awaria analityki nigdy nie spotkala sie z awaria zbierania
+
+# STAN 2026-09-29
+
+- [x] CRON POTWIERDZONY: commit `5605642 mikrus 2026-09-11 03:02 (pia)` powstal SAM, bez udzialu
+      czlowieka. Poprawka `homr` -> `home` dziala
+- [ ] PILNE: backup stanal po 2026-09-11. Minely dwa piatki (18 i 25 wrzesnia) bez commita Mikrusa.
+      Ostatni wiersz na origin to 2026-09-10 - **19 dni danych istnieje tylko na Mikrusie**.
+      Podejrzenie: 2026-09-11 o 16:09 poszedl push z laptopa (`41cb219 wyliczanie ZIK`) JUZ PO pushu
+      Mikrusa o 03:02, wiec od tego momentu `runGit.sh` musi zrobic udany `pull --rebase`.
+      Diagnoza: `cat /home/frog/zik/GitRun.log` + `git status --short` + `git log origin/master..HEAD`
+
+## PRAWDZIWA przyczyna "przelotnych" awarii frisco (ustalona 2026-09-29)
+- [ ] Klasa CSS koduje STAN CENY, nie tylko cene:
+      `f-pdp__price-amount--emphasized`  = jedna cena, produkt bez promocji
+      `f-pdp__price-amount--highlighted` = cena PROMOCYJNA
+      `f-pdp__price-amount--plain`       = cena regularna (przekreslona), gdy jest promocja
+      Pomiar 2026-09-29: 8 produktow ma `--emphasized`, `jajka` maja `--highlighted` 9,99
+      i `--plain` 13,99 (czyli sa w promocji), `piwo` nie ma zadnej z trzech
+- [ ] `frisco()` szuka WYLACZNIE `--emphasized`, wiec **kazda promocja daje `-1`**. To wyjasnia cala
+      "przelotnosc" awarii - produkty wchodza i wychodza z gazetki. Nie trzeba szukac blokad IP
+      ani wariantow frontendu
+- [ ] Poprawka: probowac `--highlighted`, potem `--emphasized`. Ale najpierw DECYZJA: zapisywac cene
+      promocyjna czy regularna? Promocyjna to tyle, ile faktycznie placisz (wlasciwe dla indeksu
+      sily nabywczej). Regularna jest porownywalna w czasie. Mieszanie obu daje szum - prawdopodobnie
+      czesc historycznych oscylacji (mydlo 39.90 <-> 48.90, chleb) to wlasnie to
+- [ ] `piwo` to OSOBNY problem: 524 kB, zero klas `f-pdp__`, zero kwot w tekscie. Zdegradowany
+      wariant strony, nie promocja
+
+## jablka zwracaja 0.0 i nikt tego nie zglasza (2026-09-29)
+- [ ] `frisco(jablka)` zwraca **0.0**, bo `--emphasized` zawiera doslownie `0,00`. Parser "odnosi
+      sukces", wpisuje zero do bazy i NIE MA GO na liscie bledow w logu. Dokladnie ta sama choroba
+      co `prad = 0.0` sprzed miesiaca
+- [ ] Poprawka: `if cena <= 0: raise` w `frisco()`. Zero to nie cena, to porazka parsera
+
+## Srodowisko na laptopie (2026-09-29)
+- [ ] Shell dziala w virtualenvie INNEGO projektu: `/home/maciek/CRM/venv/bin/python3`. Nie ma tam
+      `bs4`, `matplotlib`, `seaborn` ani `dotenv`
+- [ ] Systemowy `/usr/bin/python3.14` ma `bs4`, `requests`, `pandas`, `dotenv`, ale NIE MA
+      `matplotlib` ani `seaborn` - czyli `plot.py` nie ruszy na zadnym z nich
+- [ ] To ta pozycja o `requirements.txt`, ktora przez miesiac byla abstrakcyjna. Warto dolozyc
+      wlasny venv projektu, zeby `python3 zik.py` nie zalezalo od tego, w ktorym katalogu stoi shell
+
+## Stan zbierania 2026-09-29 (z logu)
+Dziala: kielecki, pizza, maslo, makaron, chleb, mydlo, kurczak, rolex, whisky, buty, telefon,
+m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
+- [ ] Martwe (9): jajka (promocja), piwo (zdegradowany wariant), auto_Mean, auto_Median (otomoto),
+      bigmac (403), fryzjer, upc, aspiryna (403), kasjer
+- [ ] Ciche smieci (1): jablka = 0.0
+- [ ] Widac, ze ponowienie frisco dziala - w logu `Problem z: jajka` i `Problem z: piwo` pojawiaja
+      sie po DWA razy, czyli druga proba byla wykonana
