@@ -8,7 +8,7 @@ def isGood(cena):
         cena = float(cena)
     except:
         return False
-    if cena == <=0:
+    if cena <=0:
         return False
     else:
         return True
