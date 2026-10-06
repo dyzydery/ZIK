@@ -159,7 +159,7 @@ gdzie trzeba bylo skasowac.
 - [ ] Do BeautifulSoup podawac BAJTY (`r.content`), nigdy `r.text`. `cena-pradu.pl` deklaruje `windows-1250` tylko w `<meta>`, nie w naglowku HTTP -> `requests` zgaduje ISO-8859-1 i psuje polskie znaki. `bs4` czyta meta sam i rozpoznaje poprawnie. Obecne `getPage()` robi to dobrze - nie "ulepszac"
 - [ ] `prad()` zaczepiony na kodzie koloru `#0070C0`, ktory wystepuje na stronie 2x, i nadal wycina po offsetach `kod[i+8:i+30]`. Dziala (0.97), ale kazda zmiana stylowania strony to psuje. Docelowo: wyciagnac wszystkie trzy kwoty `zl/kWh` i zweryfikowac, ze dwie pierwsze sumuja sie do trzeciej z tolerancja 0.02 - wtedy parser sprawdza wlasne zrozumienie strony
 - [ ] Sciezki liczone od CWD zamiast od `__file__`: `sqlite3.connect('zik.db')`, `open('zikDB.csv','a')`, `open('s.html','w')`, `plt.savefig('wykresy/...')`. Dlatego `cd` w skryptach crona jest obowiazkowy
-- [ ] `if __name__ == '__main__': WyliczZIK()` + osobny `debug.py` w `.gitignore`. Dzis debugowanie wymaga edycji pliku, ktory odpala cron - stad `printPage` na origin 31.08
+- [x] `if __name__ == '__main__': WyliczZIK()` + `debug.py` w `.gitignore` (2026-10-06). Zamyka klase awarii, ktora wystapila 5 razy: `printPage` (31.08), `# WyliczZIK()` (10.09, 7 dni danych), reczna edycja na Mikrusie (backup 3 tyg.), `# DBinsert` (29.09, tydzien bazy). Test: `python3 -c "import zik"` konczy sie w 0.18 s bez scrapowania. NIE uruchamiac `python3 zik.py` na laptopie - to pelny run z zapisem
 - [ ] `chmod 600 .env` na laptopie (jest 644) i na Mikrusie
 - [ ] `.*.kate-swp` do `.gitignore` (`.zik.py.kate-swp` lezal nietrackowany)
 - [ ] `runGit.sh`: zostaly 2 rzeczy - `exec >> LOG` musi byc PRZED `cd` (dzis komunikat "BLAD: brak katalogu repo" idzie na stdout, czyli pod cronem do maila), oraz `git diff --cached --quiet` przed commitem. To drugie nie jest kosmetyka: przy kolektorze chodzacym codziennie "nic do zacommitowania" ZAWSZE znaczy awarie, a dzis skrypt zameldowalby wtedy "OK: dane na origin"
@@ -402,8 +402,7 @@ m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
       Opis skryptu dla historii: Skrypt idempotentny: wstawiac tylko wiersze nowsze niz
       `max(timestamp)` w `ceny`. Wartosci z CSV to NAPISY - zamienic na float przed `DBinsert`, puste pola obsluzyc.
       Kopia `zik.db` przed uruchomieniem
-- [ ] Raport zdrowia: porownac ostatni timestamp w bazie z ostatnim w CSV. Kopia, ktorej nikt nie sprawdza,
-      nie jest kopia - ta awaria wyszlaby 30 wrzesnia zamiast 6 pazdziernika
+- [~] Porownanie bazy z CSV w raporcie - DECYZJA 2026-10-06: nie robimy (baza to kopia zapasowa, docelowo do zejscia)
 - [ ] Przy schodzeniu z bazy: `plot.py`, `inflacja.py` i modul analityki czytaja z bazy - do przepiecia na CSV
 
 ## m2 - zmienil sie tekst, nie hash (2026-10-06)
@@ -423,3 +422,12 @@ m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
 - [x] `raport.py` wolany z `runZik.sh`, wynik w `zikLast.log`
 - [ ] `REGRESJA` porownuje dwa ostatnie wiersze, wiec pokazuje awarie TYLKO w dniu wystapienia. Swieze awarie
       (telefon 4d, m2 7d) gina miedzy pozycjami po 742 dni. Posortowac `Martwe` rosnaco po dniach
+
+## telefon przez JSON-LD (2026-10-06)
+- [ ] Deluxury dzieli produkt na ~10 fragmentow JSON-LD ze wspolnym `@id`. Cena jest we fragmencie BEZ `@type` na wierzchu,
+      tylko z `offers: {@type: Offer, price: 4497}`. Szukac `szukajJsonLD(..., 'Offer')`, nie `Product`
+- [ ] Filtrowac oferty po `@id` konczacym sie na id produktu z URL (`/29761`) - fragment z `isRelatedTo` zawiera akcesoria,
+      ktore przy ofertach z cena wpadlyby do wyniku (179 zl za etui jako cena flagowca)
+- [ ] Do sprawdzenia przy najblizszej promocji: czy JSON-LD podaje cene promocyjna czy regularna (2026-10-06 obie = 4497)
+- [ ] `szukajJsonLD` porownuje `@type` doslownie - NIE znajdzie `'http://schema.org/Product'` (deluxury ma taki fragment).
+      Przy kolejnym sklepie rozwazyc porownanie koncowki

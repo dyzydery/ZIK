@@ -410,9 +410,9 @@ def upc(url):
 
 def telefon(url):
 	try:
-		cena =  getPageClass(url,'main-price').get_text()
-		# cena = cena.replace(" ", "")
-		return f.zrobCene("telefon",cena)
+		idProduktu = url.rstrip('/').split('/')[-1]        # '29761'
+		oferty = szukajJsonLD(getJsonLD(url), 'Offer')
+		return f.zrobCene("telefon",oferty[1]['price'])
 	except Exception as e:
 		print(e)
 		print ("Problem z: ",getProduct(url))
