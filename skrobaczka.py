@@ -8,6 +8,7 @@ import statistics
 import json
 import datetime
 import os
+import re
 from koszyk import getProduct
 import pathlib
 
@@ -279,12 +280,13 @@ def auchan(url):
 def m2(url):
 	try:
 		kod = getPage(url)
-
-		cena = kod.rfind("data-v-f02966ee")
-		kwota = kod[cena:cena+100]
-		beg = kwota.find('(')+1
-		kwota = kwota[beg:beg+7]
-
+		cena = re.search(r'Średnia cena:.*?\(\s*([\d\s\xa0]+)\s*zł/m', kod, re.S)
+		if cena:
+			cena = cena.group()
+			beg = cena.find('(')+1
+			kwota = cena[beg:beg+7]
+		else:
+			raise ValueError('M2 brak matchu Średniej Ceny')
 		return f.zrobCene("m2",kwota)
 	except Exception as e:
 		print(e)

@@ -388,3 +388,37 @@ m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
 - [ ] Ciche smieci (1): jablka = 0.0
 - [ ] Widac, ze ponowienie frisco dziala - w logu `Problem z: jajka` i `Problem z: piwo` pojawiaja
       sie po DWA razy, czyli druga proba byla wykonana
+
+# STAN 2026-10-06
+
+## Baza danych - decyzja
+- [x] DECYZJA 2026-10-06: CSV jest zrodlem kanonicznym, `zik.db` to KOPIA ZAPASOWA. Docelowo schodzimy z bazy.
+      Do czasu zejscia `DBinsert` zostaje wlaczony
+- [ ] `DBinsert(cart)` byl ZAKOMENTOWANY w `d77e332 naprawione frisco` (2026-09-29 14:50). Mikrus pobral to przy
+      recznym odblokowaniu tego samego dnia, wiec od runu 2026-09-30 baza nie dostawala wierszy. W logu zniknela linia
+      "Inserting row in DB" - a nieobecnosci linii nikt nie zauwaza. PIATY raz stan z testow wjechal na produkcje
+- [ ] Przywrocic `DBinsert(cart)` + reczny `git pull --rebase` na Mikrusie (bez tego czeka do piatku)
+- [ ] Uzupelnic baze z CSV (2026-09-30..2026-10-06). Skrypt idempotentny: wstawiac tylko wiersze nowsze niz
+      `max(timestamp)` w `ceny`. Wartosci z CSV to NAPISY - zamienic na float przed `DBinsert`, puste pola obsluzyc.
+      Kopia `zik.db` przed uruchomieniem
+- [ ] Raport zdrowia: porownac ostatni timestamp w bazie z ostatnim w CSV. Kopia, ktorej nikt nie sprawdza,
+      nie jest kopia - ta awaria wyszlaby 30 wrzesnia zamiast 6 pazdziernika
+- [ ] Przy schodzeniu z bazy: `plot.py`, `inflacja.py` i modul analityki czytaja z bazy - do przepiecia na CSV
+
+## m2 - zmienil sie tekst, nie hash (2026-10-06)
+- [ ] Kolumny `m2wtorny`/`m2pierwotny` martwe od ~2026-09-29. Hash `data-v-f02966ee` NADAL jest (przewidywanie
+      z 10.09, ze padnie hash, bylo bledne). Padla arytmetyka na offsetach: Morizon dopisal `(rynek wtorny)` PRZED
+      cena, wiec `find('(')` lapie zly nawias i wycinek daje `'rynek w'`
+- [ ] Poprawka: `re.search(r'Średnia cena:.*?\(\s*([\d\s\xa0]+)\s*zł/m', kod, re.S)` - sprawdzone na dzisiejszej
+      stronie: 16 388 / 16 177. Kotwica tekstowa najpierw szuka frazy, potem nawiasu
+- [ ] Bonus: strona podaje teraz filtr wprost (`od 50 m² do 60 m²`) - walidacja filtra jest jednym regexem
+
+## telefon - deluxury przebudowalo strone (2026-10-06)
+- [ ] Martwy od 2026-10-02. Produkt dostepny (4428 zl), ale klasy `main-price` juz nie ma. Cena w
+      `price__value price__value_special ... js__special-offer-price-value` - prawdopodobnie promocja, jak we frisco
+- [ ] Na stronie jest teraz 15 blokow JSON-LD (9.09 byl jeden, ze `Store`). Sprobowac `getJsonLD` + `szukajJsonLD(..., 'Product')`
+
+## Raport zdrowia - w produkcji od 2026-09-30
+- [x] `raport.py` wolany z `runZik.sh`, wynik w `zikLast.log`
+- [ ] `REGRESJA` porownuje dwa ostatnie wiersze, wiec pokazuje awarie TYLKO w dniu wystapienia. Swieze awarie
+      (telefon 4d, m2 7d) gina miedzy pozycjami po 742 dni. Posortowac `Martwe` rosnaco po dniach
