@@ -412,7 +412,11 @@ def telefon(url):
 	try:
 		idProduktu = url.rstrip('/').split('/')[-1]        # '29761'
 		oferty = szukajJsonLD(getJsonLD(url), 'Offer')
-		return f.zrobCene("telefon",oferty[1]['price'])
+		trafione = [o for o in oferty
+		if o.get('price') and o.get('@id', '').endswith('/' + idProduktu)]
+		if not trafione:
+				raise ValueError(f'brak oferty z cena dla produktu {idProduktu}')
+		return f.zrobCene("telefon", trafione[0]['price'])
 	except Exception as e:
 		print(e)
 		print ("Problem z: ",getProduct(url))
