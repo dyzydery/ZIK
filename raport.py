@@ -17,7 +17,7 @@ def deltaTime(t):
     date1 = datetime.strptime(ostatni['TimeStamp'], "%Y-%m-%d %H:%M:%S")
     date2 = datetime.strptime(t, "%Y-%m-%d %H:%M:%S")
     difference = (date1.date() - date2.date()).days
-    return str(difference)
+    return difference
 
 print('Sprawdzanie stanu zdrowia danych')
 with open("zikDB.csv", "r") as f:
@@ -41,7 +41,8 @@ print(f'REGRESJA: {regresja}')
 for b in bledne:
     for w in reversed(wiersze[:-1]):
         if isGood(w[b]):
-            martwe.append(b+": "+deltaTime(w['TimeStamp'])+'d')
+            martwe.append((deltaTime(w['TimeStamp']),b))
             break
-print(f'Martwe {martwe}')
+martwe.sort()
+print('Martwe: ' + ', '.join(f'{nazwa}: {dni}d' for dni, nazwa in martwe))
 

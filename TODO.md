@@ -397,8 +397,9 @@ m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
 - [ ] `DBinsert(cart)` byl ZAKOMENTOWANY w `d77e332 naprawione frisco` (2026-09-29 14:50). Mikrus pobral to przy
       recznym odblokowaniu tego samego dnia, wiec od runu 2026-09-30 baza nie dostawala wierszy. W logu zniknela linia
       "Inserting row in DB" - a nieobecnosci linii nikt nie zauwaza. PIATY raz stan z testow wjechal na produkcje
-- [ ] Przywrocic `DBinsert(cart)` + reczny `git pull --rebase` na Mikrusie (bez tego czeka do piatku)
-- [ ] Uzupelnic baze z CSV (2026-09-30..2026-10-06). Skrypt idempotentny: wstawiac tylko wiersze nowsze niz
+- [x] `DBinsert(cart)` przywrocony w `d2663f8` (2026-10-06)
+- [x] Baza uzupelniona z CSV jednorazowym skryptem (2026-10-06). Dziury 2026-09-11..17 NIE da sie odtworzyc - nie ma jej ani w bazie, ani w CSV.
+      Opis skryptu dla historii: Skrypt idempotentny: wstawiac tylko wiersze nowsze niz
       `max(timestamp)` w `ceny`. Wartosci z CSV to NAPISY - zamienic na float przed `DBinsert`, puste pola obsluzyc.
       Kopia `zik.db` przed uruchomieniem
 - [ ] Raport zdrowia: porownac ostatni timestamp w bazie z ostatnim w CSV. Kopia, ktorej nikt nie sprawdza,
@@ -409,7 +410,7 @@ m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
 - [ ] Kolumny `m2wtorny`/`m2pierwotny` martwe od ~2026-09-29. Hash `data-v-f02966ee` NADAL jest (przewidywanie
       z 10.09, ze padnie hash, bylo bledne). Padla arytmetyka na offsetach: Morizon dopisal `(rynek wtorny)` PRZED
       cena, wiec `find('(')` lapie zly nawias i wycinek daje `'rynek w'`
-- [ ] Poprawka: `re.search(r'Średnia cena:.*?\(\s*([\d\s\xa0]+)\s*zł/m', kod, re.S)` - sprawdzone na dzisiejszej
+- [x] Poprawione w `d2663f8` - kotwica tekstowa, sprawdzone na zywo: 16383 / 16178. Wzor: `re.search(r'Średnia cena:.*?\(\s*([\d\s\xa0]+)\s*zł/m', kod, re.S)` - sprawdzone na dzisiejszej
       stronie: 16 388 / 16 177. Kotwica tekstowa najpierw szuka frazy, potem nawiasu
 - [ ] Bonus: strona podaje teraz filtr wprost (`od 50 m² do 60 m²`) - walidacja filtra jest jednym regexem
 
