@@ -11,6 +11,7 @@ import os
 import re
 from koszyk import getProduct
 import pathlib
+import time
 
 ENV = pathlib.Path(__file__).resolve().parent / '.env'
 NAGLOWKI = {
@@ -143,7 +144,7 @@ def szukajJsonLD(dane, typ):
 	return znalezione
 
 def getPage(url):
-	page = requests.get(url, timeout=15)
+	page = requests.get(url, headers=NAGLOWKI, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	return soup.prettify()
 	# return str(urlopen(url).read())
@@ -161,7 +162,7 @@ def printPageHeader(url,header):
 	text_file.close()
 
 def printPage(url):
-	page = requests.get(url, timeout=15)
+	page = requests.get(url, headers=NAGLOWKI, timeout=15)
 	soup = BeautifulSoup(page.content, 'html.parser')
 	text_file = open("s.html", "w")
 	text_file.write(soup.prettify())
@@ -190,22 +191,18 @@ def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
 	try:
-		stron = int(getPageClassAll(url,'pagination-item ooa-1xgr17q')[-1].get_text())
 		kwota = []
-		for i in range(1,stron):
-			car = getPageClassAll(url+'&page='+str(i),'efpuxbr16 ooa-1n2paoq er34gjf0')
-			for x in car:
-				cenaAuta = x.get_text().replace("\n", "")
-				if ("Miesiąc" in cenaAuta):
-					continue
-				if ("," in cenaAuta):
-					cenaAuta = cenaAuta[:cenaAuta.find(",")]
-				nowacenaAuta = ''.join(z for z in cenaAuta if z.isdigit())
-				if(nowacenaAuta==""):
-					continue
-				nowacenaAutaF = float(nowacenaAuta)
-				kwota.append(float(nowacenaAuta))
-		print('Ofert aut: ',len(kwota))
+		for i in range(1,30):
+			oferty = szukajJsonLD(getJsonLD(url + '&page='+str(i)), 'Offer')
+			ceny_strony = [float(o['priceSpecification']['price'])
+                                     for o in oferty
+                                     if o.get('priceSpecification', {}).get('price')]
+			if len(ceny_strony)<1:
+				break
+			kwota.extend(ceny_strony)
+			time.sleep(1)
+		if len(kwota)<1:
+			raise ValueError("Otomoto brak offert")
 		return [f.zrobCene("otomoto",statistics.mean(kwota)),f.zrobCene("otomoto",statistics.median(kwota))]
 	except Exception as e:
 		print(e)
