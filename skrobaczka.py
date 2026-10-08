@@ -235,18 +235,23 @@ def kazar(url):
 
 def fryzjer(url):
 	try:
-# curl 'https://www.rezerwacje-jeanlouisdavid.pl/api/salon-prices/M58'  -H 'X-API-Version: 4' -H 'X-Client-Name: web' -H 'X-Brand: JLD' -H 'Referer: https://www.rezerwacje-jeanlouisdavid.pl/salons/Krakow/C.H.Krokus/M58' -H 'Cookie: permuserid=2111191QU9UIHIVW0HKQLUIHMDOYNNIC; _gcl_au=1.1.498805932.1637337375; _ga_K358R1KWGB=GS1.1.1637337374.1.0.1637337384.50; _ga=GA1.2.734974029.1637337376; _gid=GA1.2.1895826946.1637337377; _dc_gtm_UA-46770041-1=1; _dc_gtm_UA-46770041-3=1; _gat_UA-46770041-1=1; _fbp=fb.1.1637337377808.841734507'
-		headers = {
-			'X-API-Version': '4',
-			'X-Client-Name': 'web',
-			'X-Brand': 'JLD',
-			'Referer': 'https://www.rezerwacje-jeanlouisdavid.pl/salons/Krakow/C.H.Krokus/M58',
-			'Cookie': 'permuserid=2111191QU9UIHIVW0HKQLUIHMDOYNNIC; _gcl_au=1.1.498805932.1637337375; _ga_K358R1KWGB=GS1.1.1637337374.1.0.1637337384.50; _ga=GA1.2.734974029.1637337376; _gid=GA1.2.1895826946.1637337377; _dc_gtm_UA-46770041-1=1; _dc_gtm_UA-46770041-3=1; _gat_UA-46770041-1=1; _fbp=fb.1.1637337377808.841734507',
-			}
-		ceny = getPageHeader(url,headers)
-		gdzie = ceny.find("Mycie z masażem, strzyżenie")
-		return f.zrobCene("fryzjer",ceny[gdzie+37:gdzie+42])
-	except:
+		headers = {**NAGLOWKI,
+                      'Accept': 'application/json',
+                      'Referer': 'https://jld.pl/',
+                      'X-API-Version': '4',
+                      'X-Client-Name': 'web',
+                      'X-Brand': 'JLD'}
+		r = requests.get(url, headers=headers, timeout=15)
+		if (r.status_code != 200):
+			raise ValueError (f"Fryzjer stronka sie zepsuła: {r.status_code}")
+		pozycje = r.json()['items']
+		for x in pozycje:
+			if x['name'] == "Mycie z masażem, strzyżenie":
+				return f.zrobCene("fryzjer",x['price'])
+		raise ValueError ("Fryzjer nie ma danych")
+
+	except Exception as e:
+		print(e)
 		print ("Problem z: ",getProduct(url))
 		return float(-1)
 

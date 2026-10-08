@@ -33,7 +33,7 @@
 - [ ] `getPageClass(url, klasa, timeout=15)` - parametr `timeout` jest ZADEKLAROWANY, ale w srodku jest na sztywno `timeout=15`. Parametr jest ignorowany, czyli sygnatura klamie. Uzyc go albo usunac
 - [x] `waluty()` - klucz w `.env`, `from None`, `timeout=15`, `https`, cztery bramki awarii (transport/protokol/format/tresc). Zweryfikowane sprawdzarka 6/6
 - [ ] `skrobaczka.py:32` - nagi `raise` bez aktywnego wyjatku (dziala przypadkiem)
-- [ ] Wyciac cookies sesyjne z 2021 z `fryzjer()` (`skrobaczka.py:146` i `:152`) - `permuserid`, `_ga`, `_fbp` w publicznym repo
+- [x] (2026-10-08) Wyciac cookies sesyjne z 2021 z `fryzjer()` - usuniete z biezacego kodu. W historii publicznego repo zostaja od 2021; nie przepisujemy historii (to identyfikatory analityczne z wygaslej sesji, nie sekret).
 - [ ] Polaczenia sqlite nigdy nie zamykane (`baza.py`) - zamykane sa tylko kursory
 - [ ] `kindle.py:28` wola `zrobCene(x)` z 1 argumentem, sygnatura to `zrobCene(item, x)` - plik martwy
 
@@ -431,3 +431,25 @@ m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
 - [ ] Do sprawdzenia przy najblizszej promocji: czy JSON-LD podaje cene promocyjna czy regularna (2026-10-06 obie = 4497)
 - [ ] `szukajJsonLD` porownuje `@type` doslownie - NIE znajdzie `'http://schema.org/Product'` (deluxury ma taki fragment).
       Przy kolejnym sklepie rozwazyc porownanie koncowki
+
+# STAN 2026-10-08
+
+- [x] `auto_Mean`/`auto_Median` NAPRAWIONE po 744 dniach: JSON-LD otomoto, cena w `o['priceSpecification']['price']`,
+      petla po `&page=N` do pustej strony (limit 30), `extend` zamiast `append`. Wazne: TYLKO pelne przejscie po wszystkich
+      stronach trzyma ciaglosc szeregu (2026-10-07: wszystkie strony mediana 124 900 vs historia 09.2024 ~120 000;
+      sama strona 1 = 64 548, bo sortowanie rosnace daje 32 najtansze golfy)
+- [x] Stara wersja otomoto miala `range(1, stron)` - przez lata gubila OSTATNIA strone, czyli najdrozsze golfy.
+      Historyczne wartosci auto sa przez to lekko zanizone
+- [ ] Do rozwazenia: `if len(kwota) < 100: raise` - przy zepsutej paginacji mediana spadnie o polowe bez bledu
+- [x] `telefon` przez JSON-LD z filtrem po `@id` i cenie (2026-10-07), dziala
+- [x] Raport zdrowia: `Martwe` posortowane rosnaco po dniach - swieze awarie na gorze
+- [x] `printPage`/`getPage` bez naglowkow dostaja od otomoto 403 (`python-requests/2.33.1`). Narzedzie do podgladu
+      musi wysylac TE SAME naglowki co scraper, inaczej debugujesz inna strone niz ta, ktora parsujesz
+- [ ] Ujednolicic naglowki: dzis sa trzy zestawy (brak, Opera w `getPageClass`, `NAGLOWKI`). Jedna funkcja `pobierzSoup`
+
+## Bilans zbierania 2026-10-08
+Martwe: 6 z 33 (na poczatku pracy 13). Wszystkie pozostale to problemy z DOSTEPEM, nie z kodem:
+- [ ] `aspiryna`, `bigmac` - HTTP 403 z IP Mikrusa (parsery sprawdzone, dzialaja z laptopa)
+- [ ] `upc`, `kasjer` - tresc renderowana JS-em / sciana zgody
+- [ ] `piwo` - zdegradowany wariant strony frisco (524 kB, bez cen)
+- [x] `fryzjer` NAPRAWIONY 2026-10-08: ten sam salon (M58, Krakow Krokus) i ta sama usluga "Mycie z masażem, strzyżenie". API przeniesione z `rezerwacje-jeanlouisdavid.pl` na `https://jld.pl/api/salon-prices/M58`, naglowki `X-API-Version: 4`, `X-Brand: JLD`, `X-Client-Name: web` (znalezione w bundlu JS jld.pl). Ciaglosc: 109 (04.2025) -> 114 (10.2026). Dopasowanie nazwy przez `==` - w cenniku sa tez wersje "barberskie" (134) i "+ odsiwianie" (223)

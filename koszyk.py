@@ -19,7 +19,7 @@ koszyk = [
 ['m2pierwotny','Średnia cena m2 w Krakowie 50-60m2 pierwotny','https://www.morizon.pl/mieszkania/rynek-pierwotny/krakow/?ps%5Bliving_area_from%5D=50&ps%5Bliving_area_to%5D=60'],
 ['benzyna','Benzyna 95 1L	','https://www.autocentrum.pl/stacje-paliw/auchan/auchan-henryka-kamienskiego-11-krakow/'],
 ['lot','Mediana ceny lotu KRK-CIA w miesiacu za 3 miesiace', 'https://services-api.ryanair.com/farfnd/v4/oneWayFares/KRK/CIA/cheapestPerDay'],
-['fryzjer','Strzyżenie męskie Jean Luis David	','https://www.rezerwacje-jeanlouisdavid.pl/api/salon-prices/M58'],
+['fryzjer','Mycie z masażem, strzyżenie, salon Kraków Krokus','https://jld.pl/api/salon-prices/M58'],
 ['upc','Łącze internetowe najtanszne upc	','https://www.play.pl/oferta/play-internet/internet-swiatlowodowy'],
 ['prad','1Kwh w Tauron w dzień	','http://www.cena-pradu.pl/tauron.html'],
 ['lekarz','Cena wizyty konsultacja ortopedyczna srednia 10 ofert z znany lekarz	','https://www.znanylekarz.pl/szukaj?q=ortopeda&loc=Kraków%2C%20Polska&filters%5Bspecializations%5D%5B%5D=76&filters%5Bservices%5D%5B%5D=631&sorter=recommended'],
