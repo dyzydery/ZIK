@@ -482,11 +482,21 @@ Martwe: 6 z 33 (na poczatku pracy 13). Wszystkie pozostale to problemy z DOSTEPE
 Diagnoza: ~20 scraperow ma WLASNE try/except/print. Stad 4 formaty w logu ("Problem z: X", "ZrobCene problem z",
 "jsonld [protokol]", same `print(e)` bez nazwy - bigmac). Nazwe produktu zna najlepiej WOLAJACY (`skanujKoszyk`
 ma `x[0]`), warstwe bledu zna miejsce `raise`. Wiec: scraper tylko rzuca, jeden handler w zik.py lapie i wypisuje.
-- [ ] Krok 1: `pobierz(nazwa, funkcja, url, blad=-1.0)` w zik.py - jedyne miejsce z `except` i `print`
+- [x] Krok 1: `pobierz(nazwa, funkcja, url, blad=-1.0)` w zik.py - jedyne miejsce z `except` i `print`
       format: `BLAD {nazwa}: {type(e).__name__}: {e}`
-- [ ] Krok 2: WSZYSTKIE wywolania w `skanujKoszyk` przez `pobierz` (auto/lekarz z `blad=[-1.0, -1.0]`).
+- [x] Krok 2: WSZYSTKIE wywolania w `skanujKoszyk` przez `pobierz` (auto/lekarz z `blad=[-1.0, -1.0]`).
       Siatka najpierw - dopiero potem mozna zdejmowac try ze scraperow
-- [ ] Krok 3: frisco retry wypisuje `PONAWIAM {nazwa}` - koniec podwojnego "Problem z: piwo"
-- [ ] Krok 4: zdjac try/except ze scraperow, komunikaty `raise` w formie `[warstwa] opis` (bez nazwy produktu)
-- [ ] Krok 5: `zrobCene` rzuca zamiast zwracac -1 (upc: "could not convert string to float: ''")
+- [x] Krok 3: frisco retry wypisuje `PONAWIAM {nazwa}` - koniec podwojnego "Problem z: piwo"
+- [x] Krok 4: zdjac try/except ze scraperow, komunikaty `raise` w formie `[warstwa] opis` (bez nazwy produktu)
+- [x] Krok 5: `zrobCene` rzuca zamiast zwracac -1 (upc: "could not convert string to float: ''")
 - [ ] Bonus: lancuch 20 `elif` w `skanujKoszyk` -> slownik `{nazwa: funkcja}`
+- [x] Przy przepinaniu na `pobierz` wpadl blad kopiuj-wklej `upc -> prad` (zlapany w review, commit e979b3f czysty).
+      Argument za slownikiem SCRAPERY zamiast 20 `elif`
+- [x] Krok 4 sprawdzony na zywo z laptopa (pelny skanujKoszyk, waluty podmienione): wszystkie ceny jak w produkcji,
+      w logu tylko `BLAD piwo` x2 z `Ponawiam`, `BLAD kasjer: AttributeError`, i upc jeszcze starym formatem (krok 5)
+- [x] Przy okazji usuniete martwe `auchan()` i `spolem()` - nikt ich nie wolal
+- [x] Poprawki po kroku 4: `[protocol]` w fryzjerze (reszta ma `[protokol]` - grep nie znajdzie),
+      `[tresc] [format]` w lot (ma byc samo `[format]`), prefiks `jsonld ` w bigmac zbedny,
+      niespojne wciecia (karma, kindl, kasjer, alkohol, lot maja 2 taby), nieuzywany `from koszyk import getProduct`
+- [ ] Po kroku 5 `lekarz` wola jeszcze `f.zrobCene("lekarz",x)` (2 argumenty) -> `TypeError`, lekarz = -1.
+      Zlapane testem na laptopie, nie na produkcji. Log sam wskazal bug dzieki `type(e).__name__`

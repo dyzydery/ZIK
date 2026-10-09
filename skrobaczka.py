@@ -9,7 +9,6 @@ import json
 import datetime
 import os
 import re
-from koszyk import getProduct
 import pathlib
 import time
 
@@ -86,26 +85,22 @@ def waluty():
 
 
 def bigmac(url):
-	try:
-		pozycje = szukajJsonLD(getJsonLD(url), 'MenuItem')
-		if not pozycje:
-			raise ValueError('jsonld [tresc] brak pozycji MenuItem')
-		trafienia = [p for p in pozycje if p.get('name') == 'Big Mac®']
-		if not trafienia:
-			podobne = sorted({p.get('name','') for p in pozycje if 'Mac' in p.get('name','')})
-			raise ValueError(f'jsonld [tresc] brak pozycji "Big Mac®" wsrod {len(pozycje)}; podobne: {podobne}')
-		of = trafienia[0].get('offers')
-		if isinstance(of, list):
-			of = of[0] if of else None
-		if not isinstance(of, dict):
-			raise ValueError(f'jsonld [tresc] "Big Mac®" bez oferty: offers={of!r}')
-		cena = of.get('price')
-		if not cena:
-			raise ValueError(f'jsonld [tresc] "Big Mac®" bez ceny: oferta={of!r}')
-		return f.zrobCene("bigmac",cena)
-	except Exception as e:
-		print(e)
-		return float(-1)
+	pozycje = szukajJsonLD(getJsonLD(url), 'MenuItem')
+	if not pozycje:
+		raise ValueError('[tresc] brak pozycji MenuItem')
+	trafienia = [p for p in pozycje if p.get('name') == 'Big Mac®']
+	if not trafienia:
+		podobne = sorted({p.get('name','') for p in pozycje if 'Mac' in p.get('name','')})
+		raise ValueError(f'[tresc] brak pozycji wsrod {len(pozycje)}; podobne: {podobne}')
+	of = trafienia[0].get('offers')
+	if isinstance(of, list):
+		of = of[0] if of else None
+	if not isinstance(of, dict):
+		raise ValueError(f'[tresc] bez oferty: offers={of!r}')
+	cena = of.get('price')
+	if not cena:
+		raise ValueError(f'[tresc] bez ceny: oferta={of!r}')
+	return f.zrobCene(cena)
 
 def getJsonLD(url, headers=None):
 	page = requests.get(url, headers=headers or NAGLOWKI, timeout=15)
@@ -190,251 +185,152 @@ def getPageId(url,idx):
 def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
 	url = url.replace("2018",rok)
-	try:
-		kwota = []
-		for i in range(1,30):
-			oferty = szukajJsonLD(getJsonLD(url + '&page='+str(i)), 'Offer')
-			ceny_strony = [float(o['priceSpecification']['price'])
-                                     for o in oferty
-                                     if o.get('priceSpecification', {}).get('price')]
-			if len(ceny_strony)<1:
-				break
-			kwota.extend(ceny_strony)
-			time.sleep(1)
-		if len(kwota)<1:
-			raise ValueError("Otomoto brak offert")
-		return [f.zrobCene("otomoto",statistics.mean(kwota)),f.zrobCene("otomoto",statistics.median(kwota))]
-	except Exception as e:
-		print(e)
-		print ("Problem z: otomoto")
-		return [float(-1),float(-1)]
+	kwota = []
+	for i in range(1,30):
+		oferty = szukajJsonLD(getJsonLD(url + '&page='+str(i)), 'Offer')
+		ceny_strony = [float(o['priceSpecification']['price'])
+									for o in oferty
+									if o.get('priceSpecification', {}).get('price')]
+		if len(ceny_strony)<1:
+			break
+		kwota.extend(ceny_strony)
+		time.sleep(1)
+	if len(kwota)<1:
+		raise ValueError("[tresc] brak offert")
+	return [f.zrobCene(statistics.mean(kwota)),f.zrobCene(statistics.median(kwota))]
 
 def frisco(url):
-	try:
-		cena = getPageClass(url,'f-pdp__price-amount--highlighted')
-		if cena == None:
-			cena = getPageClass(url,'f-pdp__price-amount--emphasized')
-			if cena is None:
-				raise ValueError('Nieznaleziono ceny w frisco')
-		cena = f.zrobCene("frisco",cena.get_text())
-		if cena == 0.0:
-			raise ValueError('Cena równa 0.0')
-		return cena
-	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	cena = getPageClass(url,'f-pdp__price-amount--highlighted')
+	if cena is None:
+		cena = getPageClass(url,'f-pdp__price-amount--emphasized')
+		if cena is None:
+			raise ValueError('[tresc] Nieznaleziono ceny')
+	cena = f.zrobCene(cena.get_text())
+	if cena == 0.0:
+		raise ValueError('[tresc] Cena równa 0.0')
+	return cena
 
 def kazar(url):
-	try:
-		cena = getPageClass(url,'price').get_text().replace(",-","")
-		return f.zrobCene("kazar",cena)
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	cena = getPageClass(url,'price').get_text().replace(",-","")
+	return f.zrobCene(cena)
 
 def fryzjer(url):
-	try:
-		headers = {**NAGLOWKI,
-                      'Accept': 'application/json',
-                      'Referer': 'https://jld.pl/',
-                      'X-API-Version': '4',
-                      'X-Client-Name': 'web',
-                      'X-Brand': 'JLD'}
-		r = requests.get(url, headers=headers, timeout=15)
-		if (r.status_code != 200):
-			raise ValueError (f"Fryzjer stronka sie zepsuła: {r.status_code}")
-		pozycje = r.json()['items']
-		for x in pozycje:
-			if x['name'] == "Mycie z masażem, strzyżenie":
-				return f.zrobCene("fryzjer",x['price'])
-		raise ValueError ("Fryzjer nie ma danych")
-
-	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	headers = {**NAGLOWKI,
+					'Accept': 'application/json',
+					'Referer': 'https://jld.pl/',
+					'X-API-Version': '4',
+					'X-Client-Name': 'web',
+					'X-Brand': 'JLD'}
+	r = requests.get(url, headers=headers, timeout=15)
+	if (r.status_code != 200):
+		raise ValueError (f"[protokol] stronka sie zepsuła: {r.status_code}")
+	pozycje = r.json()['items']
+	for x in pozycje:
+		if x['name'] == "Mycie z masażem, strzyżenie":
+			return f.zrobCene(x['price'])
+	raise ValueError ("[tresc] nie ma danych")
 
 def prad(url):
-	try:
-		kod = getPage(url)
-		cena = kod.find('#0070C0')
-		kwota = kod[cena+8:cena+30]
-		return f.zrobCene("prad",kwota)
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
-
-def auchan(url):
-
-	try:
-		page = requests.get(url, timeout=15)
-		kod = BeautifulSoup(page.content, 'html.parser')
-		kod = kod.get_text()
-		cena = kod.find('product_unitprice_ati')
-		kwota = kod[cena+23:cena+50]
-		kwota = kwota[:kwota.find(',')]
-		return f.zrobCene("auchan",kwota)
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	kod = getPage(url)
+	cena = kod.find('#0070C0')
+	kwota = kod[cena+8:cena+30]
+	return f.zrobCene(kwota)
 
 def m2(url):
-	try:
-		kod = getPage(url)
-		cena = re.search(r'Średnia cena:.*?\(\s*([\d\s\xa0]+)\s*zł/m', kod, re.S)
-		if cena:
-			cena = cena.group()
-			beg = cena.find('(')+1
-			kwota = cena[beg:beg+7]
-		else:
-			raise ValueError('M2 brak matchu Średniej Ceny')
-		return f.zrobCene("m2",kwota)
-	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	kod = getPage(url)
+	cena = re.search(r'Średnia cena:.*?\(\s*([\d\s\xa0]+)\s*zł/m', kod, re.S)
+	if cena:
+		cena = cena.group()
+		beg = cena.find('(')+1
+		kwota = cena[beg:beg+7]
+	else:
+		raise ValueError('[tresc] brak matchu Średniej Ceny')
+	return f.zrobCene(kwota)
 
 
 def karma(url):
-	try:
-		kwota = getPageClassAll(url,'price__value price__value_bold js__price-value')[1].get_text()
-		return f.zrobCene("karma",kwota)
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	kwota = getPageClassAll(url,'price__value price__value_bold js__price-value')[1].get_text()
+	return f.zrobCene(kwota)
 
 def aspiryna(url):
-	try:
-		produkt = None
-		for encja in getJsonLD(url):
-			tp = encja.get('@type')
-			if tp == 'Product' or (isinstance(tp, list) and 'Product' in tp):
-				produkt = encja
-				break
-		if produkt is None:
-			raise ValueError('brak encji Product w JSON-LD')
-		of = produkt.get('offers')
-		if isinstance(of, list):
-			of = of[0]
-		cena = of.get('price')
-		return f.zrobCene("aspiryna",cena)
-	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	produkt = None
+	for encja in getJsonLD(url):
+		tp = encja.get('@type')
+		if tp == 'Product' or (isinstance(tp, list) and 'Product' in tp):
+			produkt = encja
+			break
+	if produkt is None:
+		raise ValueError('[tresc] brak encji Product w JSON-LD')
+	of = produkt.get('offers')
+	if isinstance(of, list):
+		of = of[0]
+	cena = of.get('price')
+	return f.zrobCene(cena)
 
 def rolex(url):
-	try:
-		cena = getPageClass(url,'price dig').get_text()
-		cena = cena[:cena.find('z')]
-		return f.zrobCene("rolex",cena)
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	cena = getPageClass(url,'price dig').get_text()
+	cena = cena[:cena.find('z')]
+	return f.zrobCene(cena)
 
 def benzyna(url):
-	return f.zrobCene("benzyna",getPageClass(url,'price').get_text())
+	return f.zrobCene(getPageClass(url,'price').get_text())
 
 def kindl(url):
-	try:
-		return f.zrobCene("kindle",getPageClass(url,'h2 price').get_text())
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	return f.zrobCene(getPageClass(url,'h2 price').get_text())
 
 def kasjer(url):
-	try:
-		return f.zrobCene("kasjer",getPageClass(url,'salary-info-value').get_text())
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	return f.zrobCene(getPageClass(url,'salary-info-value').get_text())
 
 def alkohol(url):
-	try:
-		kwota = getPageClassAll(url,'price')[1].get_text()
-		return f.zrobCene("alkohol",kwota)
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
-
-def spolem(url):
-	try:
-		kwota = getPageClassAll(url,'woocommerce-Price-amount amount')[3].get_text()
-		return f.zrobCene("spolem",kwota)
-	except:
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	kwota = getPageClassAll(url,'price')[1].get_text()
+	return f.zrobCene(kwota)
 
 def lot(url):
+	miesiac = ((datetime.date.today()+datetime.timedelta(days=90))).replace(day=1)
+	params = {'outboundMonthOfDate': miesiac.isoformat(),
+					'currency': 'PLN',
+					'market': 'pl-pl'}
 	try:
-		miesiac = ((datetime.date.today()+datetime.timedelta(days=90))).replace(day=1)
-		params = {'outboundMonthOfDate': miesiac.isoformat(),
-						'currency': 'PLN',
-						'market': 'pl-pl'}
-		try:
-			response = requests.get(url, headers=NAGLOWKI, timeout=15, params=params)
-		except requests.RequestException as e:
-			raise RuntimeError(f'ryanair [transport]: {type(e).__name__}') from None
-		if response.status_code != 200:
-			raise RuntimeError(f'ryanair [protokol] HTTP {response.status_code}')
-		try:
-			r = json.loads(response.text)
-		except ValueError:
-			raise RuntimeError(f'ryanair [format] nie JSON: {response.text[:80]!r}') from None
-		loty = r["outbound"]["fares"]
-		ceny =[]
-		for l in loty:
-			if l.get('price') is None:
-				continue
-			ceny.append(l['price']['value'])
-		# print(lot)
-
-		return f.zrobCene("lot",statistics.median(ceny))
-
-
-	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+		response = requests.get(url, headers=NAGLOWKI, timeout=15, params=params)
+	except requests.RequestException as e:
+		raise RuntimeError(f'[transport]: {type(e).__name__}') from None
+	if response.status_code != 200:
+		raise RuntimeError(f'[protokol] HTTP {response.status_code}')
+	try:
+		r = json.loads(response.text)
+	except ValueError:
+		raise RuntimeError(f'[format] nie JSON: {response.text[:80]!r}') from None
+	loty = r["outbound"]["fares"]
+	ceny =[]
+	for l in loty:
+		if l.get('price') is None:
+			continue
+		ceny.append(l['price']['value'])
+	return f.zrobCene(statistics.median(ceny))
 
 def upc(url):
-		try:
-			strona = getPage(url)
-			kwota = strona.find('v-rich-text__old-price')
-			strona=strona[kwota:kwota+100]
-			kwota = strona.find('003E')
-			return f.zrobCene("upc",strona[kwota+4:kwota+6])
-		except:
-			print ("Problem z: ",getProduct(url))
-			return float(-1)
+	strona = getPage(url)
+	kwota = strona.find('v-rich-text__old-price')
+	strona=strona[kwota:kwota+100]
+	kwota = strona.find('003E')
+	return f.zrobCene(strona[kwota+4:kwota+6])
 
 
 def telefon(url):
-	try:
-		idProduktu = url.rstrip('/').split('/')[-1]        # '29761'
-		oferty = szukajJsonLD(getJsonLD(url), 'Offer')
-		trafione = [o for o in oferty
-		if o.get('price') and o.get('@id', '').endswith('/' + idProduktu)]
-		if not trafione:
-				raise ValueError(f'brak oferty z cena dla produktu {idProduktu}')
-		return f.zrobCene("telefon", trafione[0]['price'])
-	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return float(-1)
+	idProduktu = url.rstrip('/').split('/')[-1]        # '29761'
+	oferty = szukajJsonLD(getJsonLD(url), 'Offer')
+	trafione = [o for o in oferty
+	if o.get('price') and o.get('@id', '').endswith('/' + idProduktu)]
+	if not trafione:
+			raise ValueError(f'[tresc] brak oferty z cena dla produktu {idProduktu}')
+	return f.zrobCene(trafione[0]['price'])
 
 def lekarz(url):
-	try:
-		lek = getPageClassAll(url,'m-0 text-nowrap font-weight-bold')
-		kwota = []
-		for x in lek:
-			# print("####",x,"####")
-			x = x.get_text()[20:].strip()
-			# print("@@@@@",x,"@@@@")
-			kwota.append(f.zrobCene("lekarz",x))
-		return [f.zrobCene("lekarz",statistics.mean(kwota)),f.zrobCene("lekarz",statistics.median(kwota))]
-	except Exception as e:
-		print(e)
-		print ("Problem z: ",getProduct(url))
-		return [float(-1),float(-1)]
+	lek = getPageClassAll(url,'m-0 text-nowrap font-weight-bold')
+	kwota = []
+	for x in lek:
+		# print("####",x,"####")
+		x = x.get_text()[20:].strip()
+		# print("@@@@@",x,"@@@@")
+		kwota.append(f.zrobCene(x))
+	return [f.zrobCene(statistics.mean(kwota)),f.zrobCene(statistics.median(kwota))]
