@@ -489,7 +489,7 @@ ma `x[0]`), warstwe bledu zna miejsce `raise`. Wiec: scraper tylko rzuca, jeden 
 - [x] Krok 3: frisco retry wypisuje `PONAWIAM {nazwa}` - koniec podwojnego "Problem z: piwo"
 - [x] Krok 4: zdjac try/except ze scraperow, komunikaty `raise` w formie `[warstwa] opis` (bez nazwy produktu)
 - [x] Krok 5: `zrobCene` rzuca zamiast zwracac -1 (upc: "could not convert string to float: ''")
-- [ ] Bonus: lancuch 20 `elif` w `skanujKoszyk` -> slownik `{nazwa: funkcja}`
+- [x] Bonus: lancuch 20 `elif` w `skanujKoszyk` -> slownik `{nazwa: funkcja}`
 - [x] Przy przepinaniu na `pobierz` wpadl blad kopiuj-wklej `upc -> prad` (zlapany w review, commit e979b3f czysty).
       Argument za slownikiem SCRAPERY zamiast 20 `elif`
 - [x] Krok 4 sprawdzony na zywo z laptopa (pelny skanujKoszyk, waluty podmienione): wszystkie ceny jak w produkcji,
@@ -498,5 +498,10 @@ ma `x[0]`), warstwe bledu zna miejsce `raise`. Wiec: scraper tylko rzuca, jeden 
 - [x] Poprawki po kroku 4: `[protocol]` w fryzjerze (reszta ma `[protokol]` - grep nie znajdzie),
       `[tresc] [format]` w lot (ma byc samo `[format]`), prefiks `jsonld ` w bigmac zbedny,
       niespojne wciecia (karma, kindl, kasjer, alkohol, lot maja 2 taby), nieuzywany `from koszyk import getProduct`
-- [ ] Po kroku 5 `lekarz` wola jeszcze `f.zrobCene("lekarz",x)` (2 argumenty) -> `TypeError`, lekarz = -1.
+- [x] Po kroku 5 `lekarz` wola jeszcze `f.zrobCene("lekarz",x)` (2 argumenty) -> `TypeError`, lekarz = -1.
       Zlapane testem na laptopie, nie na produkcji. Log sam wskazal bug dzieki `type(e).__name__`
+- [x] `skanujKoszyk` na slownikach SCRAPERY / PODWOJNE / WALUTY, petla `for nazwa, opis, url in koszyk.koszyk`.
+      Test: 34 klucze = naglowek CSV, bledy tylko piwo/upc/kasjer. Nowy produkt bez scrapera -> glosny KeyError
+- [ ] Do potwierdzenia w logu produkcyjnym: pierwsza noc po `git pull` na Mikrusie (recznie albo w piatek 2026-10-16)
+- [ ] Narzedzie: `ruff check` - wylapuje nieuzywane parametry/importy (F841/F401) i powtorzone klucze slownika (F601),
+      czyli 3 z bledow tej lekcji. `from skrobaczka import *` utrudnia mu prace (F403/F405)
