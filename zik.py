@@ -17,56 +17,65 @@ from time import sleep
 print('Złoty Indeks Kieleckiego')
 print(datetime.datetime.now())
 cart = {'TimeStamp':str(datetime.datetime.now().replace(microsecond=0))}
+
+def pobierz(towar, funkcja, url, blad=-1.0):
+    try:
+        return funkcja(url)
+    except Exception as e:
+        print(f'BLAD {towar}: {type(e).__name__}: {e}')
+        return blad
+
 def skanujKoszyk():
     l = len(koszyk.koszyk)+1
     i = 0
     for x in koszyk.koszyk:
         # print ('[==',int(i/l*100),'% ',f.CYELLOW2 + x[0] + f.CEND,' ==]',end="               \r")
         if (x[2].find('frisco')!=-1):
-            cart[x[0]] = frisco(x[2])
+            cart[x[0]] = pobierz(x[0],frisco,x[2])
             if cart[x[0]] == -1:
+                print(f'Ponawiam próbę {x[0]}')
                 sleep(3)
-                cart[x[0]] = frisco(x[2])
+                cart[x[0]] = pobierz(x[0],frisco,x[2])
         elif (x[0]=='buty'):
-            cart[x[0]] = kazar(x[2])
+            cart[x[0]] = pobierz(x[0],kazar,x[2])
         elif (x[0]=='whisky'):
-            cart[x[0]] = alkohol(x[2])
+            cart[x[0]] = pobierz(x[0],alkohol,x[2])
         # elif (x[0]=='piwo'):
         #     cart[x[0]] = f.zrobCene(piwo(x[2]))
         elif (x[0]=='karma'):
-            cart[x[0]] = karma(x[2])
+            cart[x[0]] = pobierz(x[0],karma,x[2])
         elif (x[0]=='aspiryna'):
-            cart[x[0]] = aspiryna(x[2])
+            cart[x[0]] = pobierz(x[0],aspiryna,x[2])
         elif (x[0]=='rolex'):
-            cart[x[0]] = rolex(x[2])
+            cart[x[0]] = pobierz(x[0],rolex,x[2])
         elif (x[0]=='benzyna'):
-            cart[x[0]] = benzyna(x[2])
+            cart[x[0]] = pobierz(x[0],benzyna,x[2])
         elif (x[0]=='prad'):
-            cart[x[0]] = prad(x[2])
+            cart[x[0]] = pobierz(x[0],prad,x[2])
         elif (x[0]=='upc'):
-            cart[x[0]] = upc(x[2])
+            cart[x[0]] = pobierz(x[0],upc,x[2])
         elif (x[0]=='m2wtorny'):
-            cart[x[0]] = m2(x[2])
+            cart[x[0]] = pobierz(x[0],m2,x[2])
         elif (x[0]=='m2pierwotny'):
-            cart[x[0]] = m2(x[2])
+            cart[x[0]] = pobierz(x[0],m2,x[2])
         elif (x[0]=='telefon'):
-            cart[x[0]] = telefon(x[2])
+            cart[x[0]] = pobierz(x[0],telefon,x[2])
         elif (x[0]=='kasjer'):
-            cart[x[0]] = kasjer(x[2])
+            cart[x[0]] = pobierz(x[0],kasjer,x[2])
         elif (x[0]=='fryzjer'):
-            cart[x[0]] = fryzjer(x[2])
+            cart[x[0]] = pobierz(x[0],fryzjer,x[2])
         elif (x[0]=='bigmac'):
-            cart[x[0]] = bigmac(x[2])
+            cart[x[0]] = pobierz(x[0],bigmac,x[2])
         elif (x[0]=='lot'):
-            cart[x[0]] = lot(x[2])
+            cart[x[0]] = pobierz(x[0],lot,x[2])
         elif (x[0]=='kindle'):
-            cart[x[0]] = kindl(x[2])
+            cart[x[0]] = pobierz(x[0],kindl,x[2])
         elif (x[0]=='lekarz'):
-            z=lekarz(x[2])
+            z=pobierz(x[0],lekarz,x[2],[-1.0,-1.0])
             cart[x[0]+'_Mean'] = z[0]
             cart[x[0]+'_Median'] = z[1]
         elif (x[0]=='auto'):
-            z=otomoto(x[2])
+            z=pobierz(x[0],otomoto,x[2],[-1.0,-1.0])
             cart[x[0]+'_Mean'] = z[0]
             cart[x[0]+'_Median'] = z[1]
         i+=1

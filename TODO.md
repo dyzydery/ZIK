@@ -477,3 +477,16 @@ Martwe: 6 z 33 (na poczatku pracy 13). Wszystkie pozostale to problemy z DOSTEPE
       odhaczyc punkt o `sed -i 's/\r$//'`
 - [~] `kielecki` 2021-11-25 i 2025-05-08 - nie ruszamy, przelicznik 1.43 nie do odroznienia od zwyklej zmiany ceny
 - [~] Mieszanie ceny promocyjnej i regularnej w historii zostaje - nie da sie tego odtworzyc wstecz
+
+## Jeden format bledow - lekcja A (2026-10-09)
+Diagnoza: ~20 scraperow ma WLASNE try/except/print. Stad 4 formaty w logu ("Problem z: X", "ZrobCene problem z",
+"jsonld [protokol]", same `print(e)` bez nazwy - bigmac). Nazwe produktu zna najlepiej WOLAJACY (`skanujKoszyk`
+ma `x[0]`), warstwe bledu zna miejsce `raise`. Wiec: scraper tylko rzuca, jeden handler w zik.py lapie i wypisuje.
+- [ ] Krok 1: `pobierz(nazwa, funkcja, url, blad=-1.0)` w zik.py - jedyne miejsce z `except` i `print`
+      format: `BLAD {nazwa}: {type(e).__name__}: {e}`
+- [ ] Krok 2: WSZYSTKIE wywolania w `skanujKoszyk` przez `pobierz` (auto/lekarz z `blad=[-1.0, -1.0]`).
+      Siatka najpierw - dopiero potem mozna zdejmowac try ze scraperow
+- [ ] Krok 3: frisco retry wypisuje `PONAWIAM {nazwa}` - koniec podwojnego "Problem z: piwo"
+- [ ] Krok 4: zdjac try/except ze scraperow, komunikaty `raise` w formie `[warstwa] opis` (bez nazwy produktu)
+- [ ] Krok 5: `zrobCene` rzuca zamiast zwracac -1 (upc: "could not convert string to float: ''")
+- [ ] Bonus: lancuch 20 `elif` w `skanujKoszyk` -> slownik `{nazwa: funkcja}`
