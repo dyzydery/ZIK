@@ -58,7 +58,7 @@
 - [ ] `aspiryna()` i `frisco()` robia 2x request na ta sama strone - rozdzielic "pobierz strone" od "wyciagnij cene"
 
 ## frisco() czyta cene jednostkowa zamiast ceny produktu (2026-09-04)
-- [ ] KRYTYCZNE: klasa `price_num` na frisco.pl to CENA ZA KG/LITR, nie cena produktu. Dotyczy 9 z 33 kolumn - calego rdzenia koszyka spozywczego. Arytmetyka zgadza sie co do grosza: kielecki 14,19/0,7 l = 20,27 | pizza 10,29/0,425 kg = 24,21 | maslo 5,89/0,2 = 29,45 | makaron 5,19/0,4 = 12,97 | chleb 4,69/0,5 = 9,38 | piwo 17,59/2 l = 8,79
+- [x] KRYTYCZNE: klasa `price_num` na frisco.pl to CENA ZA KG/LITR, nie cena produktu. Dotyczy 9 z 33 kolumn - calego rdzenia koszyka spozywczego. Arytmetyka zgadza sie co do grosza: kielecki 14,19/0,7 l = 20,27 | pizza 10,29/0,425 kg = 24,21 | maslo 5,89/0,2 = 29,45 | makaron 5,19/0,4 = 12,97 | chleb 4,69/0,5 = 9,38 | piwo 17,59/2 l = 8,79
 - [ ] Wlasciwy selektor: `f-pdp__price-amount--emphasized` (pdp = product detail page, konwencja BEM, nie hash z bundlera). Sprawdzony na 10 produktach, dziala na wszystkich - w tym na `jajka`, gdzie `price_num` w ogole nie istnieje
 - [ ] Zmiana selektora naprawia naraz: kielecki, pizza, maslo, jablka, makaron, chleb, mydlo, kurczak, jajka, piwo
 - [ ] Przywraca tez ZNACZENIE historyczne: pierwszy odczyt kielecki z 2020 to 8,99 czyli cena produktu, nie 12,8 zl/l. Nowy selektor wraca do tego, co mierzono na poczatku
@@ -85,7 +85,7 @@ Czyli w ostatnich 16 miesiacach okolo 12,5 miesiaca danych to cena za kg/litr za
 Przelicznik jest znany i staly, wiec te okresy DA SIE przeliczyc wstecz - w odroznieniu od `prad`,
 gdzie trzeba bylo skasowac.
 
-- [ ] Zdecydowac, co z okresami jednostkowymi: przeliczyc przez gramature (przelicznik znany co do grosza)
+- [x] Zdecydowac, co z okresami jednostkowymi: przeliczyc przez gramature (przelicznik znany co do grosza)
       czy oznaczyc jako `-1`. Przeliczenie jest tu obronialne, bo to ta sama wielkosc w innej jednostce,
       a nie inny produkt
 - [ ] `kielecki` ma najmniejszy przelicznik (1.428), wiec jego skoki z 2021-11-25 i 2025-05-08 moga byc
@@ -258,7 +258,7 @@ gdzie trzeba bylo skasowac.
 
 ## Zrobione 2026-09-10
 - [x] `saveCSV` naprawione: `open(...,'a', newline='')` + `csv.DictWriter(..., lineterminator='\n')`. Nowe wiersze beda mialy `\n`
-- [ ] Zostaje jednorazowe posprzatanie 5 wierszy z `^M` (2026-09-05..09): `sed -i 's/\r$//' zikDB.csv` na Mikrusie
+- [x] Zostaje jednorazowe posprzatanie 5 wierszy z `^M` (2026-09-05..09): `sed -i 's/\r$//' zikDB.csv` na Mikrusie - ZROBIONE przy przeliczeniu frisco 2026-10-09
 - [x] `frisco` potwierdzone z laptopa 2026-09-10: 9 z 10 produktow zwraca ceny (kielecki 14.19, pizza 11.09, maslo 5.89, jablka 6.49, makaron 5.19, chleb 4.69, mydlo 4.59, kurczak 24.19, jajka 13.99). Wczorajsza regresja byla przelotna
 
   - limit prob musi byc twardy: `timeout=15` chroni JEDEN request, nie petle
@@ -453,3 +453,27 @@ Martwe: 6 z 33 (na poczatku pracy 13). Wszystkie pozostale to problemy z DOSTEPE
 - [ ] `upc`, `kasjer` - tresc renderowana JS-em / sciana zgody
 - [ ] `piwo` - zdegradowany wariant strony frisco (524 kB, bez cen)
 - [x] `fryzjer` NAPRAWIONY 2026-10-08: ten sam salon (M58, Krakow Krokus) i ta sama usluga "Mycie z masażem, strzyżenie". API przeniesione z `rezerwacje-jeanlouisdavid.pl` na `https://jld.pl/api/salon-prices/M58`, naglowki `X-API-Version: 4`, `X-Brand: JLD`, `X-Client-Name: web` (znalezione w bundlu JS jld.pl). Ciaglosc: 109 (04.2025) -> 114 (10.2026). Dopasowanie nazwy przez `==` - w cenniku sa tez wersje "barberskie" (134) i "+ odsiwianie" (223)
+
+# STAN 2026-10-09 (log produkcyjny)
+- [x] `fryzjer` potwierdzony w produkcji: brak bledu w logu i brak w liscie `Martwe`
+- Martwe: 5 z 33 - kasjer 179d, piwo 253d, aspiryna 255d, bigmac 350d, upc 745d
+- [ ] `piwo` wypisuje "Problem z: piwo" DWA razy (pierwsza proba + ponowienie w `skanujKoszyk`). To dziala zgodnie z
+      zalozeniem, ale log wyglada jak dwie rozne awarie. Lepiej: `skanujKoszyk` niech wypisze "ponawiam piwo" przed retry
+- [ ] Niespojne komunikaty: `upc` wypisuje "ZrobCene problem z upc", inne "Problem z: X", jsonld "[protokol] HTTP 403".
+      Jeden format linii bledu (`[warstwa] produkt: opis`) pozwoli kiedys grepowac log zamiast go czytac
+- [ ] `bigmac` w logu nie ma linii "Problem z: bigmac" (jest tylko 403 z jsonld), a `aspiryna` ma - dwa scrapery
+      oparte na tym samym `getJsonLD` raportuja bledy inaczej
+
+## Przeliczenie historii frisco (2026-10-09)
+- [x] Skrypt `przelicz_frisco.py` (jednorazowy, poza repo): okna 2025-05-24..2025-12-11 i 2026-03-04..2026-09-04,
+      cena_produktu = cena_jednostkowa * gramatura. Przeliczniki: kielecki 0.7, pizza 0.425, maslo 0.2, makaron 0.4,
+      chleb 0.5, mydlo 0.1, kurczak 0.5, piwo 2.0. `jablka` i `jajka` bez zmian (przelicznik 1 / brak price_num)
+- [x] Test na kopii: 2868 komorek w 389 wierszach, zero zmian poza 8 kolumnami frisco, `zik` = `ceny`/`xau` spojne,
+      drugie uruchomienie odmawia (straznik: maslo 2026-03-04 < 20). Szwy na granicach okien zgadzaja sie co do grosza
+      (np. maslo 41.45*0.2 = 8.29 = pierwszy odczyt po powrocie do ceny produktu)
+- [x] `chleb` w oknie 1 (189 odczytow 0.09..0.98) -> `-1`, nie przeliczenie: to byl losowy element strony
+- [x] Uruchomic na Mikrusie (CSV + zik.db), commit + push recznie, kopie `*.przed_frisco` wyniesc poza repo - ZROBIONE 2026-10-09, commit 22c5123
+- [x] Zapis CSV przez `csv.DictWriter(lineterminator='\n')` przy okazji usuwa `^M` z 5 wierszy - po uruchomieniu
+      odhaczyc punkt o `sed -i 's/\r$//'`
+- [~] `kielecki` 2021-11-25 i 2025-05-08 - nie ruszamy, przelicznik 1.43 nie do odroznienia od zwyklej zmiany ceny
+- [~] Mieszanie ceny promocyjnej i regularnej w historii zostaje - nie da sie tego odtworzyc wstecz
