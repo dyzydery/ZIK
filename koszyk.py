@@ -10,7 +10,7 @@ koszyk = [
 ['jajka','jaja z wolnego wybiegu L 10 sztuk','https://www.frisco.pl/pid,100769/n,wybiegane-kury-jaja-kurze-z-wolnego-wybiegu-(rozmiar-l)---10-szt./'],#'https://ezakupy.tesco.pl/groceries/pl-PL/search?query=jajka%20z%20wolnego%20wybiegu'],
 ['rolex','ROLEX Submariner Niebieski/18 karatowe białe złoto Ø40 mm	','https://www.czaszegarkow.pl/rolex-submariner-niebieski-18-karatowe-biale-zloto-o41-mm-p-385557.html'],
 ['whisky','Whisky Jack Daniels 0.5L	','https://alkoholeswiata24.pl/whisky-burbon-jack-daniel-s-0-5l-40proc'],
-['piwo','Piwo Żywiec  czteropak puszka','https://www.frisco.pl/pid,3192/n,zywiec-piwo-4x500ml-(puszka)/stn,product'],
+['piwo','Piwo Żywiec  czteropak puszka','https://www.frisco.pl/pid,153955/n,zywiec-piwo-4x500ml-(puszka)/stn,product'],
 ['buty','Kazar damskie szpilki czułenka najtansze skórzane	','https://kazar.com/kobieta/buty/czolenka.html?heel_height=5505&material=5465&product_list_order=price&shoes_type_multi=6862&size=5802'],
 ['auto','3 letnie używany golf srednia/mediana ze 100 ofert	','https://www.otomoto.pl/osobowe/volkswagen/golf/od-2018/?search%5Bfilter_enum_fuel_type%5D%5B0%5D=petrol&search%5Bfilter_enum_no_accident%5D=1&search%5Border%5D=filter_float_price%3Aasc&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D='],
 ['telefon','Najlepszy flagowiec Samsunga','https://deluxury.pl/pl/p/Samsung-Galaxy-S26-Ultra-S948-5G-Dual-Sim-12GB-RAM-256GB-Black/29761'],

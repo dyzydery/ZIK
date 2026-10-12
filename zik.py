@@ -35,6 +35,7 @@ SCRAPERY = {
     'bigmac': bigmac,
     'lot':    lot,
     'kindle':  kindl,
+    'piwo': friscoApi
 }
 WALUTY = {'xau','usd','chf'}
 PODWOJNE = {'lekarz': lekarz,'auto': otomoto}
@@ -49,7 +50,9 @@ def skanujKoszyk():
     for nazwa, opis, url in koszyk.koszyk:
         if nazwa in WALUTY:
             continue
-        if 'frisco' in url:
+        if nazwa in SCRAPERY:
+            cart[nazwa] = pobierz(nazwa, SCRAPERY[nazwa], url)
+        elif 'frisco' in url:
             cart[nazwa] = pobierz(nazwa,frisco,url)
             if cart[nazwa] == -1:
                 print(f'Ponawiam próbę {nazwa}')
@@ -60,7 +63,7 @@ def skanujKoszyk():
             cart[nazwa+'_Mean'] = z[0]
             cart[nazwa+'_Median'] = z[1]
         else:
-            cart[nazwa] = pobierz(nazwa, SCRAPERY[nazwa], url)
+            raise KeyError(f'brak scrapera dla {nazwa}')
     currency = waluty()
     cart['xau'] = currency['xau']
     cart['usd'] = currency['usd']

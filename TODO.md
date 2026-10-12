@@ -106,7 +106,7 @@ gdzie trzeba bylo skasowac.
 - [ ] Mozliwe podejscia do rozwazenia: powtorzenie requestu az do trafienia w nowy wariant (z limitem prob),
       albo parser obslugujacy oba uklady - ale w starym wariancie jest wylacznie cena jednostkowa,
       wiec ceny produktu nie da sie stamtad odczytac wcale
-- [ ] URL piwa w `koszyk.py` to nadal stary `pid,3192` (redirectuje na `pid,153955`) - do aktualizacji
+- [x] URL piwa w `koszyk.py` to nadal stary `pid,3192` (redirectuje na `pid,153955`) - do aktualizacji
       niezaleznie od powyzszego
 
 ## Architektura
@@ -522,3 +522,27 @@ ma `x[0]`), warstwe bledu zna miejsce `raise`. Wiec: scraper tylko rzuca, jeden 
 - [x] Pelny test po B: wszystkie wartosci jak przed zmiana, bledy tylko piwo/upc/kasjer
 - [ ] Do `debug.py` (lokalnie): stale testy frisco na DWOCH produktach - jednym w promocji, jednym bez.
       Test na samym produkcie w promocji nie wylapalby bledu `highlighted` x2
+
+## piwo - ROZWIAZANE dochodzenie (2026-10-12)
+- [x] Przyczyna: BRAMKA WIEKU, nie IP i nie wariant frontendu. Strona produktu alkoholowego renderuje sie
+      bez ceny (tytul strony glownej, zero `f-pdp__`), w bundlu JS: `popup/are-you-adult`, `confirm-adulthood`,
+      "Mam ukończone 18 lat.". Hipoteza z 2026-09-10 potwierdzona
+- [x] Cena JEST w danych strony (stan aplikacji, format transit: `"153955" ... 17.59`), ale parsowanie transit
+      jest kruche (klucze kompresowane do `^2G` zaleznie od kolejnosci)
+- [x] Czyste zrodlo: API wyszukiwarki frisco `https://www.frisco.pl/app/commerce/api/v1/offer/products/query?search=...`
+      - JSON, bez bramki wieku, bez sesji. Wybor produktu po `product.id == pid`, nie po pozycji.
+      Sprawdzone: piwo 153955 -> 17.59, maslo 13500 -> 5.89, jajka 100769 -> 13.99 (zgodne z HTML)
+- [x] Produkt 3192 ma w danych frisco status `withdrawn` i `substituted-by 153955` - stary URL w koszyku
+      to wycofany produkt, ktory przekierowuje na nastepce
+- [x] Napisac `friscoApi(url)`: pid i fraza z URL produktu (`pid,(\d+)`, `/n,([^/]+)`), cena z `product.price.price`
+- [x] Zmienic URL piwa w koszyku na `pid,153955`
+- [ ] Najpierw TYLKO piwo. Po tygodniu na Mikrusie (IP centrum danych!) rozwazyc przeniesienie wszystkich
+      9 produktow frisco z HTML na API - koniec z klasami CSS `--highlighted/--emphasized`
+- [ ] Do sprawdzenia przed przenosinami: `price` vs `priceAfterPromotion` (promocja warunkowa, np. marchew
+      2.49 -> 1.39) vs `priceBeforeDiscount` (gazetka: `price` juz jest promocyjna). Ktora pokazuje `--highlighted`?
+- [ ] Ciaglosc: ostatni odczyt 14.99 (12.2025, przeliczony), dzis 17.59. Przerwa 256 dni zostaje jako -1
+- [x] `friscoApi` dziala z laptopa: piwo 17.59. Pelny koszyk: 34 klucze, bledy tylko upc i kasjer.
+      `skanujKoszyk`: SCRAPERY sprawdzane PRZED regula `'frisco' in url`, na koncu `else: raise KeyError`
+- [ ] Poprawki w `friscoApi`: komunikat `[protokol] HTTP {kod}` zamiast "stronka sie zepsuła",
+      `r.json()` w try jako `[format]` (przy 403/antybot przyjdzie HTML)
+- [ ] Potwierdzic w logu z Mikrusa (IP centrum danych) - pierwsza noc po pull

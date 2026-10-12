@@ -174,6 +174,22 @@ def otomoto(url):
 		raise ValueError("[tresc] brak offert")
 	return [f.zrobCene(statistics.mean(kwota)),f.zrobCene(statistics.median(kwota))]
 
+FRISCO_API = 'https://www.frisco.pl/app/commerce/api/v1/offer/products/query'
+def friscoApi(url):
+	pid = re.search(r'pid,(\d+)', url).group(1)
+	fraza = re.search(r'/n,([^/]+)', url).group(1).replace('-', ' ') # 'zywiec piwo 4x500ml (puszka)'
+	r = requests.get(FRISCO_API, params={'search': fraza}, headers={**NAGLOWKI, 'Accept': 'application/json'}, timeout=15)
+	if (r.status_code != 200):
+		raise ValueError (f'[protokol] HTTP {r.status_code}')
+	try:
+        dane = r.json()
+    except ValueError:
+        raise RuntimeError(f'[format] nie JSON: {r.text[:80]!r}') from None
+	for x in dane['products']:
+		if x['product']['id'] == pid:
+			return f.zrobCene(x['product']['price']['price'])
+	raise ValueError(f'[tresc] brak produktu {pid} w wynikach dla "{fraza}"')
+
 def frisco(url):
 	soup = pobierzSoup(url)
 	cena = soup.find(class_='f-pdp__price-amount--highlighted')
