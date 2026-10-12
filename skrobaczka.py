@@ -1,7 +1,6 @@
 # coding=utf-8
 #! python3
 from bs4 import BeautifulSoup
-from urllib.request import urlopen
 import requests
 import funkcyjki as f
 import statistics
@@ -45,6 +44,15 @@ def wczytajEnv(sciezka=ENV):
 
 wczytajEnv()
 
+def pobierzSoup(url, headers=None):
+	try:
+		page = requests.get(url, headers=headers or NAGLOWKI, timeout=15)
+	except requests.RequestException as e:
+		raise RuntimeError(f'[transport] {type(e).__name__}') from None
+	if page.status_code != 200:
+		raise RuntimeError(f'[protokol] HTTP {page.status_code} dla {url[:60]}')
+	return BeautifulSoup(page.content, 'html.parser')
+
 def waluty():
 	fixer_api_key = os.environ.get('FIXER_API_KEY')
 	if not fixer_api_key:
@@ -55,7 +63,7 @@ def waluty():
 	try:
 		response = requests.get(url, timeout=15)
 	except requests.RequestException as e:
-		raise RuntimeError(f'fixer.io [transport]: {type(e).__name__}') from None
+		raise RuntimeError(f'fixer.io [transport] {type(e).__name__}') from None
 
 	# warstwa 2: PROTOKOL - HTTP 4xx/5xx nie rzuca samo z siebie.
 	if response.status_code != 200:
@@ -103,10 +111,7 @@ def bigmac(url):
 	return f.zrobCene(cena)
 
 def getJsonLD(url, headers=None):
-	page = requests.get(url, headers=headers or NAGLOWKI, timeout=15)
-	if page.status_code != 200:
-		raise RuntimeError(f'jsonld [protokol] HTTP {page.status_code} dla {url[:60]}')
-	soup = BeautifulSoup(page.content, 'html.parser')
+	soup = pobierzSoup(url, headers)
 	if soup.head is None or soup.head.title.get_text(strip=True) == "":
 		raise RuntimeError(f'jsonld [antybot]  dla {url[:60]}')
 	encje = []
@@ -139,48 +144,18 @@ def szukajJsonLD(dane, typ):
 	return znalezione
 
 def getPage(url):
-	page = requests.get(url, headers=NAGLOWKI, timeout=15)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	return soup.prettify()
-	# return str(urlopen(url).read())
-
-def getPageHeader(url,header):
-	page = requests.get(url,headers=header, timeout=15)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	return str(soup)
-
-def printPageHeader(url,header):
-	page = requests.get(url,headers=header, timeout=15)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	text_file = open("s.html", "w")
-	text_file.write(soup.prettify())
-	text_file.close()
+	return pobierzSoup(url).prettify()
 
 def printPage(url):
-	page = requests.get(url, headers=NAGLOWKI, timeout=15)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	text_file = open("s.html", "w")
-	text_file.write(soup.prettify())
-	text_file.close()
+	kod = pobierzSoup(url).prettify()
+	with open("s.html", "w") as plik:
+		plik.write(kod)
 
 def getPageClass(url,klasa):
-	headers = requests.utils.default_headers()
-	headers.update(NAGLOWKI)
-	page = requests.get(url,headers=headers, timeout=15)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	return soup.find(class_=klasa)
+	return pobierzSoup(url).find(class_=klasa)
 
 def getPageClassAll(url,klasa):
-	headers = requests.utils.default_headers()
-	headers.update(NAGLOWKI)
-	page = requests.get(url,headers=headers, timeout=15)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	return soup.find_all(class_=klasa)
-
-def getPageId(url,idx):
-	page = requests.get(url, timeout=15)
-	soup = BeautifulSoup(page.content, 'html.parser')
-	return soup.find(id=idx)
+	return pobierzSoup(url).find_all(class_=klasa)
 
 def otomoto(url):
 	rok = str(int(datetime.date.today().year)-3)
@@ -200,9 +175,10 @@ def otomoto(url):
 	return [f.zrobCene(statistics.mean(kwota)),f.zrobCene(statistics.median(kwota))]
 
 def frisco(url):
-	cena = getPageClass(url,'f-pdp__price-amount--highlighted')
+	soup = pobierzSoup(url)
+	cena = soup.find(class_='f-pdp__price-amount--highlighted')
 	if cena is None:
-		cena = getPageClass(url,'f-pdp__price-amount--emphasized')
+		cena = soup.find(class_='f-pdp__price-amount--emphasized')
 		if cena is None:
 			raise ValueError('[tresc] Nieznaleziono ceny')
 	cena = f.zrobCene(cena.get_text())
@@ -293,7 +269,7 @@ def lot(url):
 	try:
 		response = requests.get(url, headers=NAGLOWKI, timeout=15, params=params)
 	except requests.RequestException as e:
-		raise RuntimeError(f'[transport]: {type(e).__name__}') from None
+		raise RuntimeError(f'[transport] {type(e).__name__}') from None
 	if response.status_code != 200:
 		raise RuntimeError(f'[protokol] HTTP {response.status_code}')
 	try:

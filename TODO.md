@@ -55,7 +55,7 @@
 - [ ] `upc` - NIE selektor: 493 kB HTML ale tylko 1577 znakow tekstu, tresc renderowana JS-em
 - [ ] `kasjer` - NIE selektor: 987 B HTML, 74 znaki tekstu, sciana bot/consent
 - [ ] `auto` i `m2` opieraja sie na hashowanych klasach CSS (`efpuxbr16 ooa-1n2paoq er34gjf0`, `data-v-0d6d0a35`) - to sie zmienia przy kazdym deployu strony. Przepisac na JSON-LD / `__NEXT_DATA__` / `data-testid`
-- [ ] `aspiryna()` i `frisco()` robia 2x request na ta sama strone - rozdzielic "pobierz strone" od "wyciagnij cene"
+- [x] `aspiryna()` i `frisco()` robia 2x request na ta sama strone - rozdzielic "pobierz strone" od "wyciagnij cene"
 
 ## frisco() czyta cene jednostkowa zamiast ceny produktu (2026-09-04)
 - [x] KRYTYCZNE: klasa `price_num` na frisco.pl to CENA ZA KG/LITR, nie cena produktu. Dotyczy 9 z 33 kolumn - calego rdzenia koszyka spozywczego. Arytmetyka zgadza sie co do grosza: kielecki 14,19/0,7 l = 20,27 | pizza 10,29/0,425 kg = 24,21 | maslo 5,89/0,2 = 29,45 | makaron 5,19/0,4 = 12,97 | chleb 4,69/0,5 = 9,38 | piwo 17,59/2 l = 8,79
@@ -445,7 +445,7 @@ m2wtorny, m2pierwotny, benzyna, lot, prad, lekarz, karma, kindle, xau, chf, usd
 - [x] Raport zdrowia: `Martwe` posortowane rosnaco po dniach - swieze awarie na gorze
 - [x] `printPage`/`getPage` bez naglowkow dostaja od otomoto 403 (`python-requests/2.33.1`). Narzedzie do podgladu
       musi wysylac TE SAME naglowki co scraper, inaczej debugujesz inna strone niz ta, ktora parsujesz
-- [ ] Ujednolicic naglowki: dzis sa trzy zestawy (brak, Opera w `getPageClass`, `NAGLOWKI`). Jedna funkcja `pobierzSoup`
+- [x] Ujednolicic naglowki: dzis sa trzy zestawy (brak, Opera w `getPageClass`, `NAGLOWKI`). Jedna funkcja `pobierzSoup`
 
 ## Bilans zbierania 2026-10-08
 Martwe: 6 z 33 (na poczatku pracy 13). Wszystkie pozostale to problemy z DOSTEPEM, nie z kodem:
@@ -502,6 +502,23 @@ ma `x[0]`), warstwe bledu zna miejsce `raise`. Wiec: scraper tylko rzuca, jeden 
       Zlapane testem na laptopie, nie na produkcji. Log sam wskazal bug dzieki `type(e).__name__`
 - [x] `skanujKoszyk` na slownikach SCRAPERY / PODWOJNE / WALUTY, petla `for nazwa, opis, url in koszyk.koszyk`.
       Test: 34 klucze = naglowek CSV, bledy tylko piwo/upc/kasjer. Nowy produkt bez scrapera -> glosny KeyError
-- [ ] Do potwierdzenia w logu produkcyjnym: pierwsza noc po `git pull` na Mikrusie (recznie albo w piatek 2026-10-16)
+- [x] Potwierdzone w logu produkcyjnym 2026-10-12: wszystkie bledy w formacie `BLAD nazwa: Typ: ...`, bigmac pierwszy raz podpisany nazwa, piwo jako jedna awaria z ponowieniem
 - [ ] Narzedzie: `ruff check` - wylapuje nieuzywane parametry/importy (F841/F401) i powtorzone klucze slownika (F601),
       czyli 3 z bledow tej lekcji. `from skrobaczka import *` utrudnia mu prace (F403/F405)
+
+## B - jedna funkcja pobierajaca strone (2026-10-12)
+- [x] `pobierzSoup(url, headers=None)`: transport/protokol w jednym miejscu, uzywaja jej getJsonLD, getPage,
+      getPageClass, getPageClassAll, printPage. Usuniete martwe getPageHeader/printPageHeader/getPageId/urlopen
+- [x] Test stara (HEAD) vs nowa wersja: wartosci identyczne (prad, m2, upc - te od `prettify`), poza lekarz_Mean,
+      ktory zmienia sie miedzy zapytaniami (zywa lista lekarzy)
+- [x] DOWOD SENSU ZMIANY: przy tescie frisco zwrocilo 503 (dwa rownolegle skany = podwojne obciazenie, moja wina).
+      Stara wersja zapisala w logu `jajka: [tresc] Nieznaleziono ceny`, nowa `jajka: [protokol] HTTP 503`.
+      Ta sama awaria, stara diagnoza wysylala na szukanie zepsutego selektora
+- [ ] Hipoteza do sprawdzenia: czy czesc nocnych "zdegradowanych wariantow" piwa to w rzeczywistosci 503/429?
+      Od teraz log to pokaze
+- [x] Krok 3: frisco jednym zapytaniem (zostal zagniezdzony `if`, wybor autora). Po drodze 3 bledy w tych samych 2 liniach: `find` bez `class_=` (szuka TAGU), `--highlighted` dwa razy, kropka na koncu nazwy klasy. Wszystkie zlapane testem jednego produktu bez promocji
+- [x] `printPage` otwiera s.html PRZED pobraniem - przy bledzie zostaje pusty plik. Najpierw pobierz, potem `with open`
+- [x] Drobiazg: `'[transport]: ...'` ma dwukropek, w `waluty` i `lot` tez - ujednolicic
+- [x] Pelny test po B: wszystkie wartosci jak przed zmiana, bledy tylko piwo/upc/kasjer
+- [ ] Do `debug.py` (lokalnie): stale testy frisco na DWOCH produktach - jednym w promocji, jednym bez.
+      Test na samym produkcie w promocji nie wylapalby bledu `highlighted` x2
