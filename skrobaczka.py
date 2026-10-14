@@ -182,9 +182,9 @@ def friscoApi(url):
 	if (r.status_code != 200):
 		raise ValueError (f'[protokol] HTTP {r.status_code}')
 	try:
-        dane = r.json()
-    except ValueError:
-        raise RuntimeError(f'[format] nie JSON: {r.text[:80]!r}') from None
+		dane = r.json()
+	except ValueError:
+		raise RuntimeError(f'[format] nie JSON: {r.text[:80]!r}') from None
 	for x in dane['products']:
 		if x['product']['id'] == pid:
 			return f.zrobCene(x['product']['price']['price'])
