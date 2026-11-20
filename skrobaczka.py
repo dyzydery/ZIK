@@ -21,6 +21,7 @@ NAGLOWKI = {
       'Sec-Fetch-Dest': 'document', 'Sec-Fetch-Mode': 'navigate',
       'Sec-Fetch-Site': 'none', 'Sec-Fetch-User': '?1',
 }
+NAGLOWKI_BOT = {'User-Agent': 'ZIK-cennik/1.0 (prywatny projekt, 1 zapytanie dziennie)'}
 
 def wczytajEnv(sciezka=ENV):
 	"""Wczytuje zmienne z .env lezacego obok tego pliku.
@@ -223,10 +224,13 @@ def fryzjer(url):
 	raise ValueError ("[tresc] nie ma danych")
 
 def prad(url):
-	kod = getPage(url)
-	cena = kod.find('#0070C0')
-	kwota = kod[cena+8:cena+30]
-	return f.zrobCene(kwota)
+	soup = pobierzSoup(url, NAGLOWKI_BOT)
+	kod = soup.prettify()
+	cena = re.search(r'#0070C0[^>]*>\s*([\d,]+)\s*zł/kWh', kod)
+	if cena is None:
+		title = soup.title.get_text(strip=True) if soup.title is not None else "Brak Tytulu"
+		raise ValueError(f'[tresc] Strona {title} brak matchu dla ceny pradu. Dlugosc strony {len(kod)}')
+	return f.zrobCene(cena.group(1))
 
 def m2(url):
 	kod = getPage(url)

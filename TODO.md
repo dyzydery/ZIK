@@ -3,26 +3,34 @@
 Przemodelowane 2026-10-12: punkty nieaktualne usuniete, rozsiane sekcje scalone tematycznie.
 Legenda: `[ ]` do zrobienia, `[x]` zrobione, `[~]` swiadomie odrzucone (decyzja).
 
-## Stan (2026-10-12)
-- Martwe kolumny: 4 z 33 (na starcie pracy 13): `aspiryna`, `bigmac`, `upc`, `kasjer`
-- `piwo` dziala z laptopa przez API frisco, czeka na potwierdzenie z Mikrusa
+## Stan (2026-11-20)
+- Martwe kolumny: 4 z 33 (na starcie pracy 13): `aspiryna`, `bigmac`, `upc`, `kasjer`. `prad` martwy 2026-11-10..20,
+  poprawka C1 wypchnieta 2026-11-20 - potwierdzic w logu z 2026-11-21
+- CICHE SMIECI: `kindle` od 2026-11-17 zapisuje 94981930839.0 (patrz sekcja 4)
+- `piwo` dziala przez API frisco, potwierdzone na Mikrusie 2026-10-14 (po 258 dniach)
 - Log: jeden format `BLAD nazwa: Typ: [warstwa] opis`, raport zdrowia (`REGRESJA`, `Martwe`) po kazdym przebiegu
 - CSV jest zrodlem kanonicznym, `zik.db` to kopia zapasowa (decyzja 2026-10-06)
 
 ---
 
 # 1. Najblizej
-- [ ] AWARIA 2026-10-13/14: `e1793eb` (piwo przez API) ma w `friscoApi` 3 linie wciete SPACJAMI w pliku na tabach
+- [x] AWARIA 2026-10-13/14: `e1793eb` (piwo przez API) ma w `friscoApi` 3 linie wciete SPACJAMI w pliku na tabach
       (`try`/`except` wklejone z mojego przykladu) -> `TabError` przy imporcie, zero zbierania. Stracone noce
       2026-10-13 i 2026-10-14 (ostatni wiersz 2026-10-12). Poprawka: taby, commit, push, `git pull` na Mikrusie
       przed 02:02, ewentualnie reczny `python3 zik.py` na Mikrusie, zeby uratowac 2026-10-14
 - [ ] RAPORT ZDROWIA NIE ZAUWAZYL AWARII: `REGRESJA: []`, a `Martwe` liczy dni wzgledem OSTATNIEGO WIERSZA, wiec
       przy braku nowego wiersza wszystko wyglada jak wczoraj. Dodac sprawdzenie swiezosci: data ostatniego wiersza
       != dzis -> glosne `BRAK DZISIEJSZEGO WIERSZA` na samej gorze
+- [ ] DRUGA NIEZAUWAZONA DZIURA: brak wierszy 2026-10-22..2026-10-28 (7 dni), brak tez piatkowego pushu 2026-10-23.
+      Przyczyna nieznana - sprawdzic `zikFull.log` na Mikrusie z tych dni. Raport zdrowia v2 (lekcja D):
+      (a) swiezosc ostatniego wiersza, (b) dziury w datach, (c) skoki >30% (sekcja 4), (d) kolumny martwe >1 dzien
+      wypisywane glosno, nie tylko nowe regresje (`prad` byl martwy 11 dni zanim ktos zauwazyl)
+- [ ] Po pushu C1: `git pull` na Mikrusie, rano sprawdzic w logu `prad` = 0.97
 - [ ] Przed kazdym commitem kodu: `python3 -c "import zik"` (0.2 s, bez scrapowania). Wylapalby te awarie.
       Mozna to zautomatyzowac hookiem `pre-commit` w gicie
 - [x] `friscoApi`: `[protokol] HTTP {kod}` zamiast "stronka sie zepsuła", `r.json()` w try jako `[format]`
-- [ ] Commit `friscoApi` + `git pull` na Mikrusie, potwierdzic piwo w logu (IP centrum danych!)
+- [x] Commit `friscoApi` + `git pull` na Mikrusie, piwo potwierdzone z IP Mikrusa (2026-10-14, reczny run 13:54).
+      Stracone tylko 2026-10-13; wiersz 2026-10-14 ma godzine dzienna. Okno 7 dni na decyzje o frisco->API liczy sie od dzis
 - [ ] `debug.py` (lokalnie): staly test frisco na DWOCH produktach - jednym w promocji, jednym bez.
       Test na samym produkcie w promocji nie wylapalby bledu `--highlighted` x2 z 2026-10-12
 - [ ] `ruff check` na calym projekcie. Wylapuje nieuzywane parametry/importy (F841/F401) i powtorzone klucze
@@ -35,7 +43,14 @@ Legenda: `[ ]` do zrobienia, `[x]` zrobione, `[~]` swiadomie odrzucone (decyzja)
       bez `Sec-Fetch-Dest: document`), albo API sklepu jak przy fryzjerze/piwie, albo inne zrodlo.
       bigmac: ciaglosc 11.30 (2020) -> 22.90 (2024) -> 24.70 (2026-08 recznie)
 - [ ] `upc` - 900 kB HTML, cena renderowana JS-em. Szukac API, z ktorego bierze ja strona
-- [ ] `kasjer` (jobted.pl) - 984 B HTML, sciana zgody/antybot. Prawdopodobnie inne zrodlo
+- [ ] `kasjer` (jobted.pl) - 984 B HTML, sciana zgody/antybot. Prawdopodobnie inne zrodlo.
+      Log 2026-11-20: `AttributeError: 'NoneType' ... get_text` - `getPageClass` zwraca None, brak `[tresc]`
+- [ ] UCZCIWY USER-AGENT dla `aspiryna`, `bigmac`, `kasjer`: na Mikrusie `curl -s -A "ZIK-cennik/1.0 ..." URL`
+      i porownac z `NAGLOWKI` (udajacymi Chrome). Przy `prad` wlasnie udawanie przegladarki uruchamialo antybota
+- [x] `prad` (2026-11-20, lekcja C1): od 2026-11-10 cena-pradu.pl za antybotem Anubis (`/.within.website/`,
+      tytul "Making sure you're not a bot!", HTTP 200, 7 kB zamiast 75 kB) - tylko dla IP centrum danych.
+      Przepuszcza klienta, ktory NIE podaje sie za przegladarke. Poprawka: `NAGLOWKI_BOT` + regex na `zł/kWh`
+      + `[tresc]` z tytulem i dlugoscia strony. Nie obchodzimy zabezpieczen (PoW, udawanie przegladarki)
 - [ ] Metoda, ktora zadzialala 2x (fryzjer, piwo): zamiast parsowac HTML, sprawdzic w bundlu JS strony,
       skad jej aplikacja bierze dane - zwykle jest publiczne API pod inna sciezka
 
@@ -53,8 +68,12 @@ Legenda: `[ ]` do zrobienia, `[x]` zrobione, `[~]` swiadomie odrzucone (decyzja)
 - [ ] `buty` skoczyly 239 -> 259 -> 549 (2026-09-06..08) i stoja na 549. `getPageClass(url,'price')` bierze
       PIERWSZA cene na liscie, niekoniecznie najtansza. Sprawdzic
 - [ ] `otomoto`: `if len(kwota) < 100: raise` - przy zepsutej paginacji mediana spadnie o polowe bez bledu
-- [ ] `prad()` zaczepiony na kolorze `#0070C0` i offsetach `kod[i+8:i+30]`. Docelowo: wyciagnac trzy kwoty
-      `zl/kWh` i sprawdzic, ze dwie pierwsze sumuja sie do trzeciej (tolerancja 0.02)
+- [ ] `kindle` OD 2026-11-17 SMIECI: 94983930949.0, 94981930839.0. czytio.pl w promocji pokazuje w `h2 price`
+      `949 zł819 złNajniższa cena z 30 dni przed obniżką: 839 zł`, `zrobCene` skleja cyfry. Wybrac cene po znaczeniu
+      (lekcja C2) i wyczyscic wiersze od 2026-11-17 (-1 albo recznie 819). `zrobCene` mogla by rzucac przy >1 liczbie
+- [ ] `telefon` 4445 -> 4943/4971 (2026-11-17/19). Sprawdzic, czy to podwyzka, czy inna oferta/wariant
+- [ ] `prad()` (opcjonalnie, po C1 jest regex): wyciagnac trzy kwoty `zl/kWh` i sprawdzic, ze dwie pierwsze
+      sumuja sie do trzeciej (tolerancja 0.02)
 - [ ] Opisy w `koszyk.py` rozjechane z URL-em: `mydlo` (Bialy Jelen 150g vs "barwa mydlo szare"),
       `kindle` (8gb vs URL 16gb). Telefon juz poprawiony
 - [ ] Historia `telefon` niewiarygodna: 62 skoki >10% na 888 odczytow (akcesoria 119-542 zl, ceny x100 typu
@@ -177,6 +196,11 @@ Decyzje do podjecia:
 - Do BeautifulSoup podawac bajty (`r.content`) - cena-pradu.pl deklaruje `windows-1250` tylko w `<meta>`
 - `.get_text()` na `<script>`, nie `.string` (`.string` daje `None` -> `TypeError`, ktorego `except ValueError` nie zlapie)
 - Datacenter IP dostaje gorsze traktowanie (wapteka/ubereats 403) - testy z laptopa tego nie pokaza
+- Antybot moze odpowiedziec HTTP 200 (Anubis przy `prad`) - kontrola statusu nie wystarcza. Tytul strony i dlugosc
+  HTML w komunikacie bledu daja diagnoze bez logowania na Mikrusa
+- `str.find()` zwraca -1 zamiast rzucac, a slice z -1 wycina losowy tekst - cichy blad. `re.search` + `if is None: raise`
+- Diagnoza "z laptopa dziala, na Mikrusie nie": `curl` z tymi samymi naglowkami NA MIKRUSIE, porownac rozmiar i znacznik
+- Swieze dane z Mikrusa bez czekania na pull: `git fetch` + `git show origin/master:zikDB.csv`
 
 ## Archeologia danych frisco (ustalona 2026-09-04, przeliczona 2026-10-09)
 - do 2025-05-23 cena PRODUKTU | 2025-05-24..2025-12-11 cena JEDNOSTKOWA | 2025-12-12..2026-03-03 PRODUKTU |
@@ -213,5 +237,6 @@ Decyzje do podjecia:
 - [x] 2026-10-09/12 lekcja A: `pobierz`, jeden format bledow, `zrobCene` rzuca, slowniki SCRAPERY/PODWOJNE/WALUTY
 - [x] 2026-10-12 lekcja B: `pobierzSoup` (transport/protokol dla wszystkich), frisco jednym requestem, martwe helpery usuniete
 - [x] 2026-10-12 piwo: przyczyna (bramka wieku) + `friscoApi`, nowy pid 153955, 17.59 z laptopa
+- [x] 2026-11-20 lekcja C1: `prad` - diagnoza Anubisa curlem na Mikrusie, `NAGLOWKI_BOT`, regex z grupa, `[tresc]` z tytulem
 - Klasa awarii "debug na produkcji" wystapila 5 razy (printPage, `# WyliczZIK()` -> 7 dni, edycja na Mikrusie ->
   backup 3 tyg., `# DBinsert` -> tydzien bazy). Zamknieta przez `__main__` + `debug.py`
