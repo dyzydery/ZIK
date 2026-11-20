@@ -6,7 +6,7 @@ Legenda: `[ ]` do zrobienia, `[x]` zrobione, `[~]` swiadomie odrzucone (decyzja)
 ## Stan (2026-11-20)
 - Martwe kolumny: 4 z 33 (na starcie pracy 13): `aspiryna`, `bigmac`, `upc`, `kasjer`. `prad` martwy 2026-11-10..20,
   poprawka C1 wypchnieta 2026-11-20 - potwierdzic w logu z 2026-11-21
-- CICHE SMIECI: `kindle` od 2026-11-17 zapisuje 94981930839.0 (patrz sekcja 4)
+- `kindle` od 2026-11-17 zapisywal smieci (94981930839.0), poprawka C2 2026-11-20. Wiersze 11-17..pull do wyczyszczenia
 - `piwo` dziala przez API frisco, potwierdzone na Mikrusie 2026-10-14 (po 258 dniach)
 - Log: jeden format `BLAD nazwa: Typ: [warstwa] opis`, raport zdrowia (`REGRESJA`, `Martwe`) po kazdym przebiegu
 - CSV jest zrodlem kanonicznym, `zik.db` to kopia zapasowa (decyzja 2026-10-06)
@@ -25,7 +25,11 @@ Legenda: `[ ]` do zrobienia, `[x]` zrobione, `[~]` swiadomie odrzucone (decyzja)
       Przyczyna nieznana - sprawdzic `zikFull.log` na Mikrusie z tych dni. Raport zdrowia v2 (lekcja D):
       (a) swiezosc ostatniego wiersza, (b) dziury w datach, (c) skoki >30% (sekcja 4), (d) kolumny martwe >1 dzien
       wypisywane glosno, nie tylko nowe regresje (`prad` byl martwy 11 dni zanim ktos zauwazyl)
-- [ ] Po pushu C1: `git pull` na Mikrusie, rano sprawdzic w logu `prad` = 0.97
+- [ ] Po pushu C1+C2: `git pull` na Mikrusie, rano sprawdzic w logu `prad` = 0.97 i `kindle` = 819 (albo inna
+      rozsadna cena)
+- [ ] Wyczyscic smieci `kindle` w CSV (wartosci > 10000 od 2026-11-17 do dnia pulla na Mikrusie) -> `-1` albo 819.
+      CSV zyje na Mikrusie - zaplanowac tak, zeby nie bylo konfliktu z codziennym dopisywaniem i piatkowym pushem
+      (poprzednio: skrypt `przelicz_frisco.py` odpalony na Mikrusie, commit `22c5123`)
 - [ ] Przed kazdym commitem kodu: `python3 -c "import zik"` (0.2 s, bez scrapowania). Wylapalby te awarie.
       Mozna to zautomatyzowac hookiem `pre-commit` w gicie
 - [x] `friscoApi`: `[protokol] HTTP {kod}` zamiast "stronka sie zepsuła", `r.json()` w try jako `[format]`
@@ -68,9 +72,13 @@ Legenda: `[ ]` do zrobienia, `[x]` zrobione, `[~]` swiadomie odrzucone (decyzja)
 - [ ] `buty` skoczyly 239 -> 259 -> 549 (2026-09-06..08) i stoja na 549. `getPageClass(url,'price')` bierze
       PIERWSZA cene na liscie, niekoniecznie najtansza. Sprawdzic
 - [ ] `otomoto`: `if len(kwota) < 100: raise` - przy zepsutej paginacji mediana spadnie o polowe bez bledu
-- [ ] `kindle` OD 2026-11-17 SMIECI: 94983930949.0, 94981930839.0. czytio.pl w promocji pokazuje w `h2 price`
-      `949 zł819 złNajniższa cena z 30 dni przed obniżką: 839 zł`, `zrobCene` skleja cyfry. Wybrac cene po znaczeniu
-      (lekcja C2) i wyczyscic wiersze od 2026-11-17 (-1 albo recznie 819). `zrobCene` mogla by rzucac przy >1 liczbie
+- [x] `kindle` (2026-11-20, lekcja C2): w promocji `h2 price` zawieral `949 zł819 zł...839 zł`, `zrobCene` sklejal
+      cyfry -> 94981930839.0. Teraz microdata: `itemprop="price"` WEWNATRZ `.h2.price`, atrybut `content` (819.00)
+- [ ] `kindl`: dwa identyczne bloki `title=... raise` - scalic (`cena = blok.find(...) if blok is not None else None`
+      albo `kod.select_one('.h2.price [itemprop=price]')`). Tytul+raise powtarza sie tez w `prad` - kandydat na
+      wspolna funkcje pomocnicza, np. `brakCeny(soup, opis)`
+- [ ] `zrobCene` przyjmuje tekst z kilkoma liczbami i skleja cyfry (kindle 94981930839). Rozwazyc: rzucac, gdy w
+      tekscie jest wiecej niz jedna liczba
 - [ ] `telefon` 4445 -> 4943/4971 (2026-11-17/19). Sprawdzic, czy to podwyzka, czy inna oferta/wariant
 - [ ] `prad()` (opcjonalnie, po C1 jest regex): wyciagnac trzy kwoty `zl/kWh` i sprawdzic, ze dwie pierwsze
       sumuja sie do trzeciej (tolerancja 0.02)
@@ -201,6 +209,10 @@ Decyzje do podjecia:
 - `str.find()` zwraca -1 zamiast rzucac, a slice z -1 wycina losowy tekst - cichy blad. `re.search` + `if is None: raise`
 - Diagnoza "z laptopa dziala, na Mikrusie nie": `curl` z tymi samymi naglowkami NA MIKRUSIE, porownac rozmiar i znacznik
 - Swieze dane z Mikrusa bez czekania na pull: `git fetch` + `git show origin/master:zikDB.csv`
+- `itemprop`/microdata (schema.org) mowi, KTORA liczba jest cena, ale NIE jest unikalny na stronie: czytio.pl ma 6x
+  `itemprop="price"` (pusty szablon, glowny produkt, akcesoria). Najpierw `find_all`, potem zawezic do bloku produktu
+- `str.find()` (zwraca -1) i `soup.find()` (zwraca element albo None) to rozne metody o tej samej nazwie - liczy sie TYP
+- `return` w srodku funkcji konczy ja - kod ponizej jest martwy (slad kopiuj-wklej w C2, `UnboundLocalError`)
 
 ## Archeologia danych frisco (ustalona 2026-09-04, przeliczona 2026-10-09)
 - do 2025-05-23 cena PRODUKTU | 2025-05-24..2025-12-11 cena JEDNOSTKOWA | 2025-12-12..2026-03-03 PRODUKTU |
@@ -238,5 +250,6 @@ Decyzje do podjecia:
 - [x] 2026-10-12 lekcja B: `pobierzSoup` (transport/protokol dla wszystkich), frisco jednym requestem, martwe helpery usuniete
 - [x] 2026-10-12 piwo: przyczyna (bramka wieku) + `friscoApi`, nowy pid 153955, 17.59 z laptopa
 - [x] 2026-11-20 lekcja C1: `prad` - diagnoza Anubisa curlem na Mikrusie, `NAGLOWKI_BOT`, regex z grupa, `[tresc]` z tytulem
+- [x] 2026-11-20 lekcja C2: `kindle` - microdata `itemprop`, zawezanie do bloku, `find` soup vs str
 - Klasa awarii "debug na produkcji" wystapila 5 razy (printPage, `# WyliczZIK()` -> 7 dni, edycja na Mikrusie ->
   backup 3 tyg., `# DBinsert` -> tydzien bazy). Zamknieta przez `__main__` + `debug.py`

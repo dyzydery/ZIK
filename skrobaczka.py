@@ -272,7 +272,16 @@ def benzyna(url):
 	return f.zrobCene(getPageClass(url,'price').get_text())
 
 def kindl(url):
-	return f.zrobCene(getPageClass(url,'h2 price').get_text())
+	kod = pobierzSoup(url)
+	blok = kod.find(class_='h2 price')
+	if blok is None:
+		title = kod.title.get_text(strip=True) if kod.title is not None else "Brak Tytulu"
+		raise ValueError(f'[tresc] Strona {title} brak matchu dla ceny. Dlugosc strony {len(str(kod))}')
+	cena = blok.find(attrs={'itemprop': 'price'})
+	if cena is None:
+		title = kod.title.get_text(strip=True) if kod.title is not None else "Brak Tytulu"
+		raise ValueError(f'[tresc] Strona {title} brak matchu dla ceny. Dlugosc strony {len(str(kod))}')
+	return f.zrobCene(cena.get('content'))
 
 def kasjer(url):
 	return f.zrobCene(getPageClass(url,'salary-info-value').get_text())
